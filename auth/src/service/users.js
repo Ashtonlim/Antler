@@ -4,7 +4,7 @@ import { auth } from './middleware'
 const router = Router()
 
 router.get('/', auth, getUsers)
-router.post('/', auth, register)
-router.post('/login', auth, login)
+router.post('/', register)
+router.post('/login', login)
 
 export default router
