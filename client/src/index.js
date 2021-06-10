@@ -1,13 +1,16 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./components/App";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './components/App';
+import { ContextProvider } from './context';
 
-import "antd/dist/antd.css";
-import "./scss/main.scss";
+import './scss/main.scss';
+import 'antd/dist/antd.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ContextProvider>
+      <App />
+    </ContextProvider>
   </React.StrictMode>,
-  document.getElementById("root")
+  document.getElementById('root')
 );
