@@ -1,0 +1,15 @@
+.btn {
+  display: block;
+  padding: 5px 10px;
+  border-radius: 2px;
+  color: $we;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  background-color: $theme1;
+  transition: background-color 0.3s;
+  // font-weight: bold;
+}
+
+.btn:hover,
+.btn:focus {
+  background-color: lighten($theme1, 10%);
+}

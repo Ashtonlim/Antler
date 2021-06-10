@@ -1,0 +1,50 @@
+$color-white: #ffffff;
+$color-dark: #212121;
+$color-grey: #cccccc;
+$color-red: #f7452f;
+
+.container {
+  max-width: 75rem;
+  width: 100%;
+  padding: 0 2rem;
+  margin: 0 auto;
+}
+
+.mobileNavbar {
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.8rem 0;
+    background-color: $color-dark;
+    z-index: 99;
+    will-change: transform;
+    transform: translateZ(0);
+    box-shadow: 0 -2px 3px -2px $color-dark;
+
+    &-item {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: center;
+      text-align: center;
+      font-size: 0.8rem;
+      color: $color-grey;
+    }
+
+    &-link {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .active {
+      color: $color-red;
+    }
+
+    .anticon {
+      font-size: 20px;
+    }
+  }
+}

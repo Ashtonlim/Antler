@@ -1,0 +1,32 @@
+@import "normalize";
+@import "variables";
+@import "colors";
+@import "reusable";
+@import "overwrites";
+
+* {
+  letter-spacing: 0.01em;
+}
+@media screen and (min-width: var(--tablet-s)) {
+  * {
+    font-size: calc(12px + 6 * ((100vw - 320px) / (var(--tablet-s) - 320)));
+  }
+}
+#root {
+  height: 100%;
+}
+
+main {
+  margin-top: $heightOfHeader + 35px;
+  min-height: 100vh;
+}
+
+input {
+  display: block;
+}
+
+.shadow {
+  box-shadow: 0px 2px 21px 0px rgba(82, 82, 82, 0.1);
+  background-color: $white;
+  transition: all 0.3s;
+}

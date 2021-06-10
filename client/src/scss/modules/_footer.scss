@@ -1,0 +1,35 @@
+.site-footer {
+  background-color: $theme1;
+  height: $heightOfHeader;
+  flex-shrink: 0;
+  margin-top: 50px;
+  > div {
+    height: 100%;
+  }
+
+  span {
+    color: lighten($theme1, 60%);
+  }
+  a {
+    color: lighten($theme1, 60%);
+    &:hover {
+      color: #3366cc;
+      text-decoration: none;
+    }
+  }
+
+  .copyright-text {
+    float: right;
+    margin: 0;
+  }
+}
+
+#components-layout-demo-side .logo {
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 16px;
+}
+
+.site-layout .site-layout-background {
+  background: #fff;
+}

@@ -1,0 +1,52 @@
+// site specific
+$heightOfHeader: 65px;
+$boarderUniversal: 1px solid #ccc;
+
+// generic paddings
+$marginMain: 100px;
+$leftpad: 30px;
+$sidebarpad: 15px 30px 15px $leftpad;
+$evt-padding: 10px 15px 20px 30px;
+$header_pad: 15px;
+
+// Media Queries with breakpoint
+$desktop: 1900px;
+$laptop: 1599px;
+$tablet-l: 1020px;
+$tablet: 760px;
+$tablet-s: 550;
+$mobile-l: 430px;
+$mobile: 375px;
+
+$mx-desktop: max-width 1900px;
+$mx-laptop: max-width 1224px;
+$mx-tablet: max-width 800px;
+$mx-mobile-lg: 430px;
+$mx-mobile: max-width 375px;
+
+// 160% line height
+// 30% marging bottom para
+:root {
+  --hdr_height: 60px;
+  --hdr_lh: 20px;
+  --hdr_padding: 20px;
+
+  --desktop: 1900px;
+  --laptop: 1599px;
+  --tablet-l: 1020px;
+  --tablet: 760px;
+  --tablet-s: 550;
+  --mobile-l: 430px;
+  --mobile: 375px;
+
+  --sxnw: 1.777;
+  --sxnh: 0.5625;
+  --a4x: 1.414;
+  --a4w: 164px;
+  --cw1: 95%;
+  --cw2: 90%;
+  --cw3: 85%;
+  --cw5: 720px;
+  --cw7: 850px;
+  --cw10: 1200px;
+}

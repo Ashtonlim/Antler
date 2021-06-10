@@ -1,0 +1,17 @@
+.slider-container {
+  overflow: hidden;
+  .slider {
+    display: flex;
+    flex-direction: row;
+
+    .post-box {
+      min-width: 20%;
+      padding-right: 1%;
+    }
+
+    .post-thumb img {
+      border-radius: 10px;
+      height: 450px;
+    }
+  }
+}

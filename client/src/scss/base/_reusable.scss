@@ -1,0 +1,153 @@
+.ruCenter {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ruVerticalCenter {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.pl-1 {
+  padding-left: 10px;
+}
+
+.my-1 {
+  margin: 10px 0px;
+}
+
+.my-2 {
+  margin: 20px 0px;
+}
+
+.my-3 {
+  margin: 30px 0px;
+}
+
+.ml-1 {
+  margin-left: 10px;
+}
+
+.ml-2 {
+  margin-left: 20px;
+}
+
+.ml-3 {
+  margin-left: 30px;
+}
+
+.ml-a {
+  margin-left: auto;
+}
+
+.mt-5 {
+  margin-top: 50px;
+}
+
+.mt-8 {
+  margin-top: 80px;
+}
+
+.mr-1 {
+  margin-right: 10px;
+}
+.mr-2 {
+  margin-right: 20px;
+}
+.mr-3 {
+  margin-right: 30px;
+}
+
+.mr-a {
+  margin-right: auto;
+}
+
+.ml-a {
+  margin-left: auto;
+}
+// .mtb10 {
+//   margin-top: 10px;
+//   margin-bottom: 10px;
+// }
+
+// .mtb20 {
+//   margin-top: 20px;
+//   margin-bottom: 20px;
+// }
+
+// .mtb30 {
+//   margin-top: 30px;
+//   margin-bottom: 30px;
+// }
+
+// .mt50 {
+//   margin-top: 50px;
+// }
+
+// .mt80 {
+//   margin-top: 80px;
+// }
+
+// .mr10 {
+//   margin-right: 10px;
+// }
+// .mr20 {
+//   margin-right: 20px;
+// }
+
+.link {
+  color: $blue1;
+
+  &:hover {
+    text-decoration: underline;
+    color: $blue1;
+  }
+}
+
+.mow {
+  // previously used % margin to set a width, however does not center the div
+  // margin: 20px 4%;
+
+  // now, width is specified and margin left and right is set to auto
+  min-width: 300px;
+  max-width: 2000px;
+  width: 95vw;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ruRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ruCol {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.halve {
+  width: 50%;
+}
+
+.lg-f {
+  font-size: 3em;
+}
+
+.text-chunk-mid {
+  font-size: 1.1em;
+  line-height: 1.3em;
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1500px) {
+  .mow {
+    width: 85vw;
+  }
+}
