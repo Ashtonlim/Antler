@@ -32,15 +32,14 @@ export const register = async (req, res) => {
     //     "name": "ashy",
     //     "hp": "+65111"
     //   }
-    console.log(body)
-    const newUser = new users({ ...body, funds: 0 })
-    newUser.setPassword(body.password)
+    const userObj = new users({ ...body, funds: 0 })
+    userObj.setPassword(body.password)
 
     console.log('saving... ')
     // what happens to destructuring if await returns err obj?
-    const { email, _id } = await newUser.save()
+    const { email, _id } = await userObj.save()
     const token = sign({ email, id: _id }, process.env.JWTSECRET, { expiresIn: '1h' })
-    res.status(201).json({ newUser, token })
+    res.status(201).json({ userObj, token })
   } catch ({ message }) {
     console.log(message)
     res.status(409).json({ message })
@@ -65,16 +64,16 @@ export const login = async (req, res) => {
     }
 
     //
-    const user = { ...existingUser.toObject() }
-    const token = sign({ email: existingUser.email, id: existingUser._id }, process.env.JWTSECRET, { expiresIn: '1h' })
+    const userObj = { ...existingUser.toObject() }
+    const token = sign({ email: userObj.email, id: userObj._id }, process.env.JWTSECRET, { expiresIn: '1h' })
 
-    delete user.password
-    delete user.__v
-    delete user._id // maybe can keep id?
+    delete userObj.password
+    delete userObj.__v
+    delete userObj._id // maybe can keep id?
 
-    console.info('123', { ...user })
+    console.info('123', { ...userObj })
     return res.status(201).json({
-      ...user,
+      userObj,
       token,
     })
   } catch ({ message }) {
