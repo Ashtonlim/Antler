@@ -1,0 +1,16 @@
+.DS_Store
+.tmp
+.idea
+.log
+.env
+
+node_modules
+dist
+docs
+skip
+
+npm-debug.log
+
+scripts/*/*.json
+uploads/*
+
