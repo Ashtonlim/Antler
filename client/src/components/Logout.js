@@ -6,6 +6,7 @@ import { LOGOUT } from 'actionTypes';
 const Logout = () => {
   const { dispatch } = useContext(GC);
   useEffect(() => {
+    document.title = 'Logging out | Antler';
     dispatch({ type: LOGOUT });
   });
 
