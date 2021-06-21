@@ -1,20 +1,11 @@
 import { React, useContext, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import {
-  Button,
-  Avatar,
-  Tag,
-  Divider,
-  Collapse,
-  Descriptions,
-  Upload,
-} from "antd";
+import { Button, Avatar, Tag, Divider, Collapse, Descriptions } from "antd";
 import { Link } from "react-router-dom";
 import {
   SmileTwoTone,
   CheckCircleOutlined,
   StarOutlined,
-  UploadOutlined,
   SyncOutlined,
   ClockCircleOutlined,
 } from "@ant-design/icons";
@@ -80,20 +71,21 @@ const Profile = () => {
         <h1>Hello, {state.userObj.username}</h1>
 
         <div style={{ display: "flex" }}>
-          <h3 style={{ "margin-right": "5px" }}>Country: </h3>
+          <h3 style={{ "margin-right": "5px" }}>Total Earnings: </h3>
           <Tag color="warning" style={{ height: "100%" }}>
-            {state.userObj.home_country}
+            {/* {state.userObj.home_country} */}
+            $203.20
           </Tag>
         </div>
 
         <div style={{ display: "flex" }}>
-          <h3 style={{ "margin-right": "5px" }}>Vaccination Status: </h3>
+          <h3 style={{ "margin-right": "5px" }}>Verification Status: </h3>
           <Tag
             icon={<CheckCircleOutlined />}
             color="green"
             style={{ height: "100%" }}
           >
-            Vaccinated
+            Verified
           </Tag>
         </div>
 
@@ -162,19 +154,6 @@ const Profile = () => {
             Block 1 Depot Rd, The Villa, #06-90 Singapore 109679
           </Descriptions.Item>
         </Descriptions>
-
-        <Divider
-          style={{ "font-size": 22, "margin-left": 0 }}
-          orientation="left"
-        >
-          My Documents
-        </Divider>
-
-        <div style={{ width: "100%", "margin-bottom": "25px" }}>
-          <Upload {...props}>
-            <Button icon={<UploadOutlined />}>Upload</Button>
-          </Upload>
-        </div>
 
         <Button block size="large" type="primary">
           <Link to="/logout">Log out</Link>

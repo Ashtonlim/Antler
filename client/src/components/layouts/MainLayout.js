@@ -5,12 +5,12 @@ import Header from "./layoutComponents/Header";
 import MobileNavbar from "./layoutComponents/MobileNavbar";
 import Footer from "./layoutComponents/Footer";
 
-const MainLayout = ({ children }) => (
+const MainLayout = ({ children, width = 22 } = {}) => (
   <>
     <Header />
     <div id="mainContent">
       <Row justify="center">
-        <Col xs={{ span: 20 }}>
+        <Col xs={{ span: width }}>
           <main>
             <Fragment>{children}</Fragment>
           </main>

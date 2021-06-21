@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Input, AutoComplete } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
+import { getUsers } from "api/user";
 import stockData from "./stocks.json";
 
 const renderUser = ({ username }) => {
@@ -44,7 +45,7 @@ const Autocomplete = ({ history }) => {
   // console.log(stocks)
   useEffect(() => {
     const initUsersAndStocks = async () => {
-      // setUsers(await getUsers());
+      setUsers(await getUsers());
       setStocks(stockData);
     };
 
@@ -67,13 +68,13 @@ const Autocomplete = ({ history }) => {
         .slice(0, 5)
         .map((stock) => renderStock(stock)),
     },
-    // {
-    //   label: <span>Users</span>,
-    //   options: users
-    //     .filter((user) => user.username.toUpperCase().includes(searchPredict))
-    //     .slice(0, 5)
-    //     .map((user) => renderUser(user)),
-    // },
+    {
+      label: <span>Users</span>,
+      options: users
+        .filter((user) => user.username.toUpperCase().includes(searchPredict))
+        .slice(0, 5)
+        .map((user) => renderUser(user)),
+    },
   ];
 
   return (

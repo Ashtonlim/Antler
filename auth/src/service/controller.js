@@ -35,9 +35,10 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   const { username, password } = req.body
+  console.log(password)
 
   try {
-    const existingUser = await users.findOne({ $or: [{ email: username }, { username }] }, { password: 0, __v: 0 })
+    const existingUser = await users.findOne({ $or: [{ email: username }, { username }] }, { __v: 0 })
 
     if (!existingUser) {
       return res.status(404).json({ message: 'User not found.' })
@@ -49,6 +50,7 @@ export const login = async (req, res) => {
       })
     }
 
+    delete existingUser.password
 
     const userObj = { ...existingUser.toObject() }
     const token = sign({ email: userObj.email, id: userObj._id }, process.env.JWTSECRET, { expiresIn: '1h' })
