@@ -1,22 +1,22 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { Form, Input, Button } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+import { Form, Input, Button } from "antd";
+import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 
-import MainLayout from './layouts/MainLayout';
-import GC from 'context';
-import { registerUser } from 'api/user';
-import { LOGIN } from 'actionTypes';
+import MainLayout from "./layouts/MainLayout";
+import GC from "context";
+import { registerUser } from "api/user";
+import { LOGIN } from "actionTypes";
 
 const Register = () => {
   const [vals, setVals] = useState({
-    email: '',
-    username: '',
-    password: '',
-    repassword: '',
-    name: '',
-    phone_num: '',
+    email: "",
+    username: "",
+    password: "",
+    repassword: "",
+    name: "",
+    phone_num: "",
   });
 
   const { state, dispatch } = useContext(GC);
@@ -32,24 +32,21 @@ const Register = () => {
   };
 
   const onFinish = async (values) => {
-    console.log('Success:', values);
+    console.log("Success:", values);
 
     delete values.repassword;
     try {
       dispatch({
         type: LOGIN,
-        payload: await registerUser({
-          ...values,
-          funds: 0,
-        }),
+        payload: await registerUser({ ...values }),
       });
     } catch (err) {
-      alert(err);
+      alert("@register.js" + err + "change this to proper err on frontend");
     }
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+    console.log("Failed@register.js:", errorInfo);
   };
 
   if (state.loggedIn) return <Redirect to="/" />;
@@ -76,12 +73,12 @@ const Register = () => {
               name="email"
               rules={[
                 {
-                  type: 'email',
-                  message: 'The input is not valid E-mail!',
+                  type: "email",
+                  message: "The input is not valid E-mail!",
                 },
                 {
                   required: true,
-                  message: 'Please input your Email!',
+                  message: "Please input your Email!",
                 },
               ]}
             >
@@ -98,7 +95,7 @@ const Register = () => {
               rules={[
                 {
                   required: true,
-                  message: 'Please input your username!',
+                  message: "Please input your username!",
                 },
               ]}
             >
@@ -116,7 +113,7 @@ const Register = () => {
               rules={[
                 {
                   required: true,
-                  message: 'Please input your password!',
+                  message: "Please input your password!",
                 },
               ]}
             >
@@ -131,21 +128,21 @@ const Register = () => {
             <Form.Item
               label="Re-type password"
               name="repassword"
-              dependencies={['password']}
+              dependencies={["password"]}
               hasFeedback
               rules={[
                 {
                   required: true,
-                  message: 'Please Re-type your password!',
+                  message: "Please Re-type your password!",
                 },
                 ({ getFieldValue }) => ({
                   validator(rule, value) {
                     // getFieldValue is case-sensitive
-                    if (!value || getFieldValue('password') === value) {
+                    if (!value || getFieldValue("password") === value) {
                       return Promise.resolve();
                     }
                     return Promise.reject(
-                      'The two passwords that you entered do not match!'
+                      "The two passwords that you entered do not match!"
                     );
                   },
                 }),
@@ -165,7 +162,7 @@ const Register = () => {
               rules={[
                 {
                   required: true,
-                  message: 'Please input your name!',
+                  message: "Please input your name!",
                 },
               ]}
             >
@@ -183,7 +180,7 @@ const Register = () => {
               rules={[
                 {
                   required: true,
-                  message: 'Please input your phone number!',
+                  message: "Please input your phone number!",
                 },
               ]}
             >
@@ -191,7 +188,7 @@ const Register = () => {
                 addonBefore="+65"
                 value={vals.phone_num}
                 onChange={handleInput}
-                style={{ width: '100%' }}
+                style={{ width: "100%" }}
               />
             </Form.Item>
 

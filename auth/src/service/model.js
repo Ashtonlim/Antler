@@ -19,9 +19,8 @@ const userSchema = mongoose.Schema({
   },
   name: { type: String, required: true },
   phone_num: { type: String, required: true },
-  funds: { type: Number, required: true },
-  // trades: { type: }
-  // id: { type: String },
+  funds: { type: Number, required: true, default: 0 },
+  portfolio_private: { type: Boolean, required: true, default: true },
 })
 
 userSchema.methods = {

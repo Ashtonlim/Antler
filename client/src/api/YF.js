@@ -1,31 +1,31 @@
-import React from 'react';
-import { Redirect } from 'react-router-dom';
+import React from "react";
+import { Redirect } from "react-router-dom";
 
-import { convert } from '../utils/date';
-import { resHandler } from './factory';
+import { convert } from "utils/date";
+import { resHandler } from "./factory";
 
 const { REACT_APP_CORS, REACT_APP_YF } = process.env;
 
 const v10 = `${REACT_APP_YF}/v10`;
 const v8 = `${REACT_APP_YF}/v8`;
 
-export const getStockInfo = async (symbol = 'TSLA', range = '5d', interval) => {
+export const getStockInfo = async (symbol = "TSLA", range = "5d", interval) => {
   const api = `${REACT_APP_CORS}/${v8}/finance/chart/${symbol}?symbol=${symbol}&range=${range}&interval=${interval}`;
   return await resHandler(await fetch(api));
 };
 
-export const getCompanyInfo = async (symbol = 'TSLA', modules = ['price']) => {
+export const getCompanyInfo = async (symbol = "TSLA", modules = ["price"]) => {
   let api = `${REACT_APP_CORS}/${v10}/finance/quoteSummary/${symbol}?modules=`;
   for (const v of modules) {
-    api += '%2C' + v;
+    api += "%2C" + v;
   }
   return await resHandler(await fetch(api));
 };
 
 export const getChartInfo = async (
-  symbol = 'TSLA',
-  range = '5d',
-  interval = '1d'
+  symbol = "TSLA",
+  range = "5d",
+  interval = "1d"
 ) => {
   const priceData = [];
   let max = 0;
@@ -33,18 +33,18 @@ export const getChartInfo = async (
   try {
     range = range.toLowerCase();
     switch (range) {
-      case '1d':
-        interval = '1m';
+      case "1d":
+        interval = "1m";
         break;
-      case '5d':
-        interval = '30m';
+      case "5d":
+        interval = "30m";
         break;
-      case '5y':
-      case 'max':
-        interval = '5d';
+      case "5y":
+      case "max":
+        interval = "5d";
         break;
       default:
-        interval = '1d';
+        interval = "1d";
     }
     const { chart } = await getStockInfo(symbol, range, interval);
 
@@ -74,7 +74,7 @@ export const getChartInfo = async (
       }
     }
   } catch (err) {
-    alert('Err in getting chart from getChartInfo() in YF.js');
+    alert("Err in getting chart from getChartInfo() in YF.js");
     return <Redirect to="/" />;
   }
   return { priceData, max, min };
