@@ -11,10 +11,6 @@ const LoggedInOutView = () => {
   const { state } = useContext(GC);
   const [visible, setVisible] = useState(false);
 
-  const hide = () => {
-    setVisible(false);
-  };
-
   const handleVisibleChange = (visible) => {
     setVisible(visible);
   };
@@ -36,6 +32,9 @@ const LoggedInOutView = () => {
               </li>
               <li>
                 <Link to="/">Research</Link>
+              </li>
+              <li>
+                <Link to="/">Settings</Link>
               </li>
               <li>
                 <Link to="/logout">Logout</Link>

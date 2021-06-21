@@ -56,12 +56,12 @@ const Login = () => {
       <Row>
         <Col
           xs={{ span: 24 }}
-          md={{ span: 12 }}
-          lg={{ span: 9 }}
-          xl={{ span: 7 }}
+          md={{ span: 18 }}
+          lg={{ span: 13 }}
+          xl={{ span: 10 }}
         >
           <section id="loginP">
-            <div className="card">
+            <div className="card mb-3">
               <h1>Login</h1>
 
               <Form
@@ -139,11 +139,11 @@ const Login = () => {
           </section>
         </Col>
 
-        <Col md={{ span: 12 }}>
-          <section className="ml-5">
+        <Col md={{ span: 9 }} xl={{ span: 10 }}>
+          <section>
             <h2>Start Investing at Antler</h2>
             <Row className="mtb-5">
-              <Col span={2}>
+              <Col span={3}>
                 <img
                   alt="social"
                   src="https://image.flaticon.com/icons/png/512/2065/2065157.png"
@@ -158,7 +158,7 @@ const Login = () => {
               </Col>
             </Row>
             <Row className="mtb-5">
-              <Col span={2}>
+              <Col span={3}>
                 <img
                   alt="investing"
                   src="https://image.flaticon.com/icons/png/512/2737/2737448.png"
@@ -173,7 +173,7 @@ const Login = () => {
               </Col>
             </Row>
             <Row className="mtb-5">
-              <Col span={2}>
+              <Col span={3}>
                 <img
                   alt="Reporting"
                   src="https://image.flaticon.com/icons/png/512/3280/3280890.png"
