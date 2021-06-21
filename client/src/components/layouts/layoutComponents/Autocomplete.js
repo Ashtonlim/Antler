@@ -25,7 +25,7 @@ const renderStock = ({ symbol, name }) => {
   return {
     value: symbol,
     label: (
-      <Link to={`/stocks/${encodeURIComponent(symbol)}`}>
+      <Link to={`/stock/${encodeURIComponent(symbol)}`}>
         <li>
           <div className="sb-row ruRow">
             <div className="sb-symbol">{symbol}</div>

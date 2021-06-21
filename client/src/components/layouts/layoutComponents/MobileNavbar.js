@@ -10,14 +10,6 @@ import {
 
 import GC from "context";
 
-const menu = [
-  { icon: <HomeOutlined />, tab: "Home" },
-  { icon: <FileOutlined />, tab: "Feed" },
-  { icon: <PieChartOutlined />, tab: "Markets" },
-  { icon: <UserOutlined />, tab: "Account" },
-  { icon: <StockOutlined />, tab: "Settings" },
-];
-
 const MobileNavbar = () => {
   const { pathname } = useLocation();
   const [sel, setSel] = useState(pathname);
