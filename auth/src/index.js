@@ -11,10 +11,23 @@ const app = express()
 const PORT = process.env.PORT || 8000
 
 // app.use(express.static('./routes'))
+
+
+// Add a list of allowed origins.
+// If you have more origins you would like to add, you can add them to the array below.
+// const allowedOrigins = ['http://localhost:3000']
+
+// app.use(
+//   cors({
+//     origin: allowedOrigins,
+//   })
+// )
+
 app.use(express.json())
 app.use(cors())
 app.use('/users', userRoutes)
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc))
+
 
 mongoose.set('useNewUrlParser', true)
 mongoose.set('useFindAndModify', false)

@@ -22,7 +22,9 @@ const Login = () => {
 
   const { state, dispatch } = useContext(GC);
 
-  useEffect(() => {});
+  useEffect(() => {
+    document.title = 'Log In | Antler';
+  });
 
   const [form] = Form.useForm();
 

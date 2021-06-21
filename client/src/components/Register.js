@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { Redirect } from "react-router-dom";
+import React, { useState, useContext, useEffect } from 'react';
+import { Redirect } from 'react-router-dom';
 
 import { Form, Input, Button } from "antd";
 import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
@@ -21,6 +21,10 @@ const Register = () => {
 
   const { state, dispatch } = useContext(GC);
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    document.title = 'Register | Antler';
+  });
 
   const handleInput = (e) => {
     let { name, val } = e.target;

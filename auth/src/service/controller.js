@@ -19,14 +19,14 @@ export const register = async (req, res) => {
   const body = req.body
   try {
     // createdAt: new Date().toISOString() // add this back if oid cant give timestamp
-    const newUser = new users({ ...body, funds: 0 })
-    newUser.setPassword(body.password)
+    const userObj = new users({ ...body, funds: 0 })
+    userObj.setPassword(body.password)
 
     console.log('@controller.js: saving... ')
     // what happens to destructuring if await returns err obj?
-    const { email, _id } = await newUser.save()
+    const { email, _id } = await userObj.save()
     const token = sign({ email, id: _id }, process.env.JWTSECRET, { expiresIn: '1h' })
-    res.status(201).json({ newUser, token })
+    res.status(201).json({ userObj, token })
   } catch ({ message }) {
     console.log(message)
     res.status(409).json({ message })
@@ -49,12 +49,12 @@ export const login = async (req, res) => {
       })
     }
 
-    const user = { ...existingUser.toObject() }
-    const token = sign({ email: existingUser.email, id: existingUser._id }, process.env.JWTSECRET, { expiresIn: '1h' })
 
-    console.info('123', { ...user })
+    const userObj = { ...existingUser.toObject() }
+    const token = sign({ email: userObj.email, id: userObj._id }, process.env.JWTSECRET, { expiresIn: '1h' })
+    console.info('123', { ...userObj })
     return res.status(201).json({
-      ...user,
+      userObj,
       token,
     })
   } catch ({ message }) {
