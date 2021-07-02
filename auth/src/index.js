@@ -5,9 +5,8 @@ import cors from 'cors'
 import swaggerUI from 'swagger-ui-express'
 
 import swaggerJsDoc from './swagger'
-import userRoutes from './service/users'
-
-console.log(swaggerJsDoc)
+import usersRoute from './users/users'
+import stocksRoute from './stocks/stocks'
 
 const app = express()
 const PORT = process.env.PORT || 8000
@@ -27,7 +26,8 @@ const PORT = process.env.PORT || 8000
 
 app.use(express.json())
 app.use(cors())
-app.use('/users', userRoutes)
+app.use('/users', usersRoute)
+app.use('/stocks', stocksRoute)
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc))
 
 
