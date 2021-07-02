@@ -42,21 +42,26 @@ const Autocomplete = ({ history }) => {
   const [searchPredict, setSearchPredict] = useState("");
   const [users, setUsers] = useState([]);
   const [stocks, setStocks] = useState([]);
-  let options = [];
-
+  // console.log(stocks)
   useEffect(() => {
-    if (stocks.length === 0) {
+    const initUsersAndStocks = async () => {
+      let userData = await getUsers();
+      if (userData.length > 0) {
+        setUsers(userData);
+      }
+      console.log("making req");
       setStocks(stockData);
-    }
-    if (users.length === 0) {
-      getUsers().then((data) => {
-        setUsers(data);
-      });
-    }
-  }, [stocks, users]);
+    };
 
-  if (stocks.length > 0) {
-    options.push({
+    initUsersAndStocks();
+  }, []);
+
+  const handleSymbol = (values) => {
+    setSearchPredict(values.toUpperCase());
+  };
+
+  const options = [
+    {
       label: <span>Stocks</span>,
       options: stocks
         .filter(
@@ -66,26 +71,15 @@ const Autocomplete = ({ history }) => {
         )
         .slice(0, 5)
         .map((stock) => renderStock(stock)),
-    });
-  }
-
-  if (users.length > 0) {
-    options.push({
-      label: (
-        <span>
-          Users{users.length === 0 ? " cannot be retrieved right now" : ""}
-        </span>
-      ),
+    },
+    {
+      label: <span>Users</span>,
       options: users
         .filter((user) => user.username.toUpperCase().includes(searchPredict))
         .slice(0, 5)
         .map((user) => renderUser(user)),
-    });
-  }
-
-  const handleSymbol = (values) => {
-    setSearchPredict(values.toUpperCase());
-  };
+    },
+  ];
 
   return (
     <AutoComplete

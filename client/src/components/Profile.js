@@ -23,47 +23,47 @@ const Profile = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  const props = {
-    action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
-    onChange({ file, fileList }) {
-      if (file.status !== "uploading") {
-        console.log(file, fileList);
-      }
-    },
-    defaultFileList: [
-      {
-        uid: "1",
-        name: "Travel Declaration.png",
-        status: "done",
-        response: "Server Error 500", // custom error message to show
-        url: "http://www.baidu.com/xxx.png",
-      },
-      {
-        uid: "2",
-        name: "NRIC Front and Back.png",
-        status: "done",
-        url: "http://www.baidu.com/yyy.png",
-      },
-    ],
-    showUploadList: {
-      showDownloadIcon: true,
-      downloadIcon: "download ",
-      showRemoveIcon: true,
-      removeIcon: (
-        <StarOutlined
-          onClick={(e) => console.log(e, "custom removeIcon event")}
-        />
-      ),
-    },
-  };
+  // const props = {
+  //   action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+  //   onChange({ file, fileList }) {
+  //     if (file.status !== "uploading") {
+  //       console.log(file, fileList);
+  //     }
+  //   },
+  //   defaultFileList: [
+  //     {
+  //       uid: "1",
+  //       name: "Travel Declaration.png",
+  //       status: "done",
+  //       response: "Server Error 500", // custom error message to show
+  //       url: "http://www.baidu.com/xxx.png",
+  //     },
+  //     {
+  //       uid: "2",
+  //       name: "NRIC Front and Back.png",
+  //       status: "done",
+  //       url: "http://www.baidu.com/yyy.png",
+  //     },
+  //   ],
+  //   showUploadList: {
+  //     showDownloadIcon: true,
+  //     downloadIcon: "download ",
+  //     showRemoveIcon: true,
+  //     removeIcon: (
+  //       <StarOutlined
+  //         onClick={(e) => console.log(e, "custom removeIcon event")}
+  //       />
+  //     ),
+  //   },
+  // };
 
   return (
     <MainLayout>
       <section
         style={{
           display: "flex",
-          "align-items": "center",
-          "flex-direction": "column",
+          alignItems: "center",
+          flexDirection: "column",
         }}
       >
         <Avatar size={64} icon={<SmileTwoTone />} />
@@ -71,7 +71,7 @@ const Profile = () => {
         <h1>Hello, {state.userObj.username}</h1>
 
         <div style={{ display: "flex" }}>
-          <h3 style={{ "margin-right": "5px" }}>Total Earnings: </h3>
+          <h3 style={{ marginRight: "5px" }}>Total Earnings: </h3>
           <Tag color="warning" style={{ height: "100%" }}>
             {/* {state.userObj.home_country} */}
             $203.20
@@ -79,7 +79,7 @@ const Profile = () => {
         </div>
 
         <div style={{ display: "flex" }}>
-          <h3 style={{ "margin-right": "5px" }}>Verification Status: </h3>
+          <h3 style={{ marginRight: "5px" }}>Verification Status: </h3>
           <Tag
             icon={<CheckCircleOutlined />}
             color="green"
@@ -90,7 +90,7 @@ const Profile = () => {
         </div>
 
         <Divider
-          style={{ "font-size": 22, "margin-left": 0, width: "100%" }}
+          style={{ fontSize: 22, marginLeft: 0, width: "100%" }}
           orientation="left"
         >
           Upcoming Trips
@@ -133,10 +133,7 @@ const Profile = () => {
           </Panel>
         </Collapse>
 
-        <Divider
-          style={{ "font-size": 22, "margin-left": 0 }}
-          orientation="left"
-        >
+        <Divider style={{ fontSize: 22, marginLeft: 0 }} orientation="left">
           Personal Details
         </Divider>
 

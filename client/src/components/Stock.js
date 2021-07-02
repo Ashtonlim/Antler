@@ -13,7 +13,6 @@ const Stock = (props) => {
   const { state } = useContext(GC);
   const symbol = useLocation().pathname.split("/").pop();
   const range = ["1D", "5D", "3MO", "6MO", "1Y", "5Y", "MAX"];
-  console.log("alksdjfl");
 
   const [onFocus, setOnFocus] = useState(1);
   const [coyInfo, setcoyInfo] = useState("");
@@ -43,13 +42,13 @@ const Stock = (props) => {
   };
 
   const addWL = async () => {
-    var localarr = JSON.parse(localStorage["arr" + "+" + state.username]);
+    var localarr = JSON.parse(localStorage[`arr + ${state.username}`]);
     if (localarr.includes(symbol) === false) {
-      alert(symbol + " is added to watchlist!");
+      alert(`${symbol} is added to watchlist!`);
       localarr.push(symbol);
-      localStorage["arr" + "+" + state.username] = JSON.stringify(localarr);
+      localStorage[`arr + ${state.username}`] = JSON.stringify(localarr);
     } else {
-      alert(symbol + " is already in watchlist!");
+      alert(`${symbol} is already in watchlist!`);
     }
   };
 
