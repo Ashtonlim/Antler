@@ -1,4 +1,4 @@
-{
+const swaggerJsDoc = {
   "openapi": "3.0.2",
   "info": {
     "title": "Library API",
@@ -79,3 +79,5 @@
     }
   }
 }
+
+export default swaggerJsDoc

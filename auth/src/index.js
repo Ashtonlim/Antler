@@ -3,9 +3,11 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import swaggerUI from 'swagger-ui-express'
-import swaggerJsDoc from './swagger.json'
 
+import swaggerJsDoc from './swagger'
 import userRoutes from './service/users'
+
+console.log(swaggerJsDoc)
 
 const app = express()
 const PORT = process.env.PORT || 8000
