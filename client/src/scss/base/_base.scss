@@ -32,15 +32,11 @@ input {
 }
 
 .shadow {
-  box-shadow: 0px 2px 21px 0px rgba(82, 82, 82, 0.1);
-  background-color: $white;
+  // box-shadow: 0px 2px 21px 0px rgba(82, 82, 82, 0.1);
+  background: $white;
   transition: all 0.3s;
 }
 
-html,
-img,
-video,
-iframe,
-footer {
-  // filter: invert(1) hue-rotate(180deg);
+.darkMode {
+  filter: invert(1) hue-rotate(180deg);
 }

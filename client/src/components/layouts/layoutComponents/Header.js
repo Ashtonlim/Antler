@@ -1,21 +1,22 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { Row, Col, Avatar, Badge, Popover } from "antd";
+import { Row, Col, Avatar, Badge, Popover, Switch } from "antd";
+// import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
 // import { UserOutlined } from "@ant-design/icons";
 
-import GC from "context";
 import Autocomplete from "./Autocomplete";
-import { getUsers } from "api/user";
+import GC from "context";
+import { TOGGLE_DARK_MODE } from "actionTypes";
+// import { getUsers } from "api/user";
 
-const LoggedInOutView = ({ state }) => {
+const LoggedInOutView = ({ loggedIn, userObj }) => {
   const [visible, setVisible] = useState(false);
-  console.log("state");
-  console.log(state);
+
   const handleVisibleChange = (visible) => {
     setVisible(visible);
   };
 
-  if (state.loggedIn) {
+  if (loggedIn) {
     return (
       <React.Fragment>
         {/* <li className="nav-item">
@@ -44,20 +45,16 @@ const LoggedInOutView = ({ state }) => {
               </li>
             </div>
           }
-          title={`${state.userObj.username.toUpperCase()} - ${
-            state.userObj.funds
-          } SGD`}
+          title={`${userObj.username.toUpperCase()} - ${userObj.funds} SGD`}
           trigger="hover"
           visible={visible}
           onVisibleChange={handleVisibleChange}
         >
           <span className="avatar-item">
-            {state.userObj ? (
-              <Link
-                to={`/profile/${encodeURIComponent(state.userObj.username)}`}
-              >
+            {userObj ? (
+              <Link to={`/profile/${encodeURIComponent(userObj.username)}`}>
                 <Badge count={1}>
-                  <Avatar>{state.userObj.username.slice(0, 1)}</Avatar>
+                  <Avatar>{userObj.username.slice(0, 1)}</Avatar>
                 </Badge>
               </Link>
             ) : (
@@ -88,14 +85,18 @@ const LoggedInOutView = ({ state }) => {
 };
 
 const Header = () => {
-  const { state } = useContext(GC);
+  const { state, dispatch } = useContext(GC);
 
-  const connect = () => {
-    const checkConnection = async () => {
-      alert(JSON.stringify(await getUsers()));
-    };
-    checkConnection();
+  const toggleLightMode = (darkMode) => {
+    dispatch({ type: TOGGLE_DARK_MODE, payload: { darkMode } });
   };
+
+  // const connect = () => {
+  //   const checkConnection = async () => {
+  //     alert(JSON.stringify(await getUsers()));
+  //   };
+  //   checkConnection();
+  // };
 
   return (
     <header className="App-header shadow">
@@ -119,6 +120,12 @@ const Header = () => {
             <ul className="ruRow nav-items">
               {/* remove button in prod */}
               {/* <button onClick={connect}>Test Link</button> */}
+              <Switch
+                checkedChildren="Dark"
+                unCheckedChildren="Light"
+                checked={state.darkMode || false}
+                onClick={toggleLightMode}
+              />
 
               <li className="nav-item">
                 <Link to="/">Discover</Link>
@@ -130,7 +137,10 @@ const Header = () => {
                 <Link to="/">Portfolio</Link>
               </li>
 
-              <LoggedInOutView state={state} />
+              <LoggedInOutView
+                loggedIn={state.loggedIn}
+                userObj={state.userObj}
+              />
 
               {state.userObj && (
                 <li className="nav-item">Funds ${state.userObj.funds}</li>

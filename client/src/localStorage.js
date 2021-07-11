@@ -1,6 +1,6 @@
-const INITIAL_STATE = { loggedIn: false };
+const INITIAL_STATE = { loggedIn: false, darkMode: false };
 
-export const loadState = (key = 'state') => {
+export const loadState = (key = "state") => {
   try {
     const serializedState = window.localStorage.getItem(key);
     if (serializedState) {
@@ -13,8 +13,8 @@ export const loadState = (key = 'state') => {
   }
 };
 
-export const saveState = (state, key = 'state') => {
-  console.log('savingState');
+export const saveState = (state, key = "state") => {
+  console.log("savingState");
   try {
     window.localStorage.setItem(key, JSON.stringify(state));
   } catch (err) {
