@@ -36,3 +36,11 @@ input {
   background-color: $white;
   transition: all 0.3s;
 }
+
+html,
+img,
+video,
+iframe,
+footer {
+  // filter: invert(1) hue-rotate(180deg);
+}

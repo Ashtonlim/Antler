@@ -2,7 +2,7 @@ import React from "react";
 
 // reqPF (require pass fail messages/hints)
 // validity (is the input valid or invalid)
-export default (props) => {
+const CheckBox = (props) => {
   return (
     <div>
       <input className="inp-cbx" id="noon" type="checkbox" />
@@ -22,3 +22,5 @@ export default (props) => {
     </div>
   );
 };
+
+export default CheckBox;

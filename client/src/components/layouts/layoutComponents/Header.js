@@ -7,10 +7,10 @@ import GC from "context";
 import Autocomplete from "./Autocomplete";
 import { getUsers } from "api/user";
 
-const LoggedInOutView = () => {
-  const { state } = useContext(GC);
+const LoggedInOutView = ({ state }) => {
   const [visible, setVisible] = useState(false);
-
+  console.log("state");
+  console.log(state);
   const handleVisibleChange = (visible) => {
     setVisible(visible);
   };
@@ -37,11 +37,16 @@ const LoggedInOutView = () => {
                 <Link to="/">Settings</Link>
               </li>
               <li>
+                <Link to="/">Dark Mode</Link>
+              </li>
+              <li>
                 <Link to="/logout">Logout</Link>
               </li>
             </div>
           }
-          title={`${state.userObj.username.toUpperCase()}`}
+          title={`${state.userObj.username.toUpperCase()} - ${
+            state.userObj.funds
+          } SGD`}
           trigger="hover"
           visible={visible}
           onVisibleChange={handleVisibleChange}
@@ -83,6 +88,8 @@ const LoggedInOutView = () => {
 };
 
 const Header = () => {
+  const { state } = useContext(GC);
+
   const connect = () => {
     const checkConnection = async () => {
       alert(JSON.stringify(await getUsers()));
@@ -97,26 +104,37 @@ const Header = () => {
         justify="center"
         align="middle"
       >
-        <Col xs={{ span: 6 }} md={{ span: 2 }}>
+        <Col xs={{ span: 0 }} md={{ span: 3 }}>
           <Link id="logo" to="/">
-            App
+            Antler
           </Link>
         </Col>
 
-        <Col xs={{ span: 18 }} md={{ span: 12 }}>
+        <Col xs={{ span: 1 }} md={{ span: 8 }}>
           <Autocomplete />
         </Col>
 
-        <Col xs={{ span: 0 }} md={{ span: 10 }}>
+        <Col xs={{ span: 0 }} md={{ span: 13 }}>
           <nav style={{ justifyContent: "flex-end" }}>
             <ul className="ruRow nav-items">
               {/* remove button in prod */}
-              <button onClick={connect}>Test Server Connection</button>
+              {/* <button onClick={connect}>Test Link</button> */}
+
               <li className="nav-item">
-                <Link to="/">Item 1</Link>
+                <Link to="/">Discover</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/">Learn</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/">Portfolio</Link>
               </li>
 
-              <LoggedInOutView />
+              <LoggedInOutView state={state} />
+
+              {state.userObj && (
+                <li className="nav-item">Funds ${state.userObj.funds}</li>
+              )}
             </ul>
           </nav>
         </Col>

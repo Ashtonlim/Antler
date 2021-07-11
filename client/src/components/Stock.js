@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
-import { Button } from "antd";
 import { Link } from "react-router-dom";
-import { getCompanyInfo } from "api/YF";
 
+import { Statistic, Row, Col, Button, Tooltip, Tag } from "antd";
+import {
+  QuestionCircleOutlined,
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+} from "@ant-design/icons";
+
+import { getCompanyInfo } from "api/YF";
 import MainLayout from "./layouts/MainLayout";
 import Graph from "./Graph";
-import BuySellModal from "./subComponents/BuySellModal";
+// import BuySellModal from "./subComponents/BuySellModal";
 import GC from "context";
 
 const Stock = (props) => {
@@ -54,18 +60,17 @@ const Stock = (props) => {
 
   return (
     <MainLayout>
-      <section>
+      <section className="card mb-3">
         {coyInfo && ticker && (
           <div>
-            <h1 className="my-1">{coyInfo.price.shortName}</h1>
             <div style={{ float: "right" }}>
               {state.loggedIn ? (
                 <>
-                  <BuySellModal
+                  {/* <BuySellModal
                     coyInfo={coyInfo}
                     symbol={symbol}
                     state={state}
-                  />
+                  /> */}
                   <Button type="primary" size="large" onClick={addWL}>
                     Add to Watchlist
                   </Button>
@@ -78,20 +83,35 @@ const Stock = (props) => {
                 </Link>
               )}
             </div>
-            <h3 className="m-0">
-              {coyInfo.price.exchangeName}: {ticker}
-            </h3>
-            <h3 className="inblk">{coyInfo.price.regularMarketPrice.raw}</h3>{" "}
-            <span> {coyInfo.price.currency}</span>
-            <span
-              className={
-                coyInfo.price.regularMarketChange.raw > 0 ? "gr" : "rd"
-              }
-            >
-              {" "}
-              {coyInfo.price.regularMarketChange.fmt} (
-              {coyInfo.price.regularMarketChangePercent.fmt})
-            </span>
+
+            <h1 className="di mtb-0">
+              {coyInfo.price.regularMarketPrice.raw} {coyInfo.price.currency}
+              <Tag
+                style={{ margin: "0px 10px" }}
+                icon={
+                  coyInfo.price.regularMarketChange.raw > 0 ? (
+                    <ArrowUpOutlined />
+                  ) : (
+                    <ArrowDownOutlined />
+                  )
+                }
+                color={
+                  coyInfo.price.regularMarketChange.raw > 0 ? "#87d068" : "#f50"
+                }
+              >
+                <span>
+                  {" "}
+                  {coyInfo.price.regularMarketChange.fmt}{" "}
+                  {coyInfo.price.currency} (
+                  {coyInfo.price.regularMarketChangePercent.fmt})
+                </span>
+              </Tag>
+            </h1>
+            <h2 className="mtb-0 m-0">
+              {ticker}: {coyInfo.price.shortName}
+            </h2>
+
+            <div className="m-0">Listed on {coyInfo.price.exchangeName}</div>
           </div>
         )}
         <div onClick={handleClick} className="dateRangeBtns my-2">
@@ -111,12 +131,75 @@ const Stock = (props) => {
       </section>
       <section className="my-5">
         {coyInfo && (
-          <div>
-            <div>Volume {coyInfo.summaryDetail.volume.fmt}</div>
-            <div>Market Cap {coyInfo.summaryDetail.marketCap.fmt}</div>
-            <div>52-wk high {coyInfo.summaryDetail.fiftyTwoWeekHigh.fmt}</div>
-            <div>52-wk low {coyInfo.summaryDetail.fiftyTwoWeekLow.fmt}</div>
-          </div>
+          <Row className="card" gutter={16}>
+            <Col span={3}>
+              <Statistic
+                title={
+                  <Tooltip title="The average number of shares traded each day over the past 30 days">
+                    Volume <QuestionCircleOutlined />
+                  </Tooltip>
+                }
+                value={coyInfo.summaryDetail.volume.fmt}
+              />
+            </Col>
+
+            <Col span={3}>
+              <Statistic
+                title={
+                  <Tooltip title="The ratio of annual dividend to current share price that estimates the dividend return of a stock">
+                    Dividend <QuestionCircleOutlined />
+                  </Tooltip>
+                }
+                value={coyInfo.summaryDetail.dividendYield.fmt || "-"}
+              />
+            </Col>
+
+            <Col span={4}>
+              <Statistic
+                title={
+                  <Tooltip title="The ratio of current share price to trailing 12-month EPS that signals if the price is high or low compared to other stocks">
+                    Price/Earnings Ratio <QuestionCircleOutlined />
+                  </Tooltip>
+                }
+                value={
+                  coyInfo.summaryDetail.trailingPE
+                    ? coyInfo.summaryDetail.trailingPE.fmt
+                    : "-"
+                }
+              />
+            </Col>
+
+            <Col span={4}>
+              <Statistic
+                title={
+                  <Tooltip title="A valuation method that multiplies the price of a company's shares by the total number of outstanding shares.">
+                    Market Cap <QuestionCircleOutlined />
+                  </Tooltip>
+                }
+                value={
+                  coyInfo.summaryDetail.marketCap.fmt
+                    ? `${coyInfo.summaryDetail.marketCap.fmt} ${coyInfo.summaryDetail.currency}`
+                    : "-"
+                }
+              />
+            </Col>
+
+            <Col span={6}>
+              <Statistic
+                title={
+                  <Tooltip title="The difference between the high and low prices over the past 52 weeks">
+                    <span>
+                      52 Week Range <QuestionCircleOutlined />
+                    </span>
+                  </Tooltip>
+                }
+                value={`$${coyInfo.summaryDetail.fiftyTwoWeekLow.fmt} - $${coyInfo.summaryDetail.fiftyTwoWeekHigh.fmt}`}
+              />
+            </Col>
+            {/* <Col span={12}>
+          <Statistic title="Active Users" value={112894} loading />
+        </Col> */}
+          </Row>
         )}
       </section>
     </MainLayout>

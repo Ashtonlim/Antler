@@ -4,18 +4,19 @@ import { Redirect } from "react-router-dom";
 import { convert } from "utils/date";
 import { resHandler } from "./factory";
 
-const { REACT_APP_CORS, REACT_APP_YF } = process.env;
+const { REACT_APP_AUTH } = process.env;
 
-const v10 = `${REACT_APP_YF}/v10`;
-const v8 = `${REACT_APP_YF}/v8`;
+const v10 = `/v10`;
+const v8 = `/v8`;
+const BASE = REACT_APP_AUTH;
 
 export const getStockInfo = async (symbol = "TSLA", range = "5d", interval) => {
-  const api = `${REACT_APP_CORS}/${v8}/finance/chart/${symbol}?symbol=${symbol}&range=${range}&interval=${interval}`;
+  const api = `${BASE}/${v8}/finance/chart/${symbol}?symbol=${symbol}&range=${range}&interval=${interval}`;
   return await resHandler(await fetch(api));
 };
 
 export const getCompanyInfo = async (symbol = "TSLA", modules = ["price"]) => {
-  let api = `${REACT_APP_CORS}/${v10}/finance/quoteSummary/${symbol}?modules=`;
+  let api = `${BASE}/${v10}/finance/quoteSummary/${symbol}?modules=`;
   for (const v of modules) {
     api += "%2C" + v;
   }
@@ -74,7 +75,8 @@ export const getChartInfo = async (
       }
     }
   } catch (err) {
-    alert("Err in getting chart from getChartInfo() in YF.js");
+    console.log(err);
+    alert("Err in getting chart from getChartInfo()? in YF.js");
     return <Redirect to="/" />;
   }
   return { priceData, max, min };
