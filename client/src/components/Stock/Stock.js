@@ -2,18 +2,18 @@ import React, { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-import { Statistic, Row, Col, Button, Tooltip, Tag } from "antd";
-import {
-  QuestionCircleOutlined,
-  ArrowUpOutlined,
-  ArrowDownOutlined,
-} from "@ant-design/icons";
+import { Button, Tag } from "antd";
+import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 
-import { getCompanyInfo } from "api/YF";
-import MainLayout from "./layouts/MainLayout";
-import Graph from "./Graph";
-// import BuySellModal from "./subComponents/BuySellModal";
 import GC from "context";
+import { getCompanyInfo } from "api/YF";
+import MainLayout from "../layouts/MainLayout";
+import Graph from "./Graph";
+import StockCalendarDates from "./StockCalendarDates";
+import StockMetrics from "./StockMetrics";
+import StockOfficers from "./StockOfficers";
+
+// import BuySellModal from "./subComponents/BuySellModal";
 
 const Stock = (props) => {
   const { state } = useContext(GC);
@@ -129,79 +129,11 @@ const Stock = (props) => {
           {ticker && <Graph ticker={symbol} range={range[onFocus]} />}
         </div>
       </section>
-      <section className="my-5">
-        {coyInfo && (
-          <Row className="card" gutter={16}>
-            <Col span={3}>
-              <Statistic
-                title={
-                  <Tooltip title="The average number of shares traded each day over the past 30 days">
-                    Volume <QuestionCircleOutlined />
-                  </Tooltip>
-                }
-                value={coyInfo.summaryDetail.volume.fmt}
-              />
-            </Col>
 
-            <Col span={3}>
-              <Statistic
-                title={
-                  <Tooltip title="The ratio of annual dividend to current share price that estimates the dividend return of a stock">
-                    Dividend <QuestionCircleOutlined />
-                  </Tooltip>
-                }
-                value={coyInfo.summaryDetail.dividendYield.fmt || "-"}
-              />
-            </Col>
+      {coyInfo && <StockMetrics coyInfo={coyInfo} />}
 
-            <Col span={4}>
-              <Statistic
-                title={
-                  <Tooltip title="The ratio of current share price to trailing 12-month EPS that signals if the price is high or low compared to other stocks">
-                    Price/Earnings Ratio <QuestionCircleOutlined />
-                  </Tooltip>
-                }
-                value={
-                  coyInfo.summaryDetail.trailingPE
-                    ? coyInfo.summaryDetail.trailingPE.fmt
-                    : "-"
-                }
-              />
-            </Col>
-
-            <Col span={4}>
-              <Statistic
-                title={
-                  <Tooltip title="A valuation method that multiplies the price of a company's shares by the total number of outstanding shares.">
-                    Market Cap <QuestionCircleOutlined />
-                  </Tooltip>
-                }
-                value={
-                  coyInfo.summaryDetail.marketCap.fmt
-                    ? `${coyInfo.summaryDetail.marketCap.fmt} ${coyInfo.summaryDetail.currency}`
-                    : "-"
-                }
-              />
-            </Col>
-
-            <Col span={6}>
-              <Statistic
-                title={
-                  <Tooltip title="The difference between the high and low prices over the past 52 weeks">
-                    <span>
-                      52 Week Range <QuestionCircleOutlined />
-                    </span>
-                  </Tooltip>
-                }
-                value={`$${coyInfo.summaryDetail.fiftyTwoWeekLow.fmt} - $${coyInfo.summaryDetail.fiftyTwoWeekHigh.fmt}`}
-              />
-            </Col>
-            {/* <Col span={12}>
-          <Statistic title="Active Users" value={112894} loading />
-        </Col> */}
-          </Row>
-        )}
-      </section>
+      <StockCalendarDates />
+      <StockOfficers />
     </MainLayout>
   );
 };

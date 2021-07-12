@@ -10,7 +10,7 @@ const MainLayout = ({ children, width = 22 } = {}) => (
     <Header />
     <div id="mainContent">
       <Row justify="center">
-        <Col xs={{ span: width }}>
+        <Col xs={{ span: 24 }} md={{ span: width }}>
           <main>
             <Fragment>{children}</Fragment>
           </main>

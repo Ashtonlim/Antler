@@ -97,7 +97,10 @@ const Autocomplete = ({ history }) => {
       }}
       options={options}
     >
-      <Input.Search size="large" placeholder="input here" />
+      <Input.Search
+        size="large"
+        placeholder="Search for Companies or Users..."
+      />
     </AutoComplete>
   );
 };
