@@ -1,6 +1,5 @@
 import React from "react";
 import { Row, Col } from "antd";
-
 import MainLayout from "./layouts/MainLayout";
 
 const Home = () => {
@@ -8,6 +7,7 @@ const Home = () => {
     <MainLayout>
       <section>
         <h1>Welcome to Antler</h1>
+
         <Row md={{ span: 24 }} xl={{ span: 10 }}>
           <section>
             <Row className="mtb-5">

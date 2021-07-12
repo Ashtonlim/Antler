@@ -85,7 +85,7 @@ const Header = () => {
       const style = document.createElement("style");
       style.setAttribute("class", "customDarkMode");
       style.innerHTML = `html,img,footer {filter: invert(1) hue-rotate(180deg);} 
-      .card, .shadow, .ant-popover-inner {background: #eee; box-shadow: none}`;
+      .card, .shadow, .ant-popover-inner {background: #ddd; box-shadow: none}`;
       console.log(style);
       document.head.appendChild(style);
     } else {
