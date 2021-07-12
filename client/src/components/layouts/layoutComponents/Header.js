@@ -1,13 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col, Avatar, Badge, Popover, Switch } from "antd";
-// import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
-// import { UserOutlined } from "@ant-design/icons";
+// import { CloseOutlined, CheckOutlined, UserOutlined } from "@ant-design/icons";
 
 import Autocomplete from "./Autocomplete";
 import GC from "context";
 import { TOGGLE_DARK_MODE } from "actionTypes";
-// import { getUsers } from "api/user";
 
 const LoggedInOutView = ({ loggedIn, userObj }) => {
   const [visible, setVisible] = useState(false);
@@ -18,10 +16,7 @@ const LoggedInOutView = ({ loggedIn, userObj }) => {
 
   if (loggedIn) {
     return (
-      <React.Fragment>
-        {/* <li className="nav-item">
-          <Link to="/watchlist">Watchlist</Link>
-        </li> */}
+      <>
         <Popover
           content={
             <div>
@@ -67,36 +62,47 @@ const LoggedInOutView = ({ loggedIn, userObj }) => {
             )}
           </span>
         </Popover>
-
-        {/* <li className="nav-item"></li> */}
-      </React.Fragment>
+      </>
     );
   }
   return (
-    <React.Fragment>
+    <>
       <li className="nav-item">
         <Link to="/login">Login</Link>
       </li>
       <li className="nav-item">
         <Link to="/register">Register</Link>
       </li>
-    </React.Fragment>
+    </>
   );
 };
 
 const Header = () => {
   const { state, dispatch } = useContext(GC);
 
-  const toggleLightMode = (darkMode) => {
-    dispatch({ type: TOGGLE_DARK_MODE, payload: { darkMode } });
+  const toggleDarkModeStyle = (darkMode) => {
+    if (darkMode) {
+      const style = document.createElement("style");
+      style.setAttribute("class", "customDarkMode");
+      style.innerHTML = `html,img,footer {filter: invert(1) hue-rotate(180deg);} 
+      .card, .shadow, .ant-popover-inner {background: #eee; box-shadow: none}`;
+      console.log(style);
+      document.head.appendChild(style);
+    } else {
+      const l = document.querySelectorAll(".customDarkMode");
+      for (var i = 0; i < l.length; i++) {
+        l[i].remove();
+      }
+    }
   };
 
-  // const connect = () => {
-  //   const checkConnection = async () => {
-  //     alert(JSON.stringify(await getUsers()));
-  //   };
-  //   checkConnection();
-  // };
+  const toggleDarkModeState = (darkMode = false) => {
+    dispatch({ type: TOGGLE_DARK_MODE, payload: { darkMode } });
+    toggleDarkModeStyle(darkMode);
+  };
+  useEffect(() => {
+    toggleDarkModeStyle(state.darkMode);
+  }, [state.darkMode]);
 
   return (
     <header className="App-header shadow">
@@ -118,13 +124,11 @@ const Header = () => {
         <Col xs={{ span: 0 }} md={{ span: 13 }}>
           <nav style={{ justifyContent: "flex-end" }}>
             <ul className="ruRow nav-items">
-              {/* remove button in prod */}
-              {/* <button onClick={connect}>Test Link</button> */}
               <Switch
                 checkedChildren="Dark"
                 unCheckedChildren="Light"
                 checked={state.darkMode || false}
-                onClick={toggleLightMode}
+                onClick={toggleDarkModeState}
               />
 
               <li className="nav-item">

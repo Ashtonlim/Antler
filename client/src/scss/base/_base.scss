@@ -40,3 +40,8 @@ input {
 .darkMode {
   filter: invert(1) hue-rotate(180deg);
 }
+
+.forDarkMode {
+  background: #ddd !important;
+  box-shadow: none !important;
+}

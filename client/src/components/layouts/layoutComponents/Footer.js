@@ -1,5 +1,6 @@
 import React from "react";
 import { Row, Col } from "antd";
+import { Link } from "react-router-dom";
 
 function Footer() {
   return (
@@ -10,7 +11,7 @@ function Footer() {
         align="middle"
       >
         <Col xs={{ span: 24 }} md={{ span: 4 }}>
-          <span>App</span>
+          <Link to="/">ANTLER</Link>
         </Col>
 
         <Col xs={{ span: 24 }} md={{ span: 20 }}>
