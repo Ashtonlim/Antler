@@ -21,7 +21,7 @@ const Stock = (props) => {
   const range = ["1D", "5D", "3MO", "6MO", "1Y", "5Y", "MAX"];
 
   const [onFocus, setOnFocus] = useState(1);
-  const [coyInfo, setcoyInfo] = useState("");
+  const [coyInfo, setCoyInfo] = useState("");
   const [ticker, setTicker] = useState(symbol.toUpperCase());
 
   useEffect(() => {
@@ -29,11 +29,13 @@ const Stock = (props) => {
     const getInfo = async () => {
       try {
         const { quoteSummary } = await getCompanyInfo(symbol, [
+          "assetProfile",
           "summaryDetail",
           "price",
         ]);
 
-        setcoyInfo(quoteSummary.result[0]);
+        console.log("quoteSummary", quoteSummary);
+        setCoyInfo(quoteSummary.result[0]);
       } catch (err) {
         props.history.push("/stocks/TSLA");
       }
@@ -130,10 +132,14 @@ const Stock = (props) => {
         </div>
       </section>
 
-      {coyInfo && <StockMetrics coyInfo={coyInfo} />}
+      {coyInfo.summaryDetail && (
+        <StockMetrics summaryDetail={coyInfo.summaryDetail} />
+      )}
 
       <StockCalendarDates />
-      <StockOfficers />
+      {coyInfo.assetProfile && (
+        <StockOfficers companyOfficers={coyInfo.assetProfile.companyOfficers} />
+      )}
     </MainLayout>
   );
 };

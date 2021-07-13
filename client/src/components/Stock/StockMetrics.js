@@ -2,7 +2,7 @@ import React from "react";
 import { Statistic, Row, Col, Tooltip } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
-const StockMetrics = ({ coyInfo }) => {
+const StockMetrics = ({ summaryDetail }) => {
   return (
     <section className="card my-5">
       <Row gutter={24}>
@@ -13,7 +13,7 @@ const StockMetrics = ({ coyInfo }) => {
                 Volume <QuestionCircleOutlined />
               </Tooltip>
             }
-            value={coyInfo.summaryDetail.volume.fmt}
+            value={summaryDetail.volume.fmt}
           />
         </Col>
 
@@ -24,7 +24,7 @@ const StockMetrics = ({ coyInfo }) => {
                 Dividend <QuestionCircleOutlined />
               </Tooltip>
             }
-            value={coyInfo.summaryDetail.dividendYield.fmt || "-"}
+            value={summaryDetail.dividendYield.fmt || "-"}
           />
         </Col>
 
@@ -36,9 +36,7 @@ const StockMetrics = ({ coyInfo }) => {
               </Tooltip>
             }
             value={
-              coyInfo.summaryDetail.trailingPE
-                ? coyInfo.summaryDetail.trailingPE.fmt
-                : "-"
+              summaryDetail.trailingPE ? summaryDetail.trailingPE.fmt : "-"
             }
           />
         </Col>
@@ -51,8 +49,8 @@ const StockMetrics = ({ coyInfo }) => {
               </Tooltip>
             }
             value={
-              coyInfo.summaryDetail.marketCap.fmt
-                ? `${coyInfo.summaryDetail.marketCap.fmt} ${coyInfo.summaryDetail.currency}`
+              summaryDetail.marketCap.fmt
+                ? `${summaryDetail.marketCap.fmt} ${summaryDetail.currency}`
                 : "-"
             }
           />
@@ -67,7 +65,7 @@ const StockMetrics = ({ coyInfo }) => {
                 </span>
               </Tooltip>
             }
-            value={`$${coyInfo.summaryDetail.fiftyTwoWeekLow.fmt} - $${coyInfo.summaryDetail.fiftyTwoWeekHigh.fmt}`}
+            value={`$${summaryDetail.fiftyTwoWeekLow.fmt} - $${summaryDetail.fiftyTwoWeekHigh.fmt}`}
           />
         </Col>
         {/* <Col span={12}>

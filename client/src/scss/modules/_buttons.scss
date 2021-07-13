@@ -13,3 +13,10 @@
 .btn:focus {
   background-color: lighten($theme1, 10%);
 }
+
+.dateRangeBtns {
+  .dateRangeBtn.focus {
+    background: $c1;
+    color: $white;
+  }
+}

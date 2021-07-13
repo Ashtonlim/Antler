@@ -1,19 +1,8 @@
 import { React, useContext, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Button, Avatar, Tag, Divider, Collapse, Descriptions } from "antd";
-import { Link } from "react-router-dom";
-import {
-  SmileTwoTone,
-  CheckCircleOutlined,
-  StarOutlined,
-  SyncOutlined,
-  ClockCircleOutlined,
-} from "@ant-design/icons";
 
 import MainLayout from "./layouts/MainLayout";
 import GC from "context";
-
-const { Panel } = Collapse;
 
 const Profile = () => {
   const { state } = useContext(GC);
@@ -23,139 +12,133 @@ const Profile = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  // const props = {
-  //   action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
-  //   onChange({ file, fileList }) {
-  //     if (file.status !== "uploading") {
-  //       console.log(file, fileList);
-  //     }
-  //   },
-  //   defaultFileList: [
-  //     {
-  //       uid: "1",
-  //       name: "Travel Declaration.png",
-  //       status: "done",
-  //       response: "Server Error 500", // custom error message to show
-  //       url: "http://www.baidu.com/xxx.png",
-  //     },
-  //     {
-  //       uid: "2",
-  //       name: "NRIC Front and Back.png",
-  //       status: "done",
-  //       url: "http://www.baidu.com/yyy.png",
-  //     },
-  //   ],
-  //   showUploadList: {
-  //     showDownloadIcon: true,
-  //     downloadIcon: "download ",
-  //     showRemoveIcon: true,
-  //     removeIcon: (
-  //       <StarOutlined
-  //         onClick={(e) => console.log(e, "custom removeIcon event")}
-  //       />
-  //     ),
-  //   },
-  // };
-
   return (
-    <MainLayout>
-      <section
-        style={{
-          display: "flex",
-          alignItems: "center",
-          flexDirection: "column",
-        }}
-      >
-        <Avatar size={64} icon={<SmileTwoTone />} />
-
-        <h1>Hello, {state.userObj.username}</h1>
-
-        <div style={{ display: "flex" }}>
-          <h3 style={{ marginRight: "5px" }}>Total Earnings: </h3>
-          <Tag color="warning" style={{ height: "100%" }}>
-            {/* {state.userObj.home_country} */}
-            $203.20
-          </Tag>
-        </div>
-
-        <div style={{ display: "flex" }}>
-          <h3 style={{ marginRight: "5px" }}>Verification Status: </h3>
-          <Tag
-            icon={<CheckCircleOutlined />}
-            color="green"
-            style={{ height: "100%" }}
+    <MainLayout width="24">
+      <div className="profile-page" style={{ marginTop: "-50px" }}>
+        <section className="relative block" style={{ height: "500px" }}>
+          <div
+            className="edm absolute top-0 w-full h-full bg-center bg-cover"
+            style={{
+              backgroundImage:
+                "url('https://images.unsplash.com/photo-1499336315816-097655dcfbda?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2710&q=80')",
+            }}
           >
-            Verified
-          </Tag>
-        </div>
-
-        <Divider
-          style={{ fontSize: 22, marginLeft: 0, width: "100%" }}
-          orientation="left"
-        >
-          Upcoming Trips
-        </Divider>
-        <Collapse style={{ width: "100%" }}>
-          <Panel
-            header="India"
-            key="1"
-            extra={
-              <Tag icon={<CheckCircleOutlined />} color="success">
-                Completed
-              </Tag>
-            }
+            <span
+              id="blackOverlay"
+              className="w-full h-full absolute opacity-50 bg-black"
+            ></span>
+          </div>
+          <div
+            className="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden"
+            style={{ height: "70px" }}
           >
-            <p>All documents submitted. You are ready to go!</p>
-          </Panel>
-          <Panel
-            header="Malaysia"
-            key="2"
-            extra={
-              <Tag icon={<SyncOutlined spin />} color="processing">
-                Processing
-              </Tag>
-            }
-          >
-            <p>Awaiting a response from the Malaysian Government.</p>
-          </Panel>
-          <Panel
-            header="China"
-            key="3"
-            extra={
-              <Tag icon={<ClockCircleOutlined />} color="default">
-                Awaiting Documents
-              </Tag>
-            }
-          >
-            <p>
-              Please submit your travel declaration form for further processing.
-            </p>
-          </Panel>
-        </Collapse>
-
-        <Divider style={{ fontSize: 22, marginLeft: 0 }} orientation="left">
-          Personal Details
-        </Divider>
-
-        <Descriptions>
-          <Descriptions.Item label="Name">
-            {state.userObj.name}
-          </Descriptions.Item>
-          <Descriptions.Item label="Contact">
-            {state.userObj.phone_num}
-          </Descriptions.Item>
-          <Descriptions.Item label="email">
-            {state.userObj.email}
-          </Descriptions.Item>
-          <Descriptions.Item label="Address">
-            Block 1 Depot Rd, The Villa, #06-90 Singapore 109679
-          </Descriptions.Item>
-        </Descriptions>
-
-        <Button block size="large" type="primary">
-          <Link to="/logout">Log out</Link>
-        </Button>
-      </section>
+            <svg
+              className="absolute bottom-0 overflow-hidden"
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="none"
+              version="1.1"
+              viewBox="0 0 2560 100"
+              x="0"
+              y="0"
+            >
+              <polygon
+                className="text-gray-300 fill-current"
+                points="2560 0 2560 100 0 100"
+              ></polygon>
+            </svg>
+          </div>
+        </section>
+        <section className="relative py-16">
+          <div className="container mx-auto px-4">
+            <div className="augDM relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
+              <div className="px-6">
+                <div className="flex flex-wrap justify-center">
+                  <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
+                    <div className="relative">
+                      <img
+                        alt="Profile"
+                        src="https://dummyimage.com/150x150"
+                        className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16"
+                        style={{ width: "150px", maxWidth: "150px" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
+                    <div className="py-6 px-3 mt-32 sm:mt-0">
+                      <button
+                        className="eDM bg-pink-500 active:bg-pink-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1"
+                        type="button"
+                        style={{ transition: "all .15s ease" }}
+                      >
+                        Add funds
+                      </button>
+                    </div>
+                  </div>
+                  <div className="w-full lg:w-4/12 px-4 lg:order-1">
+                    <div className="flex justify-center py-4 lg:pt-4 pt-8">
+                      <div className="mr-4 p-3 text-center">
+                        <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
+                          ${state.userObj.funds}
+                        </span>
+                        <span className="text-sm text-gray-500">Funds</span>
+                      </div>
+                      <div className="mr-4 p-3 text-center">
+                        <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
+                          22
+                        </span>
+                        <span className="text-sm text-gray-500">Friends</span>
+                      </div>
+                      <div className="lg:mr-4 p-3 text-center">
+                        <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
+                          89
+                        </span>
+                        <span className="text-sm text-gray-500">Posts</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-center mt-12">
+                  <h3 className="text-4xl font-semibold leading-normal mb-2 text-gray-800 mb-2">
+                    {state.userObj.name.toUpperCase()}
+                  </h3>
+                  <div className="text-sm leading-normal mt-0 mb-2 text-gray-500 font-bold uppercase">
+                    <i className="fas fa-map-marker-alt mr-2 text-lg text-gray-500"></i>{" "}
+                    {state.userObj.email}
+                  </div>
+                  <div className="mb-2 text-gray-700 mt-10">
+                    <i className="fas fa-briefcase mr-2 text-lg text-gray-500"></i>
+                    Phone Number: {state.userObj.phone_num}
+                  </div>
+                  <div className="mb-2 text-gray-700">
+                    <i className="fas fa-university mr-2 text-lg text-gray-500"></i>
+                    {state.userObj.phone_num}
+                  </div>
+                </div>
+                <div className="mt-10 py-10 border-t border-gray-300 text-center">
+                  <div className="flex flex-wrap justify-center">
+                    <div className="w-full lg:w-9/12 px-4">
+                      <p className="mb-4 text-lg leading-relaxed text-gray-800">
+                        An artist of considerable range, Jenna the name taken by
+                        Melbourne-raised, Brooklyn-based Nick Murphy writes,
+                        performs and records all of his own music, giving it a
+                        warm, intimate feel with a solid groove structure. An
+                        artist of considerable range.
+                      </p>
+                      <a
+                        href="#pablo"
+                        className="font-normal text-pink-500"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        Show more
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </MainLayout>
   );
 };

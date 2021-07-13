@@ -11,7 +11,7 @@ const Graph = ({ ticker, range, history }) => {
     const initGraph = async () => {
       try {
         const { priceData, max, min } = await getChartInfo(ticker, range);
-        console.log("priceData", priceData);
+
         if (!priceData) return history.push("/");
         if (priceData.length === 0) return history.push("/");
 
@@ -42,15 +42,12 @@ const Graph = ({ ticker, range, history }) => {
         });
 
         chart.tooltip({ title: "y" });
-
         chart.area().position("date*price").color("#1890ff").style({
           fillOpacity: 0.2,
         });
         chart.line().position("date*price").color("#1890ff");
-
         chart.render();
       } catch (err) {
-        console.log(err);
         history.push("/");
       }
     };

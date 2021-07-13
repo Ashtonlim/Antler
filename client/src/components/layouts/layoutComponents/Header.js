@@ -84,9 +84,9 @@ const Header = () => {
     if (darkMode) {
       const style = document.createElement("style");
       style.setAttribute("class", "customDarkMode");
-      style.innerHTML = `html,img,footer {filter: invert(1) hue-rotate(180deg);} 
-      .card, .shadow, .ant-popover-inner {background: #ddd; box-shadow: none}`;
-      console.log(style);
+      style.innerHTML = `html, img, footer, .eDM {filter: invert(1) hue-rotate(180deg);} 
+      .card, .shadow, .ant-popover-inner, .augDM {background: #ddd; box-shadow: none;}
+      .augDMNoBg {box-shadow: none} .augDMNoBg:focus {box-shadow: none;}`;
       document.head.appendChild(style);
     } else {
       const l = document.querySelectorAll(".customDarkMode");

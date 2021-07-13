@@ -1,6 +1,7 @@
 import React from "react";
-export default (props) => (
-  <div class="material-textfield">
+
+const OutlinedInput = (props) => (
+  <div className="material-textfield">
     <input
       className={props.classes}
       type={props.type}
@@ -11,3 +12,5 @@ export default (props) => (
     <label>{props.label || "Label"}</label>
   </div>
 );
+
+export default OutlinedInput;
