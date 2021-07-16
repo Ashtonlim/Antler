@@ -15,6 +15,18 @@ export const getUsers = async (req, res) => {
   }
 }
 
+export const updateUserDetails = async (req, res) => {
+  const { _id } = req.body
+  try {
+    // const user = await users.findOne({ $or: [{ email: username }, { username }] }, { __v: 0 })
+    const data = await users.updateOne({ _id }, { funds: 20 })
+    console.log(data)
+    res.json(data)
+  } catch (err) {
+    res.status(404).json(err.message)
+  }
+}
+
 export const register = async (req, res) => {
   const body = req.body
   try {
@@ -35,9 +47,11 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   const { username, password } = req.body
-  console.log(password)
 
   try {
+    // sent as {username: 'userInput'} and but may be email too hence search either email or username
+    // NOTE: there must not be any usernames = emails of any and all users.
+    // I.e. If user1 username = email of user 2 and they both happen to have the same pwd, user1 able to login to user2 account.
     const existingUser = await users.findOne({ $or: [{ email: username }, { username }] }, { __v: 0 })
 
     if (!existingUser) {

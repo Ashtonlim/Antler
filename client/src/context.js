@@ -24,6 +24,8 @@ const reducer = (state = {}, action) => {
       saveState(logoutState);
       return logoutState;
     case TOGGLE_DARK_MODE:
+      // ====== REVIEW ======
+      // ====== REVIEW ======
       // REVIEW: I cannot figure for the life of me why this adds <style> to head TWICE!! console log only occurs once
       // if (action.payload.darkMode) {
       //   const style = document.createElement("style");
@@ -38,6 +40,8 @@ const reducer = (state = {}, action) => {
       //     l[i].remove();
       //   }
       // }
+      // ====== REVIEW ======
+      // ====== REVIEW ======
 
       const mode = { ...state, ...action.payload };
       saveState(mode);

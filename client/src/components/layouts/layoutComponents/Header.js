@@ -85,7 +85,7 @@ const Header = () => {
       const style = document.createElement("style");
       style.setAttribute("class", "customDarkMode");
       style.innerHTML = `html, img, footer, .eDM {filter: invert(1) hue-rotate(180deg);} 
-      .card, .shadow, .ant-popover-inner, .augDM {background: #ddd; box-shadow: none;}
+      .App-header, .card, .augDM {background-color: #ddd; box-shadow: none;}
       .augDMNoBg {box-shadow: none} .augDMNoBg:focus {box-shadow: none;}`;
       document.head.appendChild(style);
     } else {
@@ -105,7 +105,7 @@ const Header = () => {
   }, [state.darkMode]);
 
   return (
-    <header className="App-header shadow">
+    <header className="App-header bg-white">
       <Row
         style={{ width: "100%", padding: "0px 20px" }}
         justify="center"

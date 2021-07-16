@@ -1,12 +1,82 @@
-import { React, useContext, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { useLocation, Link } from "react-router-dom";
+import { Form, Modal, Input, Button } from "antd";
 
 import MainLayout from "./layouts/MainLayout";
 import GC from "context";
 
+const AddFundsForm = () => {
+  const onFinish = (values) => {
+    console.log("Success:", values);
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+
+  return (
+    <Form
+      name="basic"
+      layout="inline"
+      initialValues={{
+        remember: true,
+      }}
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
+    >
+      <Form.Item
+        label="Add "
+        name="funds"
+        rules={[
+          {
+            required: true,
+            message: "Please input your funds!",
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
+  );
+};
+
 const Profile = () => {
   const { state } = useContext(GC);
   const { pathname } = useLocation();
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = (value) => {
+    console.log(value.target.innerText);
+    // setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const onFinish = (values) => {
+    console.log("Received values from form: ", values);
+  };
+
+  const checkPrice = (_, value) => {
+    if (value.number > 0) {
+      return Promise.resolve();
+    }
+
+    return Promise.reject(new Error("Price must be greater than zero!"));
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -14,10 +84,26 @@ const Profile = () => {
 
   return (
     <MainLayout width="24">
-      <div className="profile-page" style={{ marginTop: "-50px" }}>
+      <Modal
+        title="Add Funds to your Account"
+        visible={isModalVisible}
+        onCancel={handleCancel}
+        footer={[
+          <button
+            className="eDM text-xs bg-blue-500 hover:bg-blue-600 uppercase text-white font-bold hover:shadow-md px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1"
+            onClick={handleCancel}
+            style={{ transition: "all .15s ease" }}
+          >
+            Cancel
+          </button>,
+        ]}
+      >
+        <AddFundsForm />
+      </Modal>
+      <div className="profile-page -mt-10">
         <section className="relative block" style={{ height: "500px" }}>
           <div
-            className="edm absolute top-0 w-full h-full bg-center bg-cover"
+            className="eDM absolute top-0 w-full h-full bg-center bg-cover"
             style={{
               backgroundImage:
                 "url('https://images.unsplash.com/photo-1499336315816-097655dcfbda?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2710&q=80')",
@@ -53,21 +139,23 @@ const Profile = () => {
             <div className="augDM relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
               <div className="px-6">
                 <div className="flex flex-wrap justify-center">
-                  <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
-                    <div className="relative">
-                      <img
-                        alt="Profile"
-                        src="https://dummyimage.com/150x150"
-                        className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16"
-                        style={{ width: "150px", maxWidth: "150px" }}
-                      />
-                    </div>
+                  <div className="w-full lg:w-3/12 lg:order-2 flex justify-center">
+                    <img
+                      alt="Profile"
+                      src="https://dummyimage.com/150x150"
+                      className="shadow-xl rounded-full h-auto border-none -mt-20"
+                      style={{
+                        width: "150px",
+                        height: "150px",
+                        maxWidth: "150px",
+                      }}
+                    />
                   </div>
-                  <div className="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
+                  <div className="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center text-center">
                     <div className="py-6 px-3 mt-32 sm:mt-0">
                       <button
-                        className="eDM bg-pink-500 active:bg-pink-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1"
-                        type="button"
+                        className="eDM align-middle bg-blue-500 hover:bg-blue-600 uppercase text-white font-bold hover:shadow-md px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1"
+                        onClick={showModal}
                         style={{ transition: "all .15s ease" }}
                       >
                         Add funds
@@ -97,40 +185,28 @@ const Profile = () => {
                     </div>
                   </div>
                 </div>
-                <div className="text-center mt-12">
+                <div className="text-center mt-4">
                   <h3 className="text-4xl font-semibold leading-normal mb-2 text-gray-800 mb-2">
                     {state.userObj.name.toUpperCase()}
                   </h3>
                   <div className="text-sm leading-normal mt-0 mb-2 text-gray-500 font-bold uppercase">
-                    <i className="fas fa-map-marker-alt mr-2 text-lg text-gray-500"></i>{" "}
                     {state.userObj.email}
                   </div>
-                  <div className="mb-2 text-gray-700 mt-10">
-                    <i className="fas fa-briefcase mr-2 text-lg text-gray-500"></i>
+                  <div className="mb-2 text-gray-700">
                     Phone Number: {state.userObj.phone_num}
                   </div>
-                  <div className="mb-2 text-gray-700">
-                    <i className="fas fa-university mr-2 text-lg text-gray-500"></i>
-                    {state.userObj.phone_num}
-                  </div>
+                  <div className="mb-2 text-gray-700">Lorum epsum</div>
                 </div>
-                <div className="mt-10 py-10 border-t border-gray-300 text-center">
+                <div className="mt-10 py-10 text-center">
                   <div className="flex flex-wrap justify-center">
-                    <div className="w-full lg:w-9/12 px-4">
-                      <p className="mb-4 text-lg leading-relaxed text-gray-800">
-                        An artist of considerable range, Jenna the name taken by
-                        Melbourne-raised, Brooklyn-based Nick Murphy writes,
-                        performs and records all of his own music, giving it a
-                        warm, intimate feel with a solid groove structure. An
-                        artist of considerable range.
-                      </p>
-                      <a
-                        href="#pablo"
-                        className="font-normal text-pink-500"
-                        onClick={(e) => e.preventDefault()}
+                    <div className="py-6 px-3 mt-32 sm:mt-0">
+                      <Link
+                        className="eDM align-middle bg-blue-500 hover:bg-blue-600 uppercase text-white font-bold hover:shadow-md hover:text-white px-4 py-2 rounded outline-none focus:outline-none mb-1"
+                        to="/logout"
+                        style={{ transition: "all .15s ease" }}
                       >
-                        Show more
-                      </a>
+                        Logout
+                      </Link>
                     </div>
                   </div>
                 </div>

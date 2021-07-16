@@ -2,19 +2,6 @@ import { loadState } from "localStorage";
 import { createReqParams, resHandler } from "./factory";
 import { BASE } from "./const";
 
-// fetch = (originalFetch => {
-//   return (...arguments) => {
-//     const result = originalFetch.apply(this, arguments);
-//       return result.then(console.log('Request was sent'));
-//   };
-// })(fetch);
-
-// fetch('https://api.github.com/orgs/axios')
-//   .then(response => response.json())
-//   .then(data => {
-//     console.log(data)
-//   });
-
 export const getUsers = async (id = null) => {
   return await resHandler(await fetch(`${BASE}/users${id ? "/" + id : ""}`));
 };
