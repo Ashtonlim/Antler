@@ -11,6 +11,7 @@ import { LOGIN } from "actionTypes";
 
 const Login = () => {
   const [form] = Form.useForm();
+
   const [vals, setVals] = useState({
     username: "",
     password: "",
@@ -19,6 +20,7 @@ const Login = () => {
     errMsg: "",
     redirect: null,
     loginErrMsg: "",
+    loginTries: 10,
   });
 
   const { state, dispatch } = useContext(GC);
@@ -42,8 +44,19 @@ const Login = () => {
     delete values.remember; // temp
     try {
       dispatch({ type: LOGIN, payload: await loginUser(values) });
-    } catch (err) {
-      alert(err);
+    } catch ({ message }) {
+      if (vals.loginTries >= 0) {
+        setVals({
+          ...vals,
+          loginErrMsg: `${message}, ${vals.loginTries} attempts left`,
+          loginTries: --vals.loginTries,
+        });
+      } else {
+        setVals({
+          ...vals,
+          loginErrMsg: `${message}, please reset your username or password`,
+        });
+      }
     }
   };
 
@@ -127,6 +140,14 @@ const Login = () => {
                   <Checkbox>Remember me</Checkbox>
                 </Form.Item>
 
+                {vals.loginErrMsg && (
+                  <div
+                    class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 my-3 rounded relative"
+                    role="alert"
+                  >
+                    <span class="block sm:inline">{vals.loginErrMsg}</span>
+                  </div>
+                )}
                 <Form.Item>
                   <Button block size="large" type="primary" htmlType="submit">
                     Submit

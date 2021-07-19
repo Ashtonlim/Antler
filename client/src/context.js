@@ -26,7 +26,7 @@ const reducer = (state = {}, action) => {
       return { ...state, ...action.payload };
     case LOGOUT:
       // const logoutState = { loggedIn: false, username: 'not logged in' }
-      const logoutState = { ...state, loggedIn: false };
+      const logoutState = { ...state, loggedIn: false, userObj: {}, token: {} };
       saveState(logoutState);
       return logoutState;
     case DEPOSIT_FUNDS:

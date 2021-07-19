@@ -32,16 +32,20 @@ export const createReqParams = (method, body, headers = "json") => {
 };
 
 export const resHandler = async (res) => {
-  if (res.ok) return await res.json();
-  else {
-    console.log("@factory.js: res from server is not okay :(");
-    let jsonRes = await res.json();
-    if ("message" in jsonRes) {
-      console.log(jsonRes.message);
-      throw new Error(jsonRes.message);
-    }
-    return await jsonRes;
+  if (res.ok) {
+    const { message: val, ...resObj } = await res.json();
+    // if no msg provided, val is undefined
+    console.log("@factory.js: res from server is okay :)", val, resObj);
+    return resObj;
   }
+
+  console.log("@factory.js: res from server is not okay :(");
+  const jsonResErr = await res.json();
+  if ("message" in jsonResErr) {
+    console.log(jsonResErr.message);
+    throw new Error(jsonResErr.message);
+  }
+  return await jsonResErr;
 };
 
 export const noCSFR = { ok: false, err: "no csfr token" };

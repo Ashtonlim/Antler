@@ -40,7 +40,7 @@ const LoggedInOutView = ({ loggedIn, userObj }) => {
               </li>
             </div>
           }
-          title={`${userObj.username.toUpperCase()} - ${userObj.funds} SGD`}
+          title={`${userObj.username?.toUpperCase()} - ${userObj.funds} SGD`}
           trigger="hover"
           visible={visible}
           onVisibleChange={handleVisibleChange}
@@ -49,7 +49,7 @@ const LoggedInOutView = ({ loggedIn, userObj }) => {
             {userObj ? (
               <Link to={`/profile/${encodeURIComponent(userObj.username)}`}>
                 <Badge count={1}>
-                  <Avatar>{userObj.username.slice(0, 1)}</Avatar>
+                  <Avatar>{userObj.username?.slice(0, 1)}</Avatar>
                 </Badge>
               </Link>
             ) : (
@@ -149,7 +149,7 @@ const Header = () => {
                 userObj={state.userObj}
               />
 
-              {state.userObj && (
+              {state.userObj?.funds && (
                 <li className="nav-item">Funds ${state.userObj.funds}</li>
               )}
             </ul>

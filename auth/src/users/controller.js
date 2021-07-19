@@ -1,5 +1,5 @@
 import { sign } from 'jsonwebtoken'
-
+import { createErrMsg } from '../utils'
 import users from './model'
 
 export const getUsers = async (req, res) => {
@@ -16,7 +16,7 @@ export const updateUserDetails = async (req, res) => {
   const { _id } = req.body
 
   // specified in middleware.js
-  if (!req.userId) return res.json({ message: 'Unauthenticated, Please logout and log back in' })
+  if (!req.userId) return res.json(createErrMsg({ message: 'Unauthenticated, Please logout and log back in' }))
 
   try {
     const userObj = await users.findOne({ id: _id }, { __v: 0, password: 0 })
@@ -24,8 +24,8 @@ export const updateUserDetails = async (req, res) => {
     const depositVal = +req.body?.value
     const newAccBalance = depositVal + userObj.funds
 
-    if (depositVal > 9999) {
-      res.status(404).json({ message: 'Max deposit is only $9999' })
+    if (depositVal < 9999) {
+      res.status(400).json(createErrMsg({ message: 'Max deposit is only $9999' }))
       return
     }
 
@@ -37,10 +37,10 @@ export const updateUserDetails = async (req, res) => {
       userObj.funds = userObj.funds + depositVal
       res.json({ userObj })
     } else {
-      res.status(404).json({ message: 'error updated funds' })
+      res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))
     }
-  } catch (err) {
-    res.status(404).json({ message: err.message })
+  } catch ({ message }) {
+    res.status(400).json(createErrMsg({ message }))
   }
 }
 
@@ -69,23 +69,18 @@ export const login = async (req, res) => {
     // sent as {username: 'userInput'} and but may be email too hence search either email or username
     // NOTE: there must not be any usernames = emails of any and all users.
     // I.e. If user1 username = email of user 2 and they both happen to have the same pwd, user1 able to login to user2 account.
-    const existingUser = await users.findOne({ $or: [{ email: username }, { username }] }, { __v: 0, password: 0 })
-
-    if (!existingUser) {
-      return res.status(404).json({ message: 'User not found.' })
-    }
-
-    if (!existingUser.authenticate(password)) {
+    const existingUser = await users.findOne({ $or: [{ email: username }, { username }] }, { __v: 0 })
+    if (!existingUser || !existingUser.authenticate(password)) {
       return res.status(400).json({
-        message: 'Wrong Password',
+        message: 'Wrong username/email or password',
       })
     }
 
-    delete existingUser.password
-
     const userObj = { ...existingUser.toObject() }
+    delete userObj.password
+
     const token = sign({ email: userObj.email, _id: userObj._id }, process.env.JWTSECRET, { expiresIn: '1d' })
-    console.info('123', { ...userObj })
+
     return res.status(201).json({
       userObj,
       token,

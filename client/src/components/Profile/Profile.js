@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-import MainLayout from "../layouts/MainLayout";
+import MainLayout from "components/layouts/MainLayout";
 import GC from "context";
 import { api_addFunds } from "api/user";
 import { DEPOSIT_FUNDS } from "actionTypes";
@@ -9,12 +9,14 @@ import { DEPOSIT_FUNDS } from "actionTypes";
 const Profile = () => {
   const { state, dispatch } = useContext(GC);
 
-  const [depositVal, setDepositVal] = useState("100.00");
-  const [msgList, setMsgList] = useState({});
-
+  const [depositVal, setDepositVal] = useState("1.00");
   const [visibility, setVisibility] = useState(false);
-
-  const [isLoading, setIsLoading] = useState(false);
+  const [msgList, setMsgList] = useState({
+    test: {
+      type: "success",
+      message: "err.message",
+    },
+  });
 
   useEffect(() => {
     document.title = `${state.userObj.username} Profile | Antler`;
@@ -36,38 +38,58 @@ const Profile = () => {
 
   const depositFunds = async () => {
     console.log(depositVal);
-    // console.log(await api_addFunds({ value depositVal }));
     try {
       dispatch({
         type: DEPOSIT_FUNDS,
         payload: await api_addFunds({ value: depositVal }),
       });
-    } catch (err) {
+      const depositSuccMsg = `$${depositVal} was deposited to your Account`;
       setMsgList({
         ...msgList,
-        [err.message]: {
+        [depositSuccMsg]: {
+          type: "success",
+          message: depositSuccMsg,
+        },
+      });
+      console.log(msgList);
+      setTimeout(() => {
+        // msgList is original, without new err.msg added
+        setMsgList({ ...msgList });
+      }, 5000);
+      // setVisibility(false);
+    } catch ({ message }) {
+      console.log(message);
+      setMsgList({
+        ...msgList,
+        [message]: {
           type: "error",
-          message: err.message,
+          message,
         },
       });
       setTimeout(() => {
         // msgList is original, without new err.msg added
         setMsgList({ ...msgList });
-      }, 4000);
+      }, 3500);
     }
   };
 
   return (
     <MainLayout width="24">
       {Object.keys(msgList).length > 0 && (
-        <div className="absolute z-10 flex flex-col items-start pt-4">
+        <div className="fixed z-10 flex flex-col items-start pt-4">
           {Object.entries(msgList).map(([key, msg]) => (
             <div key={key} className="text-center py-2 lg:px-4">
               <div
-                className="p-2 bg-red-800 items-center text-red-100 leading-none lg:rounded-full flex lg:inline-flex"
+                className={`p-2 ${
+                  msg.type === "success" ? "bg-green-700" : "bg-red-800"
+                } items-center text-red-100 leading-none lg:rounded-full flex lg:inline-flex`}
                 role="alert"
               >
-                <span className="flex rounded-full bg-red-500 uppercase px-2 py-1 font-bold mr-3">
+                <span
+                  className={`flex rounded-full ${
+                    msg.type === "success" ? "bg-green-500" : "bg-red-500"
+                  } uppercase px-2 py-1 font-bold mr-3`}
+                >
                   {msg.type}
                 </span>
                 <span className="font-semibold mr-2 text-left flex-auto ">
@@ -134,6 +156,7 @@ const Profile = () => {
                         <label htmlFor="currency" className="sr-only">
                           Currency
                         </label>
+                        {/* Review: For potential future use */}
                         {/* <select
                           id="currency"
                           name="currency"
