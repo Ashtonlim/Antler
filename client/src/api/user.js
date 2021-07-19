@@ -21,6 +21,14 @@ export const loginUser = async (loginDetails) => {
   return await resHandler(res);
 };
 
+export const api_addFunds = async (info) => {
+  const res = await fetch(
+    `${BASE}/users/addfunds`,
+    createReqParams("POST", info)
+  );
+  return await resHandler(res);
+};
+
 export const editUser = async (userDetails) => {
   const userData = loadState();
 

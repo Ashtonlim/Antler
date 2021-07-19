@@ -33,9 +33,11 @@ const Login = () => {
   });
 
   const handleInput = (e) => {
+    console.log(vals);
     let { name, val } = e.target;
     setVals({ ...vals, [name]: val });
   };
+
   const onFinish = async (values) => {
     delete values.remember; // temp
     try {
@@ -88,7 +90,7 @@ const Login = () => {
                   <Input
                     size="large"
                     placeholder="Username"
-                    value={vals.username}
+                    // value={vals.username}
                     onChange={handleInput}
                     prefix={<UserOutlined />}
                   />

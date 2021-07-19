@@ -5,7 +5,7 @@ import Home from "./Home/Home";
 import Register from "./Register";
 import Logout from "./Logout";
 import Login from "./Login";
-import Profile from "./Profile";
+import Profile from "./Profile/Profile";
 import Stock from "./Stock/Stock";
 
 const Routes = () => (

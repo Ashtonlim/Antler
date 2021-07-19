@@ -85,7 +85,10 @@ const Header = () => {
       const style = document.createElement("style");
       style.setAttribute("class", "customDarkMode");
       style.innerHTML = `html, img, footer, .eDM {filter: invert(1) hue-rotate(180deg);} 
-      .App-header, .card, .augDM {background-color: #ddd; box-shadow: none;}
+      .App-header, 
+      .card, 
+      .augDM, 
+      .ant-modal-root div.ant-modal-content-rmtoallow {background-color: #ddd; box-shadow: none;}
       .augDMNoBg {box-shadow: none} .augDMNoBg:focus {box-shadow: none;}`;
       document.head.appendChild(style);
     } else {
@@ -111,17 +114,17 @@ const Header = () => {
         justify="center"
         align="middle"
       >
-        <Col xs={{ span: 0 }} md={{ span: 3 }}>
+        <Col xs={{ span: 0 }} lg={{ span: 3 }}>
           <Link id="logo" to="/">
             Antler
           </Link>
         </Col>
 
-        <Col xs={{ span: 1 }} md={{ span: 8 }}>
+        <Col xs={{ span: 24 }} md={{ span: 10 }} lg={{ span: 8 }}>
           <Autocomplete />
         </Col>
 
-        <Col xs={{ span: 0 }} md={{ span: 13 }}>
+        <Col xs={{ span: 0 }} md={{ span: 14 }} lg={{ span: 13 }}>
           <nav style={{ justifyContent: "flex-end" }}>
             <ul className="ruRow nav-items">
               <Switch

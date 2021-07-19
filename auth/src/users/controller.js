@@ -1,9 +1,6 @@
-import { Router } from 'express'
-// import mongoose from 'mongoose'
 import { sign } from 'jsonwebtoken'
 
 import users from './model'
-// const router = Router()
 
 export const getUsers = async (req, res) => {
   try {
@@ -17,13 +14,33 @@ export const getUsers = async (req, res) => {
 
 export const updateUserDetails = async (req, res) => {
   const { _id } = req.body
+
+  // specified in middleware.js
+  if (!req.userId) return res.json({ message: 'Unauthenticated, Please logout and log back in' })
+
   try {
-    // const user = await users.findOne({ $or: [{ email: username }, { username }] }, { __v: 0 })
-    const data = await users.updateOne({ _id }, { funds: 20 })
-    console.log(data)
-    res.json(data)
+    const userObj = await users.findOne({ id: _id }, { __v: 0, password: 0 })
+
+    const depositVal = +req.body?.value
+    const newAccBalance = depositVal + userObj.funds
+
+    if (depositVal > 9999) {
+      res.status(404).json({ message: 'Max deposit is only $9999' })
+      return
+    }
+
+    // console.log('depositVal', depositVal, 'newAccBalance', newAccBalance)
+    // console.log('userObj', userObj)
+    const updateRes = await users.updateOne({ id: _id }, { $set: { funds: newAccBalance } })
+
+    if (updateRes.ok) {
+      userObj.funds = userObj.funds + depositVal
+      res.json({ userObj })
+    } else {
+      res.status(404).json({ message: 'error updated funds' })
+    }
   } catch (err) {
-    res.status(404).json(err.message)
+    res.status(404).json({ message: err.message })
   }
 }
 
@@ -37,7 +54,7 @@ export const register = async (req, res) => {
     console.log('@controller.js: saving... ')
     // what happens to destructuring if await returns err obj?
     const { email, _id } = await userObj.save()
-    const token = sign({ email, id: _id }, process.env.JWTSECRET, { expiresIn: '1h' })
+    const token = sign({ email, _id }, process.env.JWTSECRET, { expiresIn: '1d' })
     res.status(201).json({ userObj, token })
   } catch ({ message }) {
     console.log(message)
@@ -52,7 +69,7 @@ export const login = async (req, res) => {
     // sent as {username: 'userInput'} and but may be email too hence search either email or username
     // NOTE: there must not be any usernames = emails of any and all users.
     // I.e. If user1 username = email of user 2 and they both happen to have the same pwd, user1 able to login to user2 account.
-    const existingUser = await users.findOne({ $or: [{ email: username }, { username }] }, { __v: 0 })
+    const existingUser = await users.findOne({ $or: [{ email: username }, { username }] }, { __v: 0, password: 0 })
 
     if (!existingUser) {
       return res.status(404).json({ message: 'User not found.' })
@@ -67,7 +84,7 @@ export const login = async (req, res) => {
     delete existingUser.password
 
     const userObj = { ...existingUser.toObject() }
-    const token = sign({ email: userObj.email, id: userObj._id }, process.env.JWTSECRET, { expiresIn: '1h' })
+    const token = sign({ email: userObj.email, _id: userObj._id }, process.env.JWTSECRET, { expiresIn: '1d' })
     console.info('123', { ...userObj })
     return res.status(201).json({
       userObj,

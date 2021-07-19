@@ -89,12 +89,10 @@ const Autocomplete = ({ history }) => {
 
   return (
     <AutoComplete
+      className="w-full"
       dropdownClassName="certain-category-search-dropdown"
       dropdownMatchSelectWidth={500}
       onChange={handleSymbol}
-      style={{
-        width: 550,
-      }}
       options={options}
     >
       <Input.Search

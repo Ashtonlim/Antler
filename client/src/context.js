@@ -1,6 +1,12 @@
 import React, { useReducer } from "react";
 
-import { LOGIN, LOGIN_REJECTED, LOGOUT, TOGGLE_DARK_MODE } from "./actionTypes";
+import {
+  LOGIN,
+  LOGIN_REJECTED,
+  LOGOUT,
+  TOGGLE_DARK_MODE,
+  DEPOSIT_FUNDS,
+} from "./actionTypes";
 import { saveState, loadState } from "./localStorage";
 const GC = React.createContext();
 
@@ -23,6 +29,11 @@ const reducer = (state = {}, action) => {
       const logoutState = { ...state, loggedIn: false };
       saveState(logoutState);
       return logoutState;
+    case DEPOSIT_FUNDS:
+      // const logoutState = { loggedIn: false, username: 'not logged in' }
+      const newUserFundsState = { ...state, ...action.payload };
+      saveState(newUserFundsState);
+      return newUserFundsState;
     case TOGGLE_DARK_MODE:
       // ====== REVIEW ======
       // ====== REVIEW ======
