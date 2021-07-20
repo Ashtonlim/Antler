@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import MainLayout from "components/layouts/MainLayout";
+import NotificationPopups from "components/subComponents/NotificationPopups";
 import GC from "context";
 import { api_addFunds } from "api/user";
 import { DEPOSIT_FUNDS } from "actionTypes";
@@ -11,19 +12,16 @@ const Profile = () => {
 
   const [depositVal, setDepositVal] = useState("1.00");
   const [visibility, setVisibility] = useState(false);
-  const [msgList, setMsgList] = useState({
-    test: {
-      type: "success",
-      message: "err.message",
-    },
-  });
+  const [addFundsCounter, setAddFundsCounter] = useState(0);
+
+  const [msgList, setMsgList] = useState([]);
 
   useEffect(() => {
-    document.title = `${state.userObj.username} Profile | Antler`;
+    document.title = `${state.userObj?.username?.toUpperCase()} Profile | Antler`;
   });
 
   const onDepositValChange = (e) => {
-    // val = string
+    // val is a string
     const val = e.target.value;
     if (isNaN(val) || +val > 9999) {
       return;
@@ -32,81 +30,60 @@ const Profile = () => {
     if (aftDecimal?.length > 2) {
       return;
     }
-    console.log(val);
     setDepositVal(val);
   };
 
+  const removeEnded = (listOfPopups) => {
+    // once items in msgList expires, remove it
+    // calculated by seeing if current time is past > initialised at time + duration to exists
+    return listOfPopups.reduce((acc, msg) => {
+      if (msg.iat + msg.expiresIn > Date.now()) {
+        acc.push(msg);
+      }
+      return acc;
+    }, []);
+  };
+
   const depositFunds = async () => {
-    console.log(depositVal);
+    setAddFundsCounter(addFundsCounter + 1);
     try {
       dispatch({
         type: DEPOSIT_FUNDS,
         payload: await api_addFunds({ value: depositVal }),
       });
-      const depositSuccMsg = `$${depositVal} was deposited to your Account`;
-      setMsgList({
-        ...msgList,
-        [depositSuccMsg]: {
-          type: "success",
-          message: depositSuccMsg,
-        },
-      });
+
       console.log(msgList);
-      setTimeout(() => {
-        // msgList is original, without new err.msg added
-        setMsgList({ ...msgList });
-      }, 5000);
+      setMsgList([
+        // Review: Not ideal, only clears msgList if user deposits funds again.
+        ...removeEnded(msgList),
+        {
+          type: "error",
+          message: `$${depositVal} was deposited to your Account`,
+          iat: Date.now(),
+        },
+      ]);
       // setVisibility(false);
     } catch ({ message }) {
-      console.log(message);
-      setMsgList({
-        ...msgList,
-        [message]: {
-          type: "error",
-          message,
-        },
-      });
-      setTimeout(() => {
-        // msgList is original, without new err.msg added
-        setMsgList({ ...msgList });
-      }, 3500);
+      console.log(msgList);
+      setMsgList([
+        ...removeEnded(msgList),
+        { type: "error", message, iat: Date.now() },
+      ]);
     }
   };
 
   return (
     <MainLayout width="24">
-      {Object.keys(msgList).length > 0 && (
-        <div className="fixed z-10 flex flex-col items-start pt-4">
-          {Object.entries(msgList).map(([key, msg]) => (
-            <div key={key} className="text-center py-2 lg:px-4">
-              <div
-                className={`p-2 ${
-                  msg.type === "success" ? "bg-green-700" : "bg-red-800"
-                } items-center text-red-100 leading-none lg:rounded-full flex lg:inline-flex`}
-                role="alert"
-              >
-                <span
-                  className={`flex rounded-full ${
-                    msg.type === "success" ? "bg-green-500" : "bg-red-500"
-                  } uppercase px-2 py-1 font-bold mr-3`}
-                >
-                  {msg.type}
-                </span>
-                <span className="font-semibold mr-2 text-left flex-auto ">
-                  {msg.message}
-                </span>
-                <button
-                  onClick={() => {
-                    // destructure with [key]: val (current key val err pair), remaining will be in newList
-                    const { [key]: val, ...destructuredNewLsit } = msgList;
-                    setMsgList(destructuredNewLsit);
-                  }}
-                  className="block outline-none focus:outline-none"
-                >
-                  <span className="text-lg">×</span>
-                </button>
-              </div>
-            </div>
+      {msgList.length && (
+        <div className="fixed z-10 flex flex-col items-start pt-4 mt-12">
+          {msgList.map((msg, index) => (
+            <NotificationPopups
+              key={index}
+              type="error"
+              message={msg.message}
+              iat={msg.iat}
+              expiresIn={msg.expiresIn}
+            />
           ))}
         </div>
       )}
@@ -198,7 +175,7 @@ const Profile = () => {
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </>
       )}
-      <div className="profile-page -mt-10">
+      <div className="profile-page -mt-24">
         <section className="relative block" style={{ height: "500px" }}>
           <div
             className="eDM absolute top-0 w-full h-full bg-center bg-cover"
@@ -211,25 +188,6 @@ const Profile = () => {
               id="blackOverlay"
               className="w-full h-full absolute opacity-50 bg-black"
             ></span>
-          </div>
-          <div
-            className="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden"
-            style={{ height: "70px" }}
-          >
-            <svg
-              className="absolute bottom-0 overflow-hidden"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="none"
-              version="1.1"
-              viewBox="0 0 2560 100"
-              x="0"
-              y="0"
-            >
-              <polygon
-                className="text-gray-300 fill-current"
-                points="2560 0 2560 100 0 100"
-              ></polygon>
-            </svg>
           </div>
         </section>
         <section className="relative py-16">

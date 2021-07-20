@@ -24,7 +24,7 @@ export const updateUserDetails = async (req, res) => {
     const depositVal = +req.body?.value
     const newAccBalance = depositVal + userObj.funds
 
-    if (depositVal < 9999) {
+    if (depositVal > 9999) {
       res.status(400).json(createErrMsg({ message: 'Max deposit is only $9999' }))
       return
     }
