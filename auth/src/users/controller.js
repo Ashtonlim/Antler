@@ -20,27 +20,34 @@ export const updateUserDetails = async (req, res) => {
 
   try {
     const userObj = await users.findOne({ id: _id }, { __v: 0, password: 0 })
-
     const depositVal = +req.body?.value
-    const newAccBalance = depositVal + userObj.funds
+
+    // check if deposit is correct format
+    if (`${depositVal}`.split('.')[1]?.length > 2) {
+      console.log('reject: > 2d.p.')
+    }
 
     if (depositVal > 9999) {
       res.status(400).json(createErrMsg({ message: 'Max deposit is only $9999' }))
       return
     }
 
-    // console.log('depositVal', depositVal, 'newAccBalance', newAccBalance)
-    // console.log('userObj', userObj)
-    const updateRes = await users.updateOne({ id: _id }, { $set: { funds: newAccBalance } })
+    console.log(depositVal * 100, userObj.funds, ~~(depositVal * 100 + userObj.funds))
+    const newAccBalance = ~~(depositVal * 100 + userObj.funds)
 
+    // Note: careful with runValidators (https://mongoosejs.com/docs/validation.html#update-validators -> caveats with 'this' and 'context')
+    const updateRes = await users.updateOne({ id: _id }, { $set: { funds: newAccBalance } }, { runValidators: true })
+
+    // console.log(updateRes)
     if (updateRes.ok) {
-      userObj.funds = userObj.funds + depositVal
+      userObj.funds = `${newAccBalance.toString().slice(0, -2)}.${newAccBalance.toString().slice(-2)}` * 1
       res.json({ userObj })
     } else {
       res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))
     }
   } catch ({ message }) {
-    res.status(400).json(createErrMsg({ message }))
+    console.log(message)
+    res.status(400).json(createErrMsg({ message: 'Unexpected error, contact support' }))
   }
 }
 

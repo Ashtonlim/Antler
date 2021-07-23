@@ -2,14 +2,13 @@ import React, { useState, useEffect } from "react";
 
 const NotificationPopups = ({
   expiresIn = 4000,
-  count = 0,
   type = "success",
   message = "Include Success Message",
   iat,
 }) => {
   const [visible, setVisible] = useState(true);
 
-  // console.log("NotificationPopups: ", message, visible);
+  // console.log("NotificationPopups: ", message, visible, type);
 
   useEffect(() => {
     setVisible(true);

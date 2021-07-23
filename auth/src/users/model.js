@@ -1,6 +1,8 @@
 import mongoose from 'mongoose'
 import { pbkdf2Sync } from 'crypto'
 
+const userFundsValidation = { validator: Number.isInteger, message: () => 'Erroneous deposit value, likely not an int' }
+
 const userSchema = mongoose.Schema({
   email: {
     type: String,
@@ -18,9 +20,23 @@ const userSchema = mongoose.Schema({
   },
   name: { type: String, required: true },
   phone_num: { type: String, required: true },
-  funds: { type: Number, required: true, default: 0 },
+  // Review: Unsure if correct to store funds in cents (avoids floating point issues)
+  funds: {
+    type: Number,
+    min: 0,
+    max: 120000,
+    validate: userFundsValidation,
+    // get: (v) => `${v.toString().slice(0, -2)}.${v.toString().slice(-2)}` * 1,
+    required: true,
+    default: 0,
+  },
   portfolio_private: { type: Boolean, required: true, default: true },
 })
+
+const convertToBiggerUnit = (cents) => {
+  // assumes this currency is 2 d.p., not all are. E.g. JPY = 0 d.p.
+  return `${cents.toString().slice(0, -2)}.${cents.toString().slice(-2)}`
+}
 
 userSchema.methods = {
   setPassword(pwd) {

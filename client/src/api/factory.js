@@ -25,7 +25,7 @@ export const createReqParams = (method, body, headers = "json") => {
       addToHeaders = { ...addToHeaders, Authorization };
     }
     params["headers"] = createHeaders(addToHeaders);
-    console.log({ log: "factory.js", params, token: Authorization });
+    // console.log({ log: "factory.js", params, token: Authorization });
   }
 
   return params;
@@ -35,7 +35,7 @@ export const resHandler = async (res) => {
   if (res.ok) {
     const { message: val, ...resObj } = await res.json();
     // if no msg provided, val is undefined
-    console.log("@factory.js: res from server is okay :)", val, resObj);
+    // console.log("@factory.js: res from server is okay :)", val, resObj);
     return resObj;
   }
 
