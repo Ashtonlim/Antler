@@ -33,14 +33,12 @@ const LoggedInOutView = ({ loggedIn, userObj }) => {
                 <Link to="/">Settings</Link>
               </li>
               <li>
-                <Link to="/">Dark Mode</Link>
-              </li>
-              <li>
                 <Link to="/logout">Logout</Link>
               </li>
             </div>
           }
           title={`${userObj.username?.toUpperCase()} - ${userObj.funds} SGD`}
+          placement="bottom"
           trigger="hover"
           visible={visible}
           onVisibleChange={handleVisibleChange}

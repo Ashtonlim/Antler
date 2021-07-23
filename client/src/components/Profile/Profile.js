@@ -8,6 +8,7 @@ import Modal from "components/subComponents/Modal";
 import GC from "context";
 import { api_addFunds } from "api/user";
 import { DEPOSIT_FUNDS } from "actionTypes";
+import { expiresIn } from "consts";
 import { currencyF } from "utils/format";
 
 const Profile = () => {
@@ -58,7 +59,7 @@ const Profile = () => {
           type: "success",
           message: `${currencyF(depositVal)} was deposited to your Account`,
           iat: Date.now(),
-          expiresIn: 2000,
+          expiresIn,
         },
       ]);
       // setVisibility(false);
@@ -66,7 +67,7 @@ const Profile = () => {
       console.log(msgList);
       setMsgList([
         ...removeEnded(msgList),
-        { type: "error", message, iat: Date.now(), expiresIn: 2000 },
+        { type: "error", message, iat: Date.now(), expiresIn },
       ]);
     }
   };
