@@ -1,4 +1,4 @@
-import { BASE } from './const';
+import { BASE } from "./apiConsts";
 
 export const getUsername = async (userName) => {
   return await fetch(`${BASE}/users/username/${userName}`);

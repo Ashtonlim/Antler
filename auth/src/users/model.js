@@ -1,6 +1,8 @@
 import mongoose from 'mongoose'
 import { pbkdf2Sync } from 'crypto'
 
+import { centsToDollars } from '../utils'
+
 const userFundsValidation = { validator: Number.isInteger, message: () => 'Erroneous deposit value, likely not an int' }
 
 const userSchema = mongoose.Schema({
@@ -26,17 +28,20 @@ const userSchema = mongoose.Schema({
     min: 0,
     max: 120000,
     validate: userFundsValidation,
-    // get: (v) => `${v.toString().slice(0, -2)}.${v.toString().slice(-2)}` * 1,
+    get: centsToDollars,
     required: true,
     default: 0,
   },
   portfolio_private: { type: Boolean, required: true, default: true },
+  stock_watchlist: [
+    {
+      type: String,
+      required: true,
+      default: [],
+      unique: true,
+    },
+  ],
 })
-
-const convertToBiggerUnit = (cents) => {
-  // assumes this currency is 2 d.p., not all are. E.g. JPY = 0 d.p.
-  return `${cents.toString().slice(0, -2)}.${cents.toString().slice(-2)}`
-}
 
 userSchema.methods = {
   setPassword(pwd) {

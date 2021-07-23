@@ -1,6 +1,6 @@
 import { sign } from 'jsonwebtoken'
-import { createErrMsg } from '../utils'
 import users from './model'
+import { createErrMsg, verifyAndGetUserId, centsToDollars, dollarsToCents } from '../utils'
 
 export const getUsers = async (req, res) => {
   try {
@@ -12,35 +12,51 @@ export const getUsers = async (req, res) => {
   }
 }
 
-export const updateUserDetails = async (req, res) => {
-  const { _id } = req.body
-
-  // specified in middleware.js
-  if (!req.userId) return res.json(createErrMsg({ message: 'Unauthenticated, Please logout and log back in' }))
-
+export const editUserWatchlist = async (req, res) => {
   try {
-    const userObj = await users.findOne({ id: _id }, { __v: 0, password: 0 })
+    const _id = verifyAndGetUserId(req, res)
+    const userObj = await users.findOne({ _id })
+    const { type, tickers } = req.body?.value
+
+    // check if ticker exists
+    // Review: ignore for now cuz im lazy to implement
+    // if (!tickerIsLegit(ticker)) return res.status(400).json(createErrMsg({ message: 'Invalid Ticker' }))
+    console.log(type, tickers, userObj)
+    let updateRes
+    if (type === 'add') {
+      updateRes = await users.updateOne({ _id }, { $addToSet: { stock_watchlist: tickers } })
+    }
+
+    if (updateRes.ok) {
+      // funds to be in dollars but not
+      res.json({ userObj: await users.findOne({ _id }, { __v: 0, password: 0 }) })
+    } else {
+      res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))
+    }
+  } catch ({ message }) {
+    console.log(message)
+  }
+}
+
+export const addUserFunds = async (req, res) => {
+  try {
+    const _id = verifyAndGetUserId(req, res)
+    const userObj = await users.findOne({ _id }, { __v: 0, password: 0 })
     const depositVal = +req.body?.value
 
     // check if deposit is correct format
-    if (`${depositVal}`.split('.')[1]?.length > 2) {
-      console.log('reject: > 2d.p.')
-    }
+    if (`${depositVal}`.split('.')[1]?.length > 2)
+      return res.status(400).json(createErrMsg({ message: 'Amount should be no more than 2 decimals, e.g. $1.12' }))
 
-    if (depositVal > 9999) {
-      res.status(400).json(createErrMsg({ message: 'Max deposit is only $9999' }))
-      return
-    }
+    if (depositVal > 999900) return res.status(400).json(createErrMsg({ message: 'Max deposit is only $9999' }))
 
-    console.log(depositVal * 100, userObj.funds, ~~(depositVal * 100 + userObj.funds))
-    const newAccBalance = ~~(depositVal * 100 + userObj.funds)
+    const newAccBalance = dollarsToCents(depositVal + userObj.funds)
 
     // Note: careful with runValidators (https://mongoosejs.com/docs/validation.html#update-validators -> caveats with 'this' and 'context')
-    const updateRes = await users.updateOne({ id: _id }, { $set: { funds: newAccBalance } }, { runValidators: true })
+    const updateRes = await users.updateOne({ _id }, { $set: { funds: newAccBalance } }, { runValidators: true })
 
-    // console.log(updateRes)
     if (updateRes.ok) {
-      userObj.funds = `${newAccBalance.toString().slice(0, -2)}.${newAccBalance.toString().slice(-2)}` * 1
+      userObj.funds = centsToDollars(newAccBalance)
       res.json({ userObj })
     } else {
       res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))
@@ -83,7 +99,7 @@ export const login = async (req, res) => {
       })
     }
 
-    const userObj = { ...existingUser.toObject() }
+    const userObj = { ...existingUser.toObject({ getters: true }) }
     delete userObj.password
 
     const token = sign({ email: userObj.email, _id: userObj._id }, process.env.JWTSECRET, { expiresIn: '1d' })
