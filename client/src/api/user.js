@@ -1,6 +1,6 @@
 import { loadState } from "localStorage";
 import { createReqParams, resHandler } from "./factory";
-import { BASE } from "./const";
+import { BASE } from "./apiConsts";
 
 export const getUsers = async (id = null) => {
   return await resHandler(await fetch(`${BASE}/users${id ? "/" + id : ""}`));
@@ -24,6 +24,14 @@ export const loginUser = async (loginDetails) => {
 export const api_addFunds = async (info) => {
   const res = await fetch(
     `${BASE}/users/addfunds`,
+    createReqParams("POST", info)
+  );
+  return await resHandler(res);
+};
+
+export const api_editWatchlist = async (info) => {
+  const res = await fetch(
+    `${BASE}/users/editwatchlist`,
     createReqParams("POST", info)
   );
   return await resHandler(res);

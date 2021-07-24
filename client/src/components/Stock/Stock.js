@@ -5,9 +5,13 @@ import { Link } from "react-router-dom";
 import { Button, Tag } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 
+import MainLayout from "../layouts/MainLayout";
+
 import GC from "context";
 import { getCompanyInfo } from "api/YF";
-import MainLayout from "../layouts/MainLayout";
+import { api_editWatchlist } from "api/user";
+import { EDIT_TO_WATCHLIST } from "actionTypes";
+
 import Graph from "./Graph";
 import StockCalendarDates from "./StockCalendarDates";
 import StockMetrics from "./StockMetrics";
@@ -16,7 +20,7 @@ import StockOfficers from "./StockOfficers";
 // import BuySellModal from "./subComponents/BuySellModal";
 
 const Stock = (props) => {
-  const { state } = useContext(GC);
+  const { state, dispatch } = useContext(GC);
   const symbol = useLocation().pathname.split("/").pop();
   const range = ["1D", "5D", "3MO", "6MO", "1Y", "5Y", "MAX"];
 
@@ -37,7 +41,8 @@ const Stock = (props) => {
         console.log("quoteSummary", quoteSummary);
         setCoyInfo(quoteSummary.result[0]);
       } catch (err) {
-        props.history.push("/stocks/TSLA");
+        // props.history.push("/stocks/TSLA");
+        console.log(err);
       }
     };
     getInfo();
@@ -49,14 +54,29 @@ const Stock = (props) => {
     setOnFocus(Array.from(e.currentTarget.children).indexOf(e.target));
   };
 
-  const addWL = async () => {
-    var localarr = JSON.parse(localStorage[`arr + ${state.username}`]);
-    if (localarr.includes(symbol) === false) {
-      alert(`${symbol} is added to watchlist!`);
-      localarr.push(symbol);
-      localStorage[`arr + ${state.username}`] = JSON.stringify(localarr);
-    } else {
-      alert(`${symbol} is already in watchlist!`);
+  const addToWatchlist = async () => {
+    try {
+      dispatch({
+        type: EDIT_TO_WATCHLIST,
+        payload: await api_editWatchlist({
+          value: { action: "update", tickers: [ticker] },
+        }),
+      });
+    } catch ({ message }) {
+      console.log(message);
+    }
+  };
+
+  const rmFromWatchlist = async () => {
+    try {
+      dispatch({
+        type: EDIT_TO_WATCHLIST,
+        payload: await api_editWatchlist({
+          value: { action: "delete", tickers: [ticker] },
+        }),
+      });
+    } catch ({ message }) {
+      console.log(message);
     }
   };
 
@@ -73,9 +93,23 @@ const Stock = (props) => {
                     symbol={symbol}
                     state={state}
                   /> */}
-                  <Button type="primary" size="large" onClick={addWL}>
-                    Add to Watchlist
-                  </Button>
+                  {state.userObj.stock_watchlist.includes(ticker) ? (
+                    <Button
+                      type="primary"
+                      size="large"
+                      onClick={rmFromWatchlist}
+                    >
+                      Remove from Watchlist
+                    </Button>
+                  ) : (
+                    <Button
+                      type="primary"
+                      size="large"
+                      onClick={addToWatchlist}
+                    >
+                      Add to Watchlist
+                    </Button>
+                  )}
                 </>
               ) : (
                 <Link to="/login">

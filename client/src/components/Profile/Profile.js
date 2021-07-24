@@ -215,13 +215,13 @@ const Profile = () => {
                 </div>
                 <div className="text-center mt-4">
                   <h3 className="text-4xl font-semibold leading-normal mb-2 text-gray-800 mb-2">
-                    {state.userObj.name.toUpperCase()}
+                    {state.userObj?.name?.toUpperCase()}
                   </h3>
                   <div className="text-sm leading-normal mt-0 mb-2 text-gray-500 font-bold uppercase">
-                    {state.userObj.email}
+                    {state.userObj?.email}
                   </div>
                   <div className="mb-2 text-gray-700">
-                    Phone Number: {state.userObj.phone_num}
+                    Phone Number: {state.userObj?.phone_num}
                   </div>
                   <div className="mb-2 text-gray-700">Lorum epsum</div>
                 </div>

@@ -1,6 +1,4 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
-
 import { convert } from "utils/date";
 import { resHandler } from "./factory";
 
@@ -9,6 +7,10 @@ const { REACT_APP_AUTH } = process.env;
 const v10 = `/v10`;
 const v8 = `/v8`;
 const BASE = REACT_APP_AUTH;
+
+// https://query1.finance.yahoo.com/v8/finance/chart/TSLA?symbol=TSLA
+// https://query1.finance.yahoo.com/v10/finance/quoteSummary/TSLA?modules=calendarEvents
+// https://stackoverflow.com/questions/44030983/yahoo-finance-url-not-working Ref here for some how tos
 
 export const getStockInfo = async (symbol = "TSLA", range = "5d", interval) => {
   const api = `${BASE}/${v8}/finance/chart/${symbol}?symbol=${symbol}&range=${range}&interval=${interval}`;
@@ -76,8 +78,7 @@ export const getChartInfo = async (
     }
   } catch (err) {
     console.log(err);
-    alert("Err in getting chart from getChartInfo()? in YF.js");
-    return <Redirect to="/" />;
+    // alert("Err in getting chart from getChartInfo()? in YF.js");
   }
   return { priceData, max, min };
 };

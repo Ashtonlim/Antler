@@ -6,6 +6,7 @@ import {
   LOGOUT,
   TOGGLE_DARK_MODE,
   DEPOSIT_FUNDS,
+  EDIT_TO_WATCHLIST,
 } from "./actionTypes";
 import { saveState, loadState } from "./localStorage";
 const GC = React.createContext();
@@ -25,12 +26,10 @@ const reducer = (state = {}, action) => {
       console.log("From reducers.js, LOG_IN_REJECTED");
       return { ...state, ...action.payload };
     case LOGOUT:
-      // const logoutState = { loggedIn: false, username: 'not logged in' }
       const logoutState = { ...state, loggedIn: false, userObj: {}, token: {} };
       saveState(logoutState);
       return logoutState;
     case DEPOSIT_FUNDS:
-      // const logoutState = { loggedIn: false, username: 'not logged in' }
       const newUserFundsState = { ...state, ...action.payload };
       saveState(newUserFundsState);
       return newUserFundsState;
@@ -57,6 +56,10 @@ const reducer = (state = {}, action) => {
       const mode = { ...state, ...action.payload };
       saveState(mode);
       return mode;
+    case EDIT_TO_WATCHLIST:
+      const newUserWatchlistState = { ...state, ...action.payload };
+      saveState(newUserWatchlistState);
+      return newUserWatchlistState;
     default:
       return state;
   }
