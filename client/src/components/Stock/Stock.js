@@ -10,7 +10,7 @@ import MainLayout from "../layouts/MainLayout";
 import GC from "context";
 import { getCompanyInfo } from "api/YF";
 import { api_editWatchlist } from "api/user";
-import { ADD_TO_WATCHLIST } from "actionTypes";
+import { EDIT_TO_WATCHLIST } from "actionTypes";
 
 import Graph from "./Graph";
 import StockCalendarDates from "./StockCalendarDates";
@@ -41,7 +41,8 @@ const Stock = (props) => {
         console.log("quoteSummary", quoteSummary);
         setCoyInfo(quoteSummary.result[0]);
       } catch (err) {
-        props.history.push("/stocks/TSLA");
+        // props.history.push("/stocks/TSLA");
+        console.log(err);
       }
     };
     getInfo();
@@ -56,13 +57,24 @@ const Stock = (props) => {
   const addToWatchlist = async () => {
     try {
       dispatch({
-        type: ADD_TO_WATCHLIST,
+        type: EDIT_TO_WATCHLIST,
         payload: await api_editWatchlist({
-          value: { type: "add", tickers: [ticker] },
+          value: { action: "update", tickers: [ticker] },
         }),
       });
+    } catch ({ message }) {
+      console.log(message);
+    }
+  };
 
-      // setVisibility(false);
+  const rmFromWatchlist = async () => {
+    try {
+      dispatch({
+        type: EDIT_TO_WATCHLIST,
+        payload: await api_editWatchlist({
+          value: { action: "delete", tickers: [ticker] },
+        }),
+      });
     } catch ({ message }) {
       console.log(message);
     }
@@ -81,9 +93,23 @@ const Stock = (props) => {
                     symbol={symbol}
                     state={state}
                   /> */}
-                  <Button type="primary" size="large" onClick={addToWatchlist}>
-                    Add to Watchlist
-                  </Button>
+                  {state.userObj.stock_watchlist.includes(ticker) ? (
+                    <Button
+                      type="primary"
+                      size="large"
+                      onClick={rmFromWatchlist}
+                    >
+                      Remove from Watchlist
+                    </Button>
+                  ) : (
+                    <Button
+                      type="primary"
+                      size="large"
+                      onClick={addToWatchlist}
+                    >
+                      Add to Watchlist
+                    </Button>
+                  )}
                 </>
               ) : (
                 <Link to="/login">

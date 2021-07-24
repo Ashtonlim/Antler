@@ -6,7 +6,7 @@ import {
   LOGOUT,
   TOGGLE_DARK_MODE,
   DEPOSIT_FUNDS,
-  ADD_TO_WATCHLIST,
+  EDIT_TO_WATCHLIST,
 } from "./actionTypes";
 import { saveState, loadState } from "./localStorage";
 const GC = React.createContext();
@@ -56,7 +56,7 @@ const reducer = (state = {}, action) => {
       const mode = { ...state, ...action.payload };
       saveState(mode);
       return mode;
-    case ADD_TO_WATCHLIST:
+    case EDIT_TO_WATCHLIST:
       const newUserWatchlistState = { ...state, ...action.payload };
       saveState(newUserWatchlistState);
       return newUserWatchlistState;

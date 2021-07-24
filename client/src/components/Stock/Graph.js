@@ -48,7 +48,8 @@ const Graph = ({ ticker, range, history }) => {
         chart.line().position("date*price").color("#1890ff");
         chart.render();
       } catch (err) {
-        history.push("/");
+        console.log("graph.js", err);
+        // history.push("/");
       }
     };
 

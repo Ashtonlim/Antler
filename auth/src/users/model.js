@@ -26,7 +26,7 @@ const userSchema = mongoose.Schema({
   funds: {
     type: Number,
     min: 0,
-    max: 120000,
+    max: 999900,
     validate: userFundsValidation,
     get: centsToDollars,
     required: true,
@@ -47,6 +47,7 @@ userSchema.methods = {
   setPassword(pwd) {
     this.password = pbkdf2Sync(pwd, this._id.toString(), 1000, 64, `sha512`).toString(`hex`)
   },
+
   authenticate(pwd) {
     return this.password === pbkdf2Sync(pwd, this._id.toString(), 1000, 64, `sha512`).toString(`hex`)
   },

@@ -15,21 +15,29 @@ export const getUsers = async (req, res) => {
 export const editUserWatchlist = async (req, res) => {
   try {
     const _id = verifyAndGetUserId(req, res)
-    const userObj = await users.findOne({ _id })
-    const { type, tickers } = req.body?.value
+    const { action, tickers } = req.body?.value
 
     // check if ticker exists
     // Review: ignore for now cuz im lazy to implement
     // if (!tickerIsLegit(ticker)) return res.status(400).json(createErrMsg({ message: 'Invalid Ticker' }))
-    console.log(type, tickers, userObj)
+
     let updateRes
-    if (type === 'add') {
+
+    if (action === 'update') {
       updateRes = await users.updateOne({ _id }, { $addToSet: { stock_watchlist: tickers } })
+    }
+
+    if (action === 'delete') {
+      updateRes = await users.updateOne({ _id }, { $pullAll: { stock_watchlist: tickers } })
+    }
+
+    if (updateRes.nModified === 0) {
+      res.status(400).json(createErrMsg({ message: 'Could not edit your watchlist' }))
     }
 
     if (updateRes.ok) {
       // funds to be in dollars but not
-      res.json({ userObj: await users.findOne({ _id }, { __v: 0, password: 0 }) })
+      res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
     } else {
       res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))
     }
@@ -41,23 +49,21 @@ export const editUserWatchlist = async (req, res) => {
 export const addUserFunds = async (req, res) => {
   try {
     const _id = verifyAndGetUserId(req, res)
-    const userObj = await users.findOne({ _id }, { __v: 0, password: 0 })
+    const userObj = await users.findOne({ _id }, { funds: 1 }).lean()
     const depositVal = +req.body?.value
 
     // check if deposit is correct format
     if (`${depositVal}`.split('.')[1]?.length > 2)
       return res.status(400).json(createErrMsg({ message: 'Amount should be no more than 2 decimals, e.g. $1.12' }))
-
     if (depositVal > 999900) return res.status(400).json(createErrMsg({ message: 'Max deposit is only $9999' }))
 
-    const newAccBalance = dollarsToCents(depositVal + userObj.funds)
+    const newAccBalance = dollarsToCents(depositVal) + userObj.funds
 
     // Note: careful with runValidators (https://mongoosejs.com/docs/validation.html#update-validators -> caveats with 'this' and 'context')
     const updateRes = await users.updateOne({ _id }, { $set: { funds: newAccBalance } }, { runValidators: true })
 
     if (updateRes.ok) {
-      userObj.funds = centsToDollars(newAccBalance)
-      res.json({ userObj })
+      res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
     } else {
       res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))
     }
@@ -99,7 +105,7 @@ export const login = async (req, res) => {
       })
     }
 
-    const userObj = { ...existingUser.toObject({ getters: true }) }
+    const userObj = existingUser.toObject({ getters: true })
     delete userObj.password
 
     const token = sign({ email: userObj.email, _id: userObj._id }, process.env.JWTSECRET, { expiresIn: '1d' })
@@ -109,7 +115,7 @@ export const login = async (req, res) => {
       token,
     })
   } catch ({ message }) {
-    console.log('existingUser123:' + message)
+    console.log('Login Err:' + message)
     res.status(500).json({ message })
   }
 }

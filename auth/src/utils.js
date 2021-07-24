@@ -20,7 +20,5 @@ export const dollarsToCents = (val) => {
   return val ? Math.round(parseFloat(val) * 100) : 0
 }
 
-export const centsToDollars = (v) => {
-  // assumes this currency is 2 d.p., not all are. E.g. JPY = 0 d.p.
-  return `${v.toString().slice(0, -2)}.${v.toString().slice(-2)}` * 1
-}
+// assumes this currency is 2 d.p., not all are. E.g. JPY = 0 d.p.
+export const centsToDollars = (v) => `${v.toString().slice(0, -2)}.${v.toString().slice(-2)}` * 1
