@@ -155,7 +155,7 @@ const Stock = (props) => {
         </div>
       </section>
 
-      <div className="">
+      <div className="mb-5">
         <TinyStockChart ticker={"GOOG"} />
         <TinyStockChart ticker={"FUTU"} />
         <TinyStockChart ticker={"MSFT"} />
