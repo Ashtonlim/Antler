@@ -2,10 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-import { Button, Tag } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 
-import MainLayout from "../layouts/MainLayout";
+import MainLayout from "components/layouts/MainLayout";
+import TinyStockChart from "components/subComponents/TinyStockChart";
+import ButtonTWP from "components/subComponents/ButtonTWP";
 
 import GC from "context";
 import { getCompanyInfo } from "api/YF";
@@ -94,54 +95,42 @@ const Stock = (props) => {
                     state={state}
                   /> */}
                   {state.userObj.stock_watchlist.includes(ticker) ? (
-                    <Button
-                      type="primary"
-                      size="large"
+                    <ButtonTWP
+                      text="Remove from Watchlist"
                       onClick={rmFromWatchlist}
-                    >
-                      Remove from Watchlist
-                    </Button>
+                    />
                   ) : (
-                    <Button
-                      type="primary"
-                      size="large"
+                    <ButtonTWP
+                      text="Add to Watchlist"
                       onClick={addToWatchlist}
-                    >
-                      Add to Watchlist
-                    </Button>
+                    />
                   )}
                 </>
               ) : (
                 <Link to="/login">
-                  <Button size="large" type="primary">
-                    Login to Trade
-                  </Button>
+                  <ButtonTWP text="Login to Trade" />
                 </Link>
               )}
             </div>
 
             <h1 className="di mtb-0">
               {coyInfo.price.regularMarketPrice.raw} {coyInfo.price.currency}
-              <Tag
-                style={{ margin: "0px 10px" }}
-                icon={
-                  coyInfo.price.regularMarketChange.raw > 0 ? (
-                    <ArrowUpOutlined />
-                  ) : (
-                    <ArrowDownOutlined />
-                  )
-                }
-                color={
-                  coyInfo.price.regularMarketChange.raw > 0 ? "#87d068" : "#f50"
-                }
+              <span
+                className={`ml-2 p-1 px-3 ${
+                  coyInfo.price.regularMarketChangePercent?.raw >= 0
+                    ? "text-green-700 bg-green-100"
+                    : "text-red-700 bg-red-100"
+                } rounded`}
               >
-                <span>
-                  {" "}
-                  {coyInfo.price.regularMarketChange.fmt}{" "}
-                  {coyInfo.price.currency} (
-                  {coyInfo.price.regularMarketChangePercent.fmt})
-                </span>
-              </Tag>
+                Today{" "}
+                {coyInfo.price.regularMarketChange?.raw > 0 ? (
+                  <ArrowUpOutlined />
+                ) : (
+                  <ArrowDownOutlined />
+                )}{" "}
+                {coyInfo.price.regularMarketChange.fmt} {coyInfo.price.currency}{" "}
+                ({coyInfo.price.regularMarketChangePercent.fmt})
+              </span>
             </h1>
             <h2 className="mtb-0 m-0">
               {ticker}: {coyInfo.price.shortName}
@@ -165,6 +154,13 @@ const Stock = (props) => {
           {ticker && <Graph ticker={symbol} range={range[onFocus]} />}
         </div>
       </section>
+
+      <div className="">
+        <TinyStockChart ticker={"GOOG"} />
+        <TinyStockChart ticker={"FUTU"} />
+        <TinyStockChart ticker={"MSFT"} />
+        <TinyStockChart ticker={"BABA"} />
+      </div>
 
       {coyInfo.summaryDetail && (
         <StockMetrics summaryDetail={coyInfo.summaryDetail} />
