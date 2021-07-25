@@ -19,3 +19,8 @@
     border-radius: 10px;
   }
 }
+
+// For some reason, ALL antd icons are misalligned. this fixes.
+.anticon {
+  display: inline-flex !important;
+}

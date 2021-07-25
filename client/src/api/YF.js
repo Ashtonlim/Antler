@@ -1,4 +1,3 @@
-import React from "react";
 import { convert } from "utils/date";
 import { resHandler } from "./factory";
 
@@ -25,14 +24,60 @@ export const getCompanyInfo = async (symbol = "TSLA", modules = ["price"]) => {
   return await resHandler(await fetch(api));
 };
 
-export const getChartInfo = async (
-  symbol = "TSLA",
+const simpleDataTransform = ({ chart, priceData = [] }) => {
+  const { adjclose } = chart.result[0].indicators.adjclose[0];
+  const max = Math.max(...adjclose);
+  const min = Math.min(...adjclose);
+  // () => (val - min) / (max - min)
+  // Math.round(v * 100) / 100
+
+  return {
+    historicalPriceData: adjclose.map((v) => (v - min) / (max - min)),
+    max,
+    min,
+    first: adjclose[0],
+    last: adjclose[adjclose.length - 1],
+  };
+};
+
+const normalDataTransform = ({
+  chart,
+  range,
+  priceData = [],
+  max = 0,
+  min = 99999,
+}) => {
+  const close = chart.result[0].indicators.quote[0].close;
+  let i = 0;
+  if (close) {
+    while (close.length) {
+      if (close[0]) {
+        const price = close.shift();
+        if (min > price) min = price;
+        if (max < price) max = price;
+        priceData.push({
+          price: +parseFloat(price).toFixed(2),
+          date: i,
+          y: convert(
+            chart.result[0].timestamp[i],
+            chart.result[0].meta.exchangeTimezoneName,
+            range
+          ),
+          y2: chart.result[0].timestamp[i],
+        });
+        i++;
+      } else close.shift();
+    }
+  }
+  return { priceData, max, min };
+};
+
+export const getChartInfo = async ({
+  ticker = "TSLA",
   range = "5d",
-  interval = "1d"
-) => {
-  const priceData = [];
-  let max = 0;
-  let min = 99999;
+  interval = "1d",
+  type = "normal",
+}) => {
   try {
     range = range.toLowerCase();
     switch (range) {
@@ -49,38 +94,20 @@ export const getChartInfo = async (
       default:
         interval = "1d";
     }
-    const { chart } = await getStockInfo(symbol, range, interval);
+    const { chart } = await getStockInfo(ticker, range, interval);
 
-    // console.log('chart')
-    console.log(chart);
-
-    const close = chart.result[0].indicators.quote[0].close;
-    let i = 0;
-    if (close) {
-      while (close.length) {
-        if (close[0]) {
-          const price = close.shift();
-          if (min > price) min = price;
-          if (max < price) max = price;
-          priceData.push({
-            price: +parseFloat(price).toFixed(2),
-            date: i,
-            y: convert(
-              chart.result[0].timestamp[i],
-              chart.result[0].meta.exchangeTimezoneName,
-              range
-            ),
-            y2: chart.result[0].timestamp[i],
-          });
-          i++;
-        } else close.shift();
-      }
+    switch (type) {
+      case "normal":
+        return normalDataTransform({ chart, range });
+      case "tinygraph":
+        return simpleDataTransform({ chart });
+      default:
+        return normalDataTransform({ chart, range });
     }
   } catch (err) {
     console.log(err);
     // alert("Err in getting chart from getChartInfo()? in YF.js");
   }
-  return { priceData, max, min };
 };
 
 // plot with close price
