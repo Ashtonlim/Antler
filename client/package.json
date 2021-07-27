@@ -21,6 +21,7 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
+    "deploy": "craco build && aws s3 rm s3://antler-app --recursive && aws s3 cp ./build s3://antler-app --recursive --acl public-read",
     "old-start": "react-scripts start",
     "old-build": "react-scripts build",
     "old-test": "react-scripts test",
