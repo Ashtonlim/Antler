@@ -13,6 +13,7 @@ export const registerUser = async (regDetails) => {
 };
 
 export const loginUser = async (loginDetails) => {
+  console.log(`${BASE}/users/login`, BASE);
   const res = await fetch(
     `${BASE}/users/login`,
     createReqParams("POST", loginDetails)
