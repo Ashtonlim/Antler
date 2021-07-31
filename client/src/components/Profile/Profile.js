@@ -89,6 +89,7 @@ const Profile = () => {
       )}
       {visibility && (
         <Modal
+          title="Fund Your Account"
           visibility={visibility}
           onClose={() => setVisibility(false)}
           msgList={msgList}

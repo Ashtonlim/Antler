@@ -45,7 +45,7 @@ const normalDataTransform = ({
   range,
   priceData = [],
   max = 0,
-  min = 99999,
+  min = 4294967295, // must be more than most expensive stock
 }) => {
   const close = chart.result[0].indicators.quote[0].close;
   let i = 0;

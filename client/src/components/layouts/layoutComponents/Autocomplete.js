@@ -38,24 +38,23 @@ const renderStock = ({ symbol, name }) => {
   };
 };
 
-const Autocomplete = ({ history }) => {
+const Autocomplete = () => {
   const [searchPredict, setSearchPredict] = useState("");
   const [users, setUsers] = useState([]);
   const [stocks, setStocks] = useState([]);
   let options = [];
 
   useEffect(() => {
-    if (stocks.length === 0) {
+    // Review: It should be the case the user has the most recent set of stocks and users
+    // To fix: requires api req everytime a user types something into search bar (finds latest lists)
+    const initData = async () => {
       setStocks(stockData);
-    }
-    if (users.length === 0) {
-      getUsers().then((data) => {
-        setUsers(data);
-      });
-    }
-  }, [stocks, users]);
+      setUsers(await getUsers());
+    };
+    initData();
+  }, []);
 
-  if (stocks.length > 0) {
+  if (Array.isArray(stocks) && stocks.length > 0) {
     options.push({
       label: <span>Stocks</span>,
       options: stocks
@@ -67,9 +66,11 @@ const Autocomplete = ({ history }) => {
         .slice(0, 5)
         .map((stock) => renderStock(stock)),
     });
+  } else {
+    console.log("stocks is either empty or not an array");
   }
 
-  if (users.length > 0) {
+  if (Array.isArray(users) && users.length > 0) {
     options.push({
       label: (
         <span>
@@ -81,6 +82,8 @@ const Autocomplete = ({ history }) => {
         .slice(0, 5)
         .map((user) => renderUser(user)),
     });
+  } else {
+    console.log("users is either empty or not an array");
   }
 
   const handleSymbol = (values) => {

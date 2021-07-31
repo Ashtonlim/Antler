@@ -50,8 +50,8 @@ const TinyStockChart = ({ ticker }) => {
   };
 
   return (
-    <button
-      // to={`/stock/${ticker}`}
+    <Link
+      to={`/stock/${ticker}`}
       className="augDM p-3.5 mr-4 shadow-xl rounded-md inline-block transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105"
     >
       <h3>
@@ -78,7 +78,7 @@ const TinyStockChart = ({ ticker }) => {
         </button>
       </h3>
       <TinyGraph ticker={ticker} data={graphData} />
-    </button>
+    </Link>
   );
 };
 

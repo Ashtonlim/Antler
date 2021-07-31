@@ -1,5 +1,9 @@
-export const currencyF = (val, { currency = "USD" } = {}) =>
-  new Intl.NumberFormat("en-US", {
+export const currencyF = (val, currency = "USD") => {
+  if (val === undefined) return 0;
+
+  // rounds the val
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
   }).format(val);
+};

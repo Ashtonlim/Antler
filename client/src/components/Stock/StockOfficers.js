@@ -1,7 +1,7 @@
 import React from "react";
 
 const StockMetrics = ({ companyOfficers }) => {
-  console.log("companyOfficers", companyOfficers);
+  // console.log("companyOfficers", companyOfficers);
   return (
     <section className="card my-5 text-gray-600 body-font">
       <div className="container px-5 py-5 mx-auto">

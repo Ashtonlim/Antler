@@ -11,9 +11,9 @@ const Graph = ({ ticker, range, history }) => {
     const initGraph = async () => {
       try {
         const { priceData, max, min } = await getChartInfo({ ticker, range });
-        console.log({ priceData, max, min });
-        if (!priceData) return history.push("/");
-        if (priceData.length === 0) return history.push("/");
+        // console.log({ priceData, max, min });
+        // if (!priceData) return history.push("/");
+        // if (priceData.length === 0) return history.push("/");
 
         let chart = new Chart({
           container: "antg",
@@ -22,10 +22,15 @@ const Graph = ({ ticker, range, history }) => {
         });
 
         chart.data(priceData);
+
+        const adjMax = max + (max - min) * 0.2;
+        const adjMin = min - (max - min) * 0.2; // min has to be > 0
+        // console.log({ adjMax, adjMin });
         chart.scale({
           price: {
-            max: max * 1.02,
-            min: min * 0.98,
+            // expla: use "max - min" prob more suitable. works well w high stock prices and small stock price fluctuation
+            max: adjMax,
+            min: adjMin, // min has to be > 0
           },
           date: {
             tickCount: 10,
