@@ -7,11 +7,19 @@ import {
   TOGGLE_DARK_MODE,
   DEPOSIT_FUNDS,
   EDIT_TO_WATCHLIST,
+  BUY_STOCK,
+  SELL_STOCK,
 } from "./actionTypes";
 import { saveState, loadState } from "./localStorage";
 const GC = React.createContext();
 
 const user = loadState();
+
+const stateResolver = (state, action) => {
+  const newState = { ...state, ...action.payload };
+  saveState(newState);
+  return newState;
+};
 
 // uses something similar to redux pattern.
 // google redux for more info
@@ -30,9 +38,9 @@ const reducer = (state = {}, action) => {
       saveState(logoutState);
       return logoutState;
     case DEPOSIT_FUNDS:
-      const newUserFundsState = { ...state, ...action.payload };
-      saveState(newUserFundsState);
-      return newUserFundsState;
+      const userFundsState = { ...state, ...action.payload };
+      saveState(userFundsState);
+      return userFundsState;
     case TOGGLE_DARK_MODE:
       // ====== REVIEW ======
       // ====== REVIEW ======
@@ -57,9 +65,13 @@ const reducer = (state = {}, action) => {
       saveState(mode);
       return mode;
     case EDIT_TO_WATCHLIST:
-      const newUserWatchlistState = { ...state, ...action.payload };
-      saveState(newUserWatchlistState);
-      return newUserWatchlistState;
+      const userWatchlistState = { ...state, ...action.payload };
+      saveState(userWatchlistState);
+      return userWatchlistState;
+    case BUY_STOCK:
+      return stateResolver(state, action);
+    case SELL_STOCK:
+      return stateResolver(state, action);
     default:
       return state;
   }

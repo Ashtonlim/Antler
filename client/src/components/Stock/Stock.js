@@ -194,7 +194,7 @@ const Stock = (props) => {
                 )}`}
               </div>
               <div className="text-right px-3">
-                {`Remainder Funds: ${currencyF(
+                {`Your new Balance: ${currencyF(
                   state.userObj?.funds -
                     noOfSharesToBuy *
                       coyInfo.price.regularMarketPrice.raw *
@@ -286,7 +286,7 @@ const Stock = (props) => {
           ))}
         </div>
 
-        <div style={{ height: "500px" }} id="g">
+        <div style={{ height: "300px" }} id="g">
           {ticker && <Graph ticker={symbol} range={range[onFocus]} />}
         </div>
       </section>
