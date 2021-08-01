@@ -37,39 +37,14 @@ const reducer = (state = {}, action) => {
       const logoutState = { ...state, loggedIn: false, userObj: {}, token: {} };
       saveState(logoutState);
       return logoutState;
-    case DEPOSIT_FUNDS:
-      const userFundsState = { ...state, ...action.payload };
-      saveState(userFundsState);
-      return userFundsState;
     case TOGGLE_DARK_MODE:
-      // ====== REVIEW ======
-      // ====== REVIEW ======
-      // REVIEW: I cannot figure for the life of me why this adds <style> to head TWICE!! console log only occurs once
-      // if (action.payload.darkMode) {
-      //   const style = document.createElement("style");
-      //   const r = Math.random().toString(36).substring(7);
-      //   style.setAttribute("class", "customDarkMode " + r);
-      //   style.innerHTML = `html,img,footer .${r} {filter: invert(1) hue-rotate(180deg);} .card, .shadow {background: #eee; box-shadow: none}`;
-      //   console.log("TOGGLE_DARK_MODE", action.payload.darkMode);
-      //   document.head.appendChild(style);
-      // } else {
-      //   const l = document.querySelectorAll(".customDarkMode");
-      //   for (var i = 0; i < l.length; i++) {
-      //     l[i].remove();
-      //   }
-      // }
-      // ====== REVIEW ======
-      // ====== REVIEW ======
-
+      // Search: REVIEW tdm#01
       const mode = { ...state, ...action.payload };
       saveState(mode);
       return mode;
+    case DEPOSIT_FUNDS:
     case EDIT_TO_WATCHLIST:
-      const userWatchlistState = { ...state, ...action.payload };
-      saveState(userWatchlistState);
-      return userWatchlistState;
     case BUY_STOCK:
-      return stateResolver(state, action);
     case SELL_STOCK:
       return stateResolver(state, action);
     default:
@@ -84,3 +59,22 @@ export const ContextProvider = ({ children }) => {
 };
 
 export default GC;
+
+// ====== REVIEW tdm#01 ======
+// ====== REVIEW tdm#01 ======
+// REVIEW: I cannot figure for the life of me why this adds <style> to head TWICE!! console log only occurs once
+// if (action.payload.darkMode) {
+//   const style = document.createElement("style");
+//   const r = Math.random().toString(36).substring(7);
+//   style.setAttribute("class", "customDarkMode " + r);
+//   style.innerHTML = `html,img,footer .${r} {filter: invert(1) hue-rotate(180deg);} .card, .shadow {background: #eee; box-shadow: none}`;
+//   console.log("TOGGLE_DARK_MODE", action.payload.darkMode);
+//   document.head.appendChild(style);
+// } else {
+//   const l = document.querySelectorAll(".customDarkMode");
+//   for (var i = 0; i < l.length; i++) {
+//     l[i].remove();
+//   }
+// }
+// ====== REVIEW tdm#01 ======
+// ====== REVIEW tdm#01 ======

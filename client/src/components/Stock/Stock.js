@@ -9,11 +9,11 @@ import TinyStockChart from "components/subComponents/TinyStockChart";
 import ButtonTWP from "components/subComponents/ButtonTWP";
 
 import GC from "context";
-import { EDIT_TO_WATCHLIST } from "actionTypes";
+import { EDIT_TO_WATCHLIST, BUY_STOCK, SELL_STOCK } from "actionTypes";
 import { getCompanyInfo } from "api/YF";
 import { currConv } from "api/apiUtils";
 
-import { api_editWatchlist } from "api/user";
+import { api_editWatchlist, api_buyStock, api_sellStock } from "api/user";
 import { currencyF } from "utils/format";
 
 import Graph from "./Graph";
@@ -33,7 +33,7 @@ const Stock = (props) => {
   const [forex, setForex] = useState(0);
   const [buyModalVisible, setBuyModalVisible] = useState(false);
   const [sellModalVisible, setSellModalVisible] = useState(false);
-  const [noOfSharesToBuy, setNoOfSharesToBuy] = useState(0);
+  const [noOfSharesToBuy, setNoOfSharesToBuy] = useState(1);
 
   useEffect(() => {
     setTicker(symbol.toUpperCase());
@@ -116,9 +116,20 @@ const Stock = (props) => {
     else setNoOfSharesToBuy(val);
   };
 
-  const buyShares = () => {
+  const buyShares = async () => {
     try {
-    } catch (err) {}
+      dispatch({
+        type: BUY_STOCK,
+        payload: await api_buyStock({
+          ticker,
+          quantity: noOfSharesToBuy,
+          unitCost: coyInfo.price.regularMarketPrice.raw,
+          totalCost: noOfSharesToBuy * coyInfo.price.regularMarketPrice.raw,
+        }),
+      });
+    } catch ({ message }) {
+      console.log(message);
+    }
   };
 
   return (
@@ -136,72 +147,70 @@ const Stock = (props) => {
                 "SGD"
               )}`}
               onClick={buyShares}
+              disabled={noOfSharesToBuy === 0}
             />,
           ]}
         >
           <div className="relative p-6 flex-auto">
-            <div>
-              <span className="link px-3">
-                {`Max shares buyable: ${~~(
-                  (state.userObj?.funds * (1 / forex)) /
-                  coyInfo.price?.regularMarketPrice?.raw
-                )}`}
-              </span>
-              {/* <label
+            {/* Review: removed a div here, not sure if will cause issues... check di#01 */}
+            <span className="link px-3">
+              {`Max shares buyable: ${~~(
+                (state.userObj?.funds * (1 / forex)) /
+                coyInfo.price?.regularMarketPrice?.raw
+              )}`}
+            </span>
+            {/* <label
               htmlFor="price"
               className="block text-sm font-medium text-gray-700"
             >
               Number of Shares:
             </label> */}
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none">
-                  <span className="text-gray-500 sm:text-sm">Purchase</span>
-                </div>
-
-                <input
-                  type="text"
-                  name="shares"
-                  id="price"
-                  value={noOfSharesToBuy}
-                  onChange={shareBuyInput}
-                  className="focus:indigo-500 focus:border-indigo-500 block w-full pl-20 py-3 pr-12 sm:text-sm border-gray-300 rounded-md"
-                  placeholder="0"
-                />
-
-                <div className="absolute inset-y-0 right-0 px-3 flex items-center pointer-events-none">
-                  <span className="text-gray-500 sm:text-sm">
-                    shares x{" "}
-                    {currencyF(
-                      coyInfo.price.regularMarketPrice?.raw,
-                      coyInfo.price.currency
-                    )}
-                    /share =
-                    {` ${currencyF(
-                      noOfSharesToBuy * coyInfo.price.regularMarketPrice.raw,
-                      coyInfo.price.currency
-                    )} ${coyInfo.price.currency}`}
-                  </span>
-                </div>
+            <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none">
+                <span className="text-gray-500 sm:text-sm">Purchase</span>
               </div>
-              <div className="text-right px-3">
-                {`(1 ${
-                  coyInfo.price?.currency
-                } = ${forex} SGD) Total: ${currencyF(
+
+              <input
+                type="text"
+                name="shares"
+                id="price"
+                value={noOfSharesToBuy}
+                onChange={shareBuyInput}
+                className="focus:indigo-500 focus:border-indigo-500 block w-full pl-20 py-3 pr-12 sm:text-sm border-gray-300 rounded-md"
+                placeholder="0"
+              />
+
+              <div className="absolute inset-y-0 right-0 px-3 flex items-center pointer-events-none">
+                <span className="text-gray-500 sm:text-sm">
+                  shares x{" "}
+                  {currencyF(
+                    coyInfo.price.regularMarketPrice?.raw,
+                    coyInfo.price.currency
+                  )}
+                  /share =
+                  {` ${currencyF(
+                    noOfSharesToBuy * coyInfo.price.regularMarketPrice.raw,
+                    coyInfo.price.currency
+                  )} ${coyInfo.price.currency}`}
+                </span>
+              </div>
+            </div>
+            <div className="text-right px-3">
+              {`(1 ${
+                coyInfo.price?.currency
+              } = ${forex} SGD) Total: ${currencyF(
+                noOfSharesToBuy * coyInfo.price.regularMarketPrice.raw * forex,
+                "SGD"
+              )}`}
+            </div>
+            <div className="text-right px-3">
+              {`Your new Balance: ${currencyF(
+                state.userObj?.funds -
                   noOfSharesToBuy *
                     coyInfo.price.regularMarketPrice.raw *
                     forex,
-                  "SGD"
-                )}`}
-              </div>
-              <div className="text-right px-3">
-                {`Your new Balance: ${currencyF(
-                  state.userObj?.funds -
-                    noOfSharesToBuy *
-                      coyInfo.price.regularMarketPrice.raw *
-                      forex,
-                  "SGD"
-                )}`}
-              </div>
+                "SGD"
+              )}`}
             </div>
           </div>
         </Modal>
@@ -232,7 +241,6 @@ const Stock = (props) => {
                     onClick={setBuyModalVisible}
                   />
                   <ButtonTWP
-                    className=""
                     text="Sell"
                     color="red"
                     onClick={setSellModalVisible}

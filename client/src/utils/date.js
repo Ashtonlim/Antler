@@ -16,14 +16,13 @@ export const convertYr = (unix) => {
 };
 
 export const convert = (t, tz = "America/New_York", range = "1d") => {
-  let f = "D MMM YY";
+  let f = "D MMM: H:mm";
   switch (range) {
     case "1d":
     case "5d":
-      f = "D MMM: H:mm";
       break;
     default:
-      f = "D MMM: H:mm";
+      f = "D MMM YYYY";
   }
   return dayjs(t * 1000)
     .tz(tz)
@@ -41,8 +40,6 @@ export const convert5d1m = (t, range = "5d") => {
     default:
       f = "MMM YYYY";
   }
-
-  console.log("format is: ", f);
 
   return dayjs(t * 1000).format(f);
 

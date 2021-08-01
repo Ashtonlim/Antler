@@ -106,6 +106,7 @@ const Profile = () => {
           ]}
         >
           <div className="relative p-6 flex-auto">
+            {/* remove this div and should work? removed in Stock.js, Review: if any issues (di#01) */}
             <div>
               <label
                 htmlFor="price"
