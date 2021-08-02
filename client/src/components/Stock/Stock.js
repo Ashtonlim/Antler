@@ -50,7 +50,7 @@ const Stock = (props) => {
         document.title =
           apiData.price?.shortName && symbol
             ? `${
-                apiData.price?.longName
+                apiData.price?.shortName
               } ${symbol.toUpperCase()} Stock Price | Antler`
             : "Antler Company Stock Price";
 
@@ -125,6 +125,7 @@ const Stock = (props) => {
           quantity: noOfSharesToBuy,
           unitCost: coyInfo.price.regularMarketPrice.raw,
           totalCost: noOfSharesToBuy * coyInfo.price.regularMarketPrice.raw,
+          forex,
         }),
       });
     } catch ({ message }) {
