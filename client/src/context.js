@@ -7,11 +7,19 @@ import {
   TOGGLE_DARK_MODE,
   DEPOSIT_FUNDS,
   EDIT_TO_WATCHLIST,
+  BUY_STOCK,
+  SELL_STOCK,
 } from "./actionTypes";
 import { saveState, loadState } from "./localStorage";
 const GC = React.createContext();
 
 const user = loadState();
+
+const stateResolver = (state, action) => {
+  const newState = { ...state, ...action.payload };
+  saveState(newState);
+  return newState;
+};
 
 // uses something similar to redux pattern.
 // google redux for more info
@@ -29,37 +37,16 @@ const reducer = (state = {}, action) => {
       const logoutState = { ...state, loggedIn: false, userObj: {}, token: {} };
       saveState(logoutState);
       return logoutState;
-    case DEPOSIT_FUNDS:
-      const newUserFundsState = { ...state, ...action.payload };
-      saveState(newUserFundsState);
-      return newUserFundsState;
     case TOGGLE_DARK_MODE:
-      // ====== REVIEW ======
-      // ====== REVIEW ======
-      // REVIEW: I cannot figure for the life of me why this adds <style> to head TWICE!! console log only occurs once
-      // if (action.payload.darkMode) {
-      //   const style = document.createElement("style");
-      //   const r = Math.random().toString(36).substring(7);
-      //   style.setAttribute("class", "customDarkMode " + r);
-      //   style.innerHTML = `html,img,footer .${r} {filter: invert(1) hue-rotate(180deg);} .card, .shadow {background: #eee; box-shadow: none}`;
-      //   console.log("TOGGLE_DARK_MODE", action.payload.darkMode);
-      //   document.head.appendChild(style);
-      // } else {
-      //   const l = document.querySelectorAll(".customDarkMode");
-      //   for (var i = 0; i < l.length; i++) {
-      //     l[i].remove();
-      //   }
-      // }
-      // ====== REVIEW ======
-      // ====== REVIEW ======
-
+      // Search: REVIEW tdm#01
       const mode = { ...state, ...action.payload };
       saveState(mode);
       return mode;
+    case DEPOSIT_FUNDS:
     case EDIT_TO_WATCHLIST:
-      const newUserWatchlistState = { ...state, ...action.payload };
-      saveState(newUserWatchlistState);
-      return newUserWatchlistState;
+    case BUY_STOCK:
+    case SELL_STOCK:
+      return stateResolver(state, action);
     default:
       return state;
   }
@@ -72,3 +59,22 @@ export const ContextProvider = ({ children }) => {
 };
 
 export default GC;
+
+// ====== REVIEW tdm#01 ======
+// ====== REVIEW tdm#01 ======
+// REVIEW: I cannot figure for the life of me why this adds <style> to head TWICE!! console log only occurs once
+// if (action.payload.darkMode) {
+//   const style = document.createElement("style");
+//   const r = Math.random().toString(36).substring(7);
+//   style.setAttribute("class", "customDarkMode " + r);
+//   style.innerHTML = `html,img,footer .${r} {filter: invert(1) hue-rotate(180deg);} .card, .shadow {background: #eee; box-shadow: none}`;
+//   console.log("TOGGLE_DARK_MODE", action.payload.darkMode);
+//   document.head.appendChild(style);
+// } else {
+//   const l = document.querySelectorAll(".customDarkMode");
+//   for (var i = 0; i < l.length; i++) {
+//     l[i].remove();
+//   }
+// }
+// ====== REVIEW tdm#01 ======
+// ====== REVIEW tdm#01 ======

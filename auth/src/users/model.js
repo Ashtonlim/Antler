@@ -5,18 +5,25 @@ import { centsToDollars } from '../utils'
 
 const userFundsValidation = { validator: Number.isInteger, message: () => 'Erroneous deposit value, likely not an int' }
 
-const stockPurchase = mongoose.Schema(
+const stockOrders = mongoose.Schema(
   {
-    company: { type: String },
-    ticker: { type: String },
-    purchase_price: { type: Number },
-    quantity: { type: Number, min: 1 },
+    // selling of stock requires stock_portfolio item(s) to be updated
+    // e.g. I buy 3xAAPL and 5xAAPL. I sell 4x AAPL. My portfolio should now reflect 3xAAPL and 1xAAPL and
+    // updates field for the original 5xAAPL should increment by 1
+    updates: { type: Number, required: true, default: 1 },
+    ticker: { type: String, required: true },
+    order_price: { type: Number, required: true, min: 0.01, validate: userFundsValidation, get: centsToDollars },
+    quantity: { type: Number, required: true, min: 1 },
   },
   { timestamps: true }
 )
 
 const userSchema = mongoose.Schema(
   {
+    username: { type: String, required: true },
+    name: { type: String, required: true },
+    phone_num: { type: String, required: true },
+    portfolio_private: { type: Boolean, required: true, default: true },
     email: {
       type: String,
       match: /^\S+@\S+\.\S+$/,
@@ -25,14 +32,11 @@ const userSchema = mongoose.Schema(
       trim: true,
       lowercase: true,
     },
-    username: { type: String, required: true },
     password: {
       type: String,
       required: true,
       minlength: 3,
     },
-    name: { type: String, required: true },
-    phone_num: { type: String, required: true },
     // Review: Unsure if correct to store funds in cents (avoids floating point issues)
     funds: {
       type: Number,
@@ -43,16 +47,17 @@ const userSchema = mongoose.Schema(
       required: true,
       default: 0,
     },
-    portfolio_private: { type: Boolean, required: true, default: true },
-    stock_watchlist: {
-      type: [String],
-      required: true,
-      default: [],
-      unique: true,
-    },
+    stock_watchlist: [
+      {
+        type: String,
+        required: true,
+        default: [],
+        unique: true,
+      },
+    ],
     stock_portfolio: [
       {
-        type: stockPurchase,
+        type: stockOrders,
         required: true,
         default: [],
       },

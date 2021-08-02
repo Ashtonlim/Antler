@@ -1,3 +1,17 @@
+# Important Read
+
+Search for
+
+1. `TODO:`
+2. `REVIEW:`
+3. `USEFUL:`
+
+Are non-critical features to refactor/fix/implement. Please do them when possible.
+
+### Code
+
+Comment well and ensure your code is readable/understandable over compactness.
+
 # Installation
 
 There are 2 components to Antler.

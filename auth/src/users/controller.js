@@ -1,14 +1,99 @@
 import { sign } from 'jsonwebtoken'
 import users from './model'
-import { createErrMsg, verifyAndGetUserId, centsToDollars, dollarsToCents } from '../utils'
+import { createErrMsg, verifyAndGetUserId, dollarsToCents } from '../utils'
+import fetch from 'node-fetch'
 
-export const getUsers = async (req, res) => {
+export const addUserFunds = async (req, res) => {
   try {
-    const data = await users.find({}, { _id: 1, username: 1, name: 1, portfolio_private: 1 })
-    res.json(data)
-    // res.status(200).json({ data })
-  } catch (err) {
-    res.status(404).json(err.message)
+    const _id = verifyAndGetUserId(req, res)
+    const userObj = await users.findOne({ _id }, { funds: 1 }).lean()
+    const depositVal = +req.body?.value
+
+    // check if deposit is correct format, could convert to 2d.p. but it shouldn't be the case is > 2d.p. since frontend sends it as 2d.p.
+    if (`${depositVal}`.split('.')[1]?.length > 2)
+      return res.status(400).json(createErrMsg({ message: 'Amount should be no more than 2 decimals, e.g. $1.12' }))
+
+    if (depositVal > 999900) return res.status(400).json(createErrMsg({ message: 'Max deposit is only $9999' }))
+
+    const newAccBalance = dollarsToCents(depositVal) + userObj.funds
+
+    // Note: careful with runValidators (https://mongoosejs.com/docs/validation.html#update-validators -> caveats with 'this' and 'context')
+    const updateRes = await users.updateOne({ _id }, { $set: { funds: newAccBalance } }, { runValidators: true })
+
+    if (updateRes.ok) {
+      res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
+    } else {
+      res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))
+    }
+  } catch ({ message }) {
+    console.log(message)
+    res.status(400).json(createErrMsg({ message: 'Unexpected error, contact support' }))
+  }
+}
+
+export const buyStock = async (req, res) => {
+  try {
+    const _id = verifyAndGetUserId(req, res)
+    const { ticker, quantity, unitCost, totalCost, forex } = req.body
+
+    // Must buy at least 1 share
+    if (quantity < 1) return res.status(400).json(createErrMsg({ message: 'At least 1 share must be bought' }))
+
+    // Ensure ticker exists and get price of stock
+    const yhApiRes = await fetch(`https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=price`)
+
+    if (yhApiRes.ok) {
+      const {
+        quoteSummary: {
+          result: [{ price }],
+        },
+      } = await yhApiRes.json()
+
+      if (price.regularMarketPrice.raw !== unitCost)
+        // Review: should get forex price but will use what user sent for now
+        console.log(
+          `deviation from user expected price execution. User saw [Share: ${unitCost}, forex: ${forex}], server saw [Share: ${
+            price.regularMarketPrice.raw
+          }, forex: ${forex}]. Diff: ${price.regularMarketPrice.raw - unitCost}`
+        )
+
+      const userObj = await users.findOne({ _id }, { funds: 1 }).lean()
+      if (isNaN(price.regularMarketPrice.raw) && isNaN(quantity) && isNaN(forex)) {
+        return res.status(400).json(createErrMsg({ message: 'Issue with price, quantity or exchange rate' }))
+      }
+
+      const purchaseCost = dollarsToCents(-(price.regularMarketPrice.raw * quantity * forex))
+
+      // check if there is enuf funds for purchase
+      if (userObj.funds < purchaseCost) return res.status(400).json(createErrMsg({ message: 'Purchase exceeds available funds' }))
+      const newAccBalance = purchaseCost + userObj.funds
+      console.log(price.regularMarketPrice.raw, { purchaseCost, newAccBalance, quantity, forex, funds: userObj.funds, _id })
+      // why is there _id and id in stock_portfolio?
+      const updateRes = await users.updateOne(
+        { _id },
+        {
+          $set: { funds: newAccBalance },
+          $push: { stock_portfolio: { ticker, order_price: dollarsToCents(price.regularMarketPrice.raw), quantity } },
+        },
+        { runValidators: true }
+      )
+      if (updateRes.ok) {
+        res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
+      } else {
+        res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))
+      }
+    }
+  } catch ({ message }) {
+    console.log(message)
+    res.status(400).json(createErrMsg({ message: 'Unexpected error, contact support' }))
+  }
+}
+export const sellStock = async (req, res) => {
+  try {
+    console.log('selling stock')
+  } catch ({ message }) {
+    console.log(message)
+    res.status(400).json(createErrMsg({ message: 'Unexpected error, contact support' }))
   }
 }
 
@@ -43,33 +128,6 @@ export const editUserWatchlist = async (req, res) => {
     }
   } catch ({ message }) {
     console.log(message)
-  }
-}
-
-export const addUserFunds = async (req, res) => {
-  try {
-    const _id = verifyAndGetUserId(req, res)
-    const userObj = await users.findOne({ _id }, { funds: 1 }).lean()
-    const depositVal = +req.body?.value
-
-    // check if deposit is correct format
-    if (`${depositVal}`.split('.')[1]?.length > 2)
-      return res.status(400).json(createErrMsg({ message: 'Amount should be no more than 2 decimals, e.g. $1.12' }))
-    if (depositVal > 999900) return res.status(400).json(createErrMsg({ message: 'Max deposit is only $9999' }))
-
-    const newAccBalance = dollarsToCents(depositVal) + userObj.funds
-
-    // Note: careful with runValidators (https://mongoosejs.com/docs/validation.html#update-validators -> caveats with 'this' and 'context')
-    const updateRes = await users.updateOne({ _id }, { $set: { funds: newAccBalance } }, { runValidators: true })
-
-    if (updateRes.ok) {
-      res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
-    } else {
-      res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))
-    }
-  } catch ({ message }) {
-    console.log(message)
-    res.status(400).json(createErrMsg({ message: 'Unexpected error, contact support' }))
   }
 }
 
@@ -117,5 +175,15 @@ export const login = async (req, res) => {
   } catch ({ message }) {
     console.log('Login Err:' + message)
     res.status(500).json({ message })
+  }
+}
+
+export const getUsers = async (req, res) => {
+  try {
+    const data = await users.find({}, { _id: 1, username: 1, name: 1, portfolio_private: 1 })
+    res.json(data)
+    // res.status(200).json({ data })
+  } catch (err) {
+    res.status(404).json(err.message)
   }
 }

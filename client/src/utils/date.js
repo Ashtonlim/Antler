@@ -16,31 +16,29 @@ export const convertYr = (unix) => {
 };
 
 export const convert = (t, tz = "America/New_York", range = "1d") => {
-  let f = "D MMM YY";
+  let f = "D MMM: H:mm";
   switch (range) {
     case "1d":
     case "5d":
-      f = "D MMM: H:mm";
       break;
     default:
-      f = "D MMM: H:mm";
+      f = "D MMM YYYY";
   }
   return dayjs(t * 1000)
     .tz(tz)
     .format(f);
 };
 
-export const convert5d1m = (t, range) => {
-  let f = "MMM YY";
+export const convert5d1m = (t, range = "5d") => {
+  let f = "D MMM";
   switch (range.toLowerCase()) {
     case "1d":
     case "5d":
     case "3mo":
     case "6mo":
-      f = "D MMM";
       break;
     default:
-      f = "D MMM";
+      f = "MMM YYYY";
   }
 
   return dayjs(t * 1000).format(f);
@@ -52,9 +50,9 @@ export const convert5d1m = (t, range) => {
 };
 
 // unused
-export const ConvertRegMktTime = (time) => {
-  return dayjs(time).format("HH:mm");
-};
+// export const ConvertRegMktTime = (time) => {
+//   return dayjs(time).format("HH:mm");
+// };
 
 // getDate()	Get the day as a number (1-31)
 // getDay()	Get the weekday as a number (0-6)

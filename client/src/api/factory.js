@@ -33,10 +33,15 @@ export const createReqParams = (method, body, headers = "json") => {
 
 export const resHandler = async (res) => {
   if (res.ok) {
+    return await res.json();
+
     // const { message: val, ...resObj } = await res.json();
     // if no msg provided, val is undefined
     // console.log("@factory.js: res from server is okay :)", val, resObj);
-    return await res.json();
+
+    // const x = await res.json();
+    // console.log({ x });
+    // return x;
   }
 
   console.log("@factory.js: res from server is not okay :(");

@@ -38,6 +38,22 @@ export const api_editWatchlist = async (info) => {
   return await resHandler(res);
 };
 
+export const api_buyStock = async (info) => {
+  const res = await fetch(
+    `${BASE}/users/buystock`,
+    createReqParams("POST", info)
+  );
+  return await resHandler(res);
+};
+
+export const api_sellStock = async (info) => {
+  const res = await fetch(
+    `${BASE}/users/sellstock`,
+    createReqParams("POST", info)
+  );
+  return await resHandler(res);
+};
+
 export const editUser = async (userDetails) => {
   const userData = loadState();
 
