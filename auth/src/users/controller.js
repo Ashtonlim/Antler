@@ -1,7 +1,10 @@
-import { sign } from 'jsonwebtoken'
 import users from './model'
-import { createErrMsg, verifyAndGetUserId, dollarsToCents } from '../utils'
 import fetch from 'node-fetch'
+import { sign } from 'jsonwebtoken'
+
+import { createErrMsg, verifyAndGetUserId, dollarsToCents } from '../utils'
+
+const expiresIn = '5d'
 
 export const addUserFunds = async (req, res) => {
   try {
@@ -57,7 +60,15 @@ export const buyStock = async (req, res) => {
           }, forex: ${forex}]. Diff: ${price.regularMarketPrice.raw - unitCost}`
         )
 
-      const userObj = await users.findOne({ _id }, { funds: 1 }).lean()
+      // const userObj = await users.findOne({ _id }, { funds: 1 }).lean()
+      let tickerExists = true
+      let userObj = await users.findOne({ _id, 'stock_portfolio.ticker': ticker }).lean()
+      // console.log({ tickerExists, userObj }, userObj === null)
+      if (userObj === null) {
+        tickerExists = false
+        userObj = await users.findOne({ _id }).lean()
+      }
+
       if (isNaN(price.regularMarketPrice.raw) && isNaN(quantity) && isNaN(forex)) {
         return res.status(400).json(createErrMsg({ message: 'Issue with price, quantity or exchange rate' }))
       }
@@ -67,24 +78,49 @@ export const buyStock = async (req, res) => {
       // check if there is enuf funds for purchase
       if (userObj.funds < purchaseCost) return res.status(400).json(createErrMsg({ message: 'Purchase exceeds available funds' }))
       const newAccBalance = purchaseCost + userObj.funds
-      console.log(price.regularMarketPrice.raw, { purchaseCost, newAccBalance, quantity, forex, funds: userObj.funds, _id })
+      // console.log(price.regularMarketPrice.raw, { purchaseCost, newAccBalance, quantity, forex, funds: userObj.funds, _id })
+
+      let updateRes
       // why is there _id and id in stock_portfolio?
-      const updateRes = await users.updateOne(
-        { _id },
-        {
-          $set: { funds: newAccBalance },
-          $push: { stock_portfolio: { ticker, order_price: dollarsToCents(price.regularMarketPrice.raw), quantity } },
-        },
-        { runValidators: true }
-      )
-      if (updateRes.ok) {
+      if (tickerExists) {
+        console.log('update instead')
+        updateRes = await users.updateOne(
+          { _id, 'stock_portfolio.ticker': ticker },
+          {
+            $set: { funds: newAccBalance },
+            $push: { 'stock_portfolio.$.stock_orders': { order_price: dollarsToCents(price.regularMarketPrice.raw), quantity } },
+          },
+          { runValidators: true }
+        )
+      } else {
+        console.log('create new')
+        updateRes = await users.updateOne(
+          { _id },
+          {
+            // $set: { funds: 100000, stock_portfolio: [] },
+            $set: {
+              funds: newAccBalance,
+              stock_portfolio: { ticker, stock_orders: { order_price: dollarsToCents(price.regularMarketPrice.raw), quantity } },
+            },
+            // $push: { stock_portfolio: { ticker, stock_orders: { order_price: dollarsToCents(price.regularMarketPrice.raw), quantity } } },
+            // $push: { stock_portfolio: { ticker: 'TSLA', order_price: 12, quantity: 5 } },
+          },
+          { runValidators: true }
+        )
+      }
+
+      //   console.log(ticker)
+      console.log(updateRes)
+
+      //   // Review: or updateRes.nModified? what's the diff between n and nModified
+      if (updateRes.ok && updateRes.n > 0) {
         res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
       } else {
         res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))
       }
     }
   } catch ({ message }) {
-    console.log(message)
+    console.log({ message })
     res.status(400).json(createErrMsg({ message: 'Unexpected error, contact support' }))
   }
 }
@@ -92,7 +128,7 @@ export const sellStock = async (req, res) => {
   try {
     console.log('selling stock')
   } catch ({ message }) {
-    console.log(message)
+    console.log({ message })
     res.status(400).json(createErrMsg({ message: 'Unexpected error, contact support' }))
   }
 }
@@ -141,7 +177,7 @@ export const register = async (req, res) => {
     console.log('@controller.js: saving... ')
     // what happens to destructuring if await returns err obj?
     const { email, _id } = await userObj.save()
-    const token = sign({ email, _id }, process.env.JWTSECRET, { expiresIn: '1d' })
+    const token = sign({ email, _id }, process.env.JWTSECRET, { expiresIn })
     res.status(201).json({ userObj, token })
   } catch ({ message }) {
     console.log(message)
@@ -166,7 +202,7 @@ export const login = async (req, res) => {
     const userObj = existingUser.toObject({ getters: true })
     delete userObj.password
 
-    const token = sign({ email: userObj.email, _id: userObj._id }, process.env.JWTSECRET, { expiresIn: '1d' })
+    const token = sign({ email: userObj.email, _id: userObj._id }, process.env.JWTSECRET, { expiresIn })
 
     return res.status(201).json({
       userObj,

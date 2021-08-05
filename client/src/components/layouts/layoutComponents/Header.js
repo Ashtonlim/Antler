@@ -147,7 +147,7 @@ const Header = () => {
                 userObj={state.userObj}
               />
 
-              {state.userObj.funds >= 0 ? (
+              {state.userObj?.funds >= 0 ? (
                 <li className="nav-item">Funds ${state.userObj.funds}</li>
               ) : (
                 ""
