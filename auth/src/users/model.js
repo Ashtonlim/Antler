@@ -7,7 +7,7 @@ const userFundsValidation = { validator: Number.isInteger, message: () => 'Erron
 
 // Review: may be useful https://mongoosejs.com/docs/subdocs.html#:~:text=first%2C%20instances%20of%20nested%20never%20have%20child%20%3D%3D%3D%20undefined.%20you%20can%20always%20set%20subproperties%20of%20child%2C%20even%20if%20you%20don't%20set%20the%20child%20property.%20but%20instances%20of%20subdoc%20can%20have%20child%20%3D%3D%3D%20undefined.
 
-// const stockPortfolio = mongoose.Schema(
+// const stockPortfolioSchema = mongoose.Schema(
 //   {
 //     // selling of stock requires stock_portfolio item(s) to be updated
 //     // e.g. I buy 3xAAPL and 5xAAPL. I sell 4x AAPL. My portfolio should now reflect 3xAAPL and 1xAAPL and
@@ -26,7 +26,7 @@ const userFundsValidation = { validator: Number.isInteger, message: () => 'Erron
 //   { timestamps: true }
 // )
 
-const stock_orders = mongoose.Schema(
+const stockOrdersSchema = mongoose.Schema(
   {
     // selling of stock requires stock_portfolio item(s) to be updated
     // e.g. I buy 3xAAPL and 5xAAPL. I sell 4x AAPL. My portfolio should now reflect 3xAAPL and 1xAAPL and
@@ -38,16 +38,19 @@ const stock_orders = mongoose.Schema(
   { timestamps: true }
 )
 
-const stockPortfolio = mongoose.Schema({
-  ticker: { type: String, required: true },
-  stock_orders: [
-    {
-      type: stock_orders,
-      required: true,
-      default: [],
-    },
-  ],
-})
+const stockPortfolioSchema = mongoose.Schema(
+  {
+    ticker: { type: String, required: true },
+    stock_orders: [
+      {
+        type: stockOrdersSchema,
+        required: true,
+        default: [],
+      },
+    ],
+  },
+  { timestamps: true }
+)
 
 const userSchema = mongoose.Schema(
   {
@@ -78,16 +81,16 @@ const userSchema = mongoose.Schema(
       required: true,
       default: 0,
     },
-    stock_watchlist: [
-      {
-        type: String,
-        required: true,
-        default: [],
-      },
-    ],
+    stock_watchlist: {
+      type: [String],
+      required: true,
+      default: [],
+
+      sparse: true,
+    },
     stock_portfolio: [
       {
-        type: stockPortfolio,
+        type: stockPortfolioSchema,
         required: true,
         default: [],
       },

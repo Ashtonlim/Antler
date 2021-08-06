@@ -1,8 +1,22 @@
 import React from "react";
+import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { Table } from "antd";
 
 import { currencyF } from "utils/format";
+
+// const d = require("dayjs");
+var utc = require("dayjs/plugin/utc"); // dependent on utc plugin
+var timezone = require("dayjs/plugin/timezone");
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+const t = (x) => {
+  console.log(
+    dayjs(new Date()).tz("Asia/Singapore").format("YYYY MMM DD hh:mmA")
+  );
+};
+t();
 
 const createInnerAndOuterTables = (data) => {
   if (!Array.isArray(data)) return { innerTableData: [], outerTableData: [] };
@@ -10,10 +24,20 @@ const createInnerAndOuterTables = (data) => {
   const innerTableData = data.reduce((acc, { ticker, stock_orders }) => {
     acc[ticker] = {
       // need to add key, quite unnecessary computational cost
-      stock_orders: stock_orders.map((e, key) => ({ key, ...e })),
+      stock_orders: stock_orders.map(
+        ({ order_price, quantity, createdAt }, key) => ({
+          key,
+          quantity,
+          order_price: currencyF(order_price),
+          createdAt: dayjs(createdAt)
+            .tz("Asia/Singapore")
+            .format("DD MMM YY hh:mma"),
+        })
+      ),
       ...stock_orders.reduce(
         (totalAcc, { quantity, order_price }) => ({
           totalQty: totalAcc.totalQty + quantity,
+          // review: totalVal is rounded later but will it ever accumalate to a rounding error if enough rows of trades?
           totalVal: totalAcc.totalVal + order_price * quantity,
         }),
         { totalQty: 0, totalVal: 0 }
