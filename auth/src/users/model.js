@@ -38,19 +38,16 @@ const stock_orders = mongoose.Schema(
   { timestamps: true }
 )
 
-const stockPortfolio = mongoose.Schema(
-  {
-    ticker: { type: String, required: true },
-    stock_orders: [
-      {
-        type: stock_orders,
-        required: true,
-        default: [],
-      },
-    ],
-  },
-  { timestamps: true }
-)
+const stockPortfolio = mongoose.Schema({
+  ticker: { type: String, required: true },
+  stock_orders: [
+    {
+      type: stock_orders,
+      required: true,
+      default: [],
+    },
+  ],
+})
 
 const userSchema = mongoose.Schema(
   {

@@ -12,6 +12,10 @@ Are non-critical features to refactor/fix/implement. Please do them when possibl
 
 Comment well and ensure your code is readable/understandable over compactness.
 
+### MongoDB
+
+Ensure KISS and readability - Simple, well organised schema. IDK best practice, but to reduce complexity, keep it simple for now.
+
 # Installation
 
 There are 2 components to Antler.

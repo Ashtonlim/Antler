@@ -6,38 +6,36 @@ import { currencyF } from "utils/format";
 
 const createInnerAndOuterTables = (data) => {
   if (!Array.isArray(data)) return { innerTableData: [], outerTableData: [] };
-  let aggregateDataOn = {};
-  const innerTableData = data.reduce(
-    (acc, { ticker, order_price, quantity, createdAt }) => {
-      // if key doesnt exist, create one
-      if (ticker in acc) {
-        acc[ticker].push({ order_price, quantity, createdAt });
-        aggregateDataOn[ticker]["totalValue"] += order_price * quantity;
-        aggregateDataOn[ticker]["totalQuantity"] += quantity;
-      } else {
-        acc[ticker] = [{ order_price, quantity, createdAt }];
-        aggregateDataOn[ticker] = {
-          totalValue: order_price * quantity,
-          totalQuantity: quantity,
-        };
-      }
-      return acc;
-    },
-    {}
-  );
-  return {
-    outerTableData: Object.entries(innerTableData).map((e) => ({
-      key: e[0],
-      ticker: <Link to={`/stock/${e[0]}`}>{e[0]}</Link>,
-      avgPrice: currencyF(
-        aggregateDataOn[e[0]]["totalValue"] /
-          aggregateDataOn[e[0]]["totalQuantity"]
+
+  const innerTableData = data.reduce((acc, { ticker, stock_orders }) => {
+    acc[ticker] = {
+      // need to add key, quite unnecessary computational cost
+      stock_orders: stock_orders.map((e, key) => ({ key, ...e })),
+      ...stock_orders.reduce(
+        (totalAcc, { quantity, order_price }) => ({
+          totalQty: totalAcc.totalQty + quantity,
+          totalVal: totalAcc.totalVal + order_price * quantity,
+        }),
+        { totalQty: 0, totalVal: 0 }
       ),
-      totalQuantity: aggregateDataOn[e[0]]["totalQuantity"],
-      totalValue: currencyF(aggregateDataOn[e[0]]["totalValue"]),
-    })),
-    innerTableData,
-  };
+    };
+
+    return acc;
+  }, {});
+
+  // Object.entries({key1: val1, key2, val2}) -> [[key1, val1], [key2, val2]]
+  const outerTableData = Object.entries(innerTableData).map(
+    ([ticker, { totalQty, totalVal }]) => ({
+      key: ticker,
+      ticker: <Link to={`/stock/${ticker}`}>{ticker}</Link>,
+      avgPrice: currencyF(totalVal / totalQty),
+      totalVal: currencyF(totalVal),
+      totalQty,
+    })
+  );
+
+  // console.log({ innerTableData, outerTableData });
+  return { data, outerTableData, innerTableData };
 };
 
 const PortfolioTable = ({ portfolio }) => {
@@ -52,7 +50,7 @@ const PortfolioTable = ({ portfolio }) => {
     return (
       <Table
         columns={columns}
-        dataSource={innerTableData[e.ticker.props.children]}
+        dataSource={innerTableData[e.ticker.props.children]["stock_orders"]}
         pagination={false}
       />
     );
@@ -61,8 +59,8 @@ const PortfolioTable = ({ portfolio }) => {
   const columns = [
     { title: "Ticker", dataIndex: "ticker", key: "ticker" },
     { title: "Avg price", dataIndex: "avgPrice", key: "avgPrice" },
-    { title: "Total value", dataIndex: "totalValue", key: "totalValue" },
-    { title: "Total shares", dataIndex: "totalQuantity", key: "totalQuantity" },
+    { title: "Total value", dataIndex: "totalVal", key: "totalVal" },
+    { title: "Total shares", dataIndex: "totalQty", key: "totalQty" },
   ];
 
   const { outerTableData, innerTableData } =

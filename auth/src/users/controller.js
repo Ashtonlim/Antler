@@ -83,17 +83,26 @@ export const buyStock = async (req, res) => {
       let updateRes
       // why is there _id and id in stock_portfolio?
       if (tickerExists) {
-        console.log('update instead')
         updateRes = await users.updateOne(
           { _id, 'stock_portfolio.ticker': ticker },
           {
-            $set: { funds: newAccBalance },
-            $push: { 'stock_portfolio.$.stock_orders': { order_price: dollarsToCents(price.regularMarketPrice.raw), quantity } },
+            $set: {
+              funds: newAccBalance,
+              // stock_portfolio: [], // uncomment to reset to empty portfolio
+            },
+            $push: {
+              'stock_portfolio.$.stock_orders': {
+                order_price: dollarsToCents(price.regularMarketPrice.raw),
+                quantity,
+                // Review: Pushing this way does not auto insert createdAt and updatedAt, therefore added here. How to have it automatically?
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+            },
           },
           { runValidators: true }
         )
       } else {
-        console.log('create new')
         updateRes = await users.updateOne(
           { _id },
           {
@@ -102,17 +111,12 @@ export const buyStock = async (req, res) => {
               funds: newAccBalance,
               stock_portfolio: { ticker, stock_orders: { order_price: dollarsToCents(price.regularMarketPrice.raw), quantity } },
             },
-            // $push: { stock_portfolio: { ticker, stock_orders: { order_price: dollarsToCents(price.regularMarketPrice.raw), quantity } } },
-            // $push: { stock_portfolio: { ticker: 'TSLA', order_price: 12, quantity: 5 } },
           },
           { runValidators: true }
         )
       }
 
-      //   console.log(ticker)
-      console.log(updateRes)
-
-      //   // Review: or updateRes.nModified? what's the diff between n and nModified
+      // Review: or updateRes.nModified? what's the diff between n and nModified
       if (updateRes.ok && updateRes.n > 0) {
         res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
       } else {
