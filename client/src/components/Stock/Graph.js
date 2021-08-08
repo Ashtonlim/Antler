@@ -11,7 +11,7 @@ const Graph = ({ ticker, range, history }) => {
     const initGraph = async () => {
       try {
         const { priceData, max, min } = await getChartInfo({ ticker, range });
-        console.log({ priceData, max, min });
+        // console.log({ priceData, max, min });
         // if (!priceData) return history.push("/");
         // if (priceData.length === 0) return history.push("/");
 

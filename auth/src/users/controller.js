@@ -9,19 +9,17 @@ const expiresIn = '5d'
 export const addUserFunds = async (req, res) => {
   try {
     const _id = verifyAndGetUserId(req, res)
-    const userObj = await users.findOne({ _id }, { funds: 1 }).lean()
     const depositVal = +req.body?.value
 
     // check if deposit is correct format, could convert to 2d.p. but it shouldn't be the case is > 2d.p. since frontend sends it as 2d.p.
     if (`${depositVal}`.split('.')[1]?.length > 2) return res.status(400).json(createErrMsg({ message: 'Specify deposit to the correct decimals' }))
     if (depositVal > 999900) return res.status(400).json(createErrMsg({ message: 'Max deposit is only $9999' }))
 
-    const newAccBalance = dollarsToCents(depositVal) + userObj.funds
-
     // Note: careful with runValidators (https://mongoosejs.com/docs/validation.html#update-validators -> caveats with 'this' and 'context')
-    const updateRes = await users.updateOne({ _id }, { $set: { funds: newAccBalance } }, { runValidators: true })
+    const updateRes = await users.updateOne({ _id }, { $inc: { funds: dollarsToCents(depositVal) } }, { runValidators: true })
 
-    if (updateRes.ok && updateRes.nModified > 0) {
+    // nModified only updates funds so === 1
+    if (updateRes.ok && updateRes.nModified === 1) {
       res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
     } else {
       res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))
@@ -138,7 +136,7 @@ export const buyStock = async (req, res) => {
 export const sellStock = async (req, res) => {
   try {
     const _id = verifyAndGetUserId(req, res)
-    const { ticker, quantity, unitCost, totalCost, forex } = req.body
+    const { ticker, quantity, forex } = req.body
 
     // Must buy at least 1 share
     if (quantity < 1) return res.status(400).json(createErrMsg({ message: 'At least 1 share must be sold.' }))
@@ -162,13 +160,11 @@ export const sellStock = async (req, res) => {
         return res.status(400).json(createErrMsg({ message: 'Issue with price, quantity or exchange rate' }))
 
       const saleVal = dollarsToCents(price.regularMarketPrice.raw * quantity * forex)
+      const newAccBalance = userObj.funds + saleVal
+      const orders = userObj.stock_portfolio.find((e) => e.ticker === ticker).stock_orders
+
       // check if there is enuf funds for purchase
       if (saleVal < 0) return res.status(400).json(createErrMsg({ message: 'Earnings is negative?' }))
-      const newAccBalance = saleVal + userObj.funds
-
-      // console.log({ ticker, quantity, unitCost, totalCost, forex })
-
-      const orders = userObj.stock_portfolio.find((e) => e.ticker === ticker).stock_orders
       if (orders === undefined) return res.status(400).json(createErrMsg({ message: 'Could not find any orders for ticker?' }))
 
       // console.log(orders, orders.length)
@@ -205,10 +201,6 @@ export const sellStock = async (req, res) => {
           toDeduct = 0
         }
       }
-
-      // console.log('===============')
-      // console.log('===============')
-      // console.log('===============')
       // console.log(orders, orders.length)
 
       const updateRes = await users.updateOne(
@@ -261,11 +253,11 @@ export const register = async (req, res) => {
     const userObj = new users({ ...body, funds: 100000 })
     userObj.setPassword(body.password)
 
-    console.log('@controller.js: saving... ', userObj)
+    console.log('@controller.js: registering new user... ', userObj)
     // what happens to destructuring if await returns err obj?
     const { email, _id } = await userObj.save()
     const token = sign({ email, _id }, process.env.JWTSECRET, { expiresIn })
-    res.status(201).json({ userObj, token })
+    res.status(201).json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }), token })
   } catch ({ message }) {
     console.log(message)
     res.status(409).json({ message })

@@ -21,7 +21,7 @@ import SellModalContent from "./SellModalContent";
 import BuyModalContent from "./BuyModalContent";
 import StockCalendarDates from "./StockCalendarDates";
 import StockMetrics from "./StockMetrics";
-import StockOfficers from "./StockOfficers";
+// import StockOfficers from "./StockOfficers";
 import Modal from "components/subComponents/Modal";
 
 const Stock = (props) => {
@@ -39,6 +39,7 @@ const Stock = (props) => {
   const [noOfSharesToSell, setNoOfSharesToSell] = useState(1);
 
   useEffect(() => {
+    console.log(symbol);
     setTicker(symbol.toUpperCase());
     const getInfo = async () => {
       try {
@@ -57,7 +58,6 @@ const Stock = (props) => {
               } ${symbol.toUpperCase()} Stock Price | Antler`
             : "Antler Company Stock Price";
 
-        console.log({ apiData });
         setCoyInfo(apiData);
         setForex(
           (
@@ -73,8 +73,7 @@ const Stock = (props) => {
       }
     };
     getInfo();
-    console.log("change range", range[onFocus]);
-  }, [props, onFocus]);
+  }, [props, onFocus, symbol]);
 
   const handleClick = (e) => {
     console.log("change date", range[onFocus]);
@@ -107,18 +106,6 @@ const Stock = (props) => {
     }
   };
 
-  const shareBuyInput = (e) => {
-    const val = +e.target.value;
-    const limit = ~~(
-      (state.userObj?.funds * (1 / forex)) /
-      coyInfo.price?.regularMarketPrice?.raw
-    );
-
-    if (isNaN(val) || val < 0) return;
-    if (val > limit) setNoOfSharesToBuy(limit);
-    else setNoOfSharesToBuy(val);
-  };
-
   const buyShares = async () => {
     try {
       dispatch({
@@ -132,7 +119,7 @@ const Stock = (props) => {
         }),
       });
       setNoOfSharesToBuy(0);
-      setBuyModalVisible(false);
+      // setBuyModalVisible(false);
     } catch ({ message }) {
       console.log(message);
     }
@@ -150,6 +137,8 @@ const Stock = (props) => {
           forex,
         }),
       });
+      setNoOfSharesToSell(0);
+      // setSellModalVisible(false);
     } catch ({ message }) {
       console.log({ action: "sell stock", message });
     }

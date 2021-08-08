@@ -67,7 +67,7 @@ const Autocomplete = () => {
         .map((stock) => renderStock(stock)),
     });
   } else {
-    console.log("stocks is either empty or not an array");
+    // console.log("--RMV-- Autocomplete.js: AC either empty or not array");
   }
 
   if (Array.isArray(users) && users.length > 0) {
@@ -83,7 +83,7 @@ const Autocomplete = () => {
         .map((user) => renderUser(user)),
     });
   } else {
-    console.log("users is either empty or not an array");
+    // console.log("--RMV-- users either empty or not array");
   }
 
   const handleSymbol = (values) => {

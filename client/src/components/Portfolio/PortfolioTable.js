@@ -5,19 +5,6 @@ import { Table } from "antd";
 
 import { currF } from "utils/format";
 
-// const d = require("dayjs");
-var utc = require("dayjs/plugin/utc"); // dependent on utc plugin
-var timezone = require("dayjs/plugin/timezone");
-dayjs.extend(utc);
-dayjs.extend(timezone);
-
-const t = (x) => {
-  console.log(
-    dayjs(new Date()).tz("Asia/Singapore").format("YYYY MMM DD hh:mmA")
-  );
-};
-t();
-
 const createInnerAndOuterTables = (data) => {
   if (!Array.isArray(data)) return { innerTableData: [], outerTableData: [] };
 

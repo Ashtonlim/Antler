@@ -20,7 +20,7 @@ const SellModalContent = ({
   // account for changes in portfolio? (i.e. user opens another tab)
   useEffect(() => {}, [stock_portfolio]);
 
-  const onNoOfShareToSellChange = (e) => {
+  const onSellSharesChange = (e) => {
     const val = +e.target.value;
 
     if (isNaN(val) || val < 0) return;
@@ -41,7 +41,7 @@ const SellModalContent = ({
           name="shares"
           id="price"
           value={noOfSharesToSell}
-          onChange={onNoOfShareToSellChange}
+          onChange={onSellSharesChange}
           className="focus:indigo-500 focus:border-indigo-500 block w-full pl-10 py-3 pr-12 sm:text-sm border-gray-300 rounded-md"
           placeholder="0"
         />

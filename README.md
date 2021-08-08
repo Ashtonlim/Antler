@@ -5,13 +5,26 @@ Search for
 1. `TODO:`
 2. `REVIEW:`
 3. `USEFUL:`
+4. `--RMV--`
 
-Are non-critical features to refactor/fix/implement. Please do them when possible.
+1-3: Non-critical features to refactor/fix/implement. Please do them when possible.
+4: Remove stuff
 
 #### Features/TODO ()
 
-1. check if can even purchase 1 stock. e.g. cant buy BTC with funds < BTC price.
-2. ...
+1. Check if can even purchase 1 stock. e.g. cant buy BTC with funds < BTC price.
+2. Buy, sell and sell all btns on portfolio pg.
+3. AC search use YF api
+4. Trf out money
+5. Portfolio stats. Affected by tfr out money. Figure how to determine gain in % despite trf out money.
+6. (MAJOR) Websocket to YF for portfolio, stocks, etc for realtime data.
+7. (MAJOR) Social - Friends, DMs, view portfolio, etc.
+8. Top performing investors/users.
+9. Contact us, about, hiring, site map, etc.
+
+### Bugs?
+
+1. If multiple tabs opened, how does that affect values? User should not be able to double buy, etc.
 
 ### Code
 
