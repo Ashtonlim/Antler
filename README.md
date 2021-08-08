@@ -8,6 +8,11 @@ Search for
 
 Are non-critical features to refactor/fix/implement. Please do them when possible.
 
+#### Features/TODO ()
+
+1. check if can even purchase 1 stock. e.g. cant buy BTC with funds < BTC price.
+2. ...
+
 ### Code
 
 Comment well and ensure your code is readable/understandable over compactness.
