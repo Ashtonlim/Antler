@@ -8,12 +8,14 @@ const BuyModalContent = ({
   setNoOfSharesToBuy,
   funds,
 }) => {
+  // setNoOfSharesToBuy
   const onBuySharesChange = (e) => {
     const val = +e.target.value;
     const limit = ~~(funds / (price?.regularMarketPrice?.raw * forex));
 
     if (isNaN(val) || val < 0) return;
     if (val > limit) setNoOfSharesToBuy(limit);
+    else if (limit === 0) setNoOfSharesToBuy(0);
     else setNoOfSharesToBuy(val);
   };
 
@@ -22,8 +24,8 @@ const BuyModalContent = ({
       {/* Review: removed a div here, not sure if will cause issues... check di#01 */}
       <span className="link px-3">
         {`Max shares buyable: ${~~(
-          (funds * (1 / forex)) /
-          price.regularMarketPrice?.raw
+          funds /
+          (price?.regularMarketPrice?.raw * forex)
         )}`}
       </span>
       {/* <label
@@ -66,7 +68,7 @@ const BuyModalContent = ({
       </div>
       <div className="text-right px-3">
         {`Your New Balance: ${currF(
-          funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex,
+          funds - noOfSharesToBuy * price.regularMarketPrice.raw * forex,
           "SGD"
         )}`}
       </div>

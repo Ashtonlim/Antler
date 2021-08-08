@@ -13,7 +13,7 @@ import { currF } from "utils/format";
 
 const Profile = () => {
   const { state, dispatch } = useContext(GC);
-  const [visibility, setVisibility] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [depositVal, setDepositVal] = useState("1.00");
   const [msgList, setMsgList] = useState([]);
 
@@ -62,7 +62,7 @@ const Profile = () => {
           expiresIn,
         },
       ]);
-      // setVisibility(false);
+      // setVisible(false);
     } catch ({ message }) {
       console.log(msgList);
       setMsgList([
@@ -87,11 +87,11 @@ const Profile = () => {
           ))}
         </div>
       )}
-      {visibility && (
+      {visible && (
         <Modal
           title="Fund Your Account"
-          visibility={visibility}
-          onClose={() => setVisibility(false)}
+          visible={visible}
+          setVisible={setVisible}
           msgList={msgList}
           setMsgList={setMsgList}
           footerButtons={[
@@ -184,7 +184,7 @@ const Profile = () => {
                       <button
                         className="eDM align-middle bg-blue-500 hover:bg-blue-600 uppercase text-white font-bold hover:shadow-md px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1"
                         onClick={() => {
-                          setVisibility(true);
+                          setVisible(true);
                         }}
                         style={{ transition: "all .15s ease" }}
                       >

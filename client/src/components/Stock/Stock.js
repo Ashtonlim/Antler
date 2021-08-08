@@ -118,7 +118,7 @@ const Stock = (props) => {
           forex,
         }),
       });
-      setNoOfSharesToBuy(0);
+      // setNoOfSharesToBuy(0);
       // setBuyModalVisible(false);
     } catch ({ message }) {
       console.log(message);
@@ -137,7 +137,7 @@ const Stock = (props) => {
           forex,
         }),
       });
-      setNoOfSharesToSell(0);
+      // setNoOfSharesToSell(0);
       // setSellModalVisible(false);
     } catch ({ message }) {
       console.log({ action: "sell stock", message });
@@ -150,8 +150,8 @@ const Stock = (props) => {
         <>
           <Modal
             title={`Buy ${coyInfo.price?.shortName} Shares`}
-            visibility={buyModalVisible}
-            onClose={() => setBuyModalVisible(false)}
+            visible={buyModalVisible}
+            setVisible={setBuyModalVisible}
             footerButtons={[
               <ButtonTWP
                 key={1}
@@ -177,8 +177,8 @@ const Stock = (props) => {
           </Modal>
           <Modal
             title={`Sell ${coyInfo.price?.shortName} Shares`}
-            visibility={sellModalVisible}
-            onClose={() => setSellModalVisible(false)}
+            visible={sellModalVisible}
+            setVisible={setSellModalVisible}
             footerButtons={[
               <ButtonTWP
                 key={1}

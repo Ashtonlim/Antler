@@ -159,12 +159,9 @@ export const sellStock = async (req, res) => {
       if (isNaN(price.regularMarketPrice.raw) && isNaN(quantity) && isNaN(forex))
         return res.status(400).json(createErrMsg({ message: 'Issue with price, quantity or exchange rate' }))
 
-      const saleVal = dollarsToCents(price.regularMarketPrice.raw * quantity * forex)
-      const newAccBalance = userObj.funds + saleVal
       const orders = userObj.stock_portfolio.find((e) => e.ticker === ticker).stock_orders
 
       // check if there is enuf funds for purchase
-      if (saleVal < 0) return res.status(400).json(createErrMsg({ message: 'Earnings is negative?' }))
       if (orders === undefined) return res.status(400).json(createErrMsg({ message: 'Could not find any orders for ticker?' }))
 
       // console.log(orders, orders.length)
@@ -201,13 +198,32 @@ export const sellStock = async (req, res) => {
           toDeduct = 0
         }
       }
+
+      // 'quantity - toDeduct' -> if could not sell all shares user request to sell (i.e. somehow user sent a req to sell more shares than he had),
+      // quantity should be the actual # shares sold.
+      // e.g. user req sell 10 shares, but user only has 7. toDeduct = 3 after above loop. quantity (10) - toDeduct (3) = 7
+      const saleVal = dollarsToCents(price.regularMarketPrice.raw * (quantity - toDeduct) * forex)
+      if (saleVal < 0) return res.status(400).json(createErrMsg({ message: 'Earnings is negative?' }))
       // console.log(orders, orders.length)
 
-      const updateRes = await users.updateOne(
-        { _id, 'stock_portfolio.ticker': ticker },
-        { $set: { funds: newAccBalance, 'stock_portfolio.$.stock_orders': orders } },
-        { runValidators: true }
-      )
+      let updateRes
+      console.log(orders)
+      if (orders.length === 0) {
+        // remove dict
+        updateRes = await users.updateOne(
+          // based on the ticker specified for 'stock_portfolio.ticker', it knows to set 'stock_portfolio.$.stock_orders'
+          { _id, 'stock_portfolio.ticker': ticker },
+          { $inc: { funds: saleVal }, $pull: { stock_portfolio: { ticker } } },
+          { runValidators: true }
+        )
+      } else {
+        updateRes = await users.updateOne(
+          // based on the ticker specified for 'stock_portfolio.ticker', it knows to set 'stock_portfolio.$.stock_orders'
+          { _id, 'stock_portfolio.ticker': ticker },
+          { $inc: { funds: saleVal }, $set: { 'stock_portfolio.$.stock_orders': orders } },
+          { runValidators: true }
+        )
+      }
 
       if (updateRes.ok && updateRes.n > 0) {
         res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
