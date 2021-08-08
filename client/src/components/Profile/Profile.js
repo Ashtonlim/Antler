@@ -9,7 +9,7 @@ import GC from "context";
 import { api_addFunds } from "api/user";
 import { DEPOSIT_FUNDS } from "actionTypes";
 import { expiresIn } from "consts";
-import { currencyF } from "utils/format";
+import { currF } from "utils/format";
 
 const Profile = () => {
   const { state, dispatch } = useContext(GC);
@@ -57,7 +57,7 @@ const Profile = () => {
         ...removeEnded(msgList),
         {
           type: "success",
-          message: `${currencyF(depositVal)} was deposited to your Account`,
+          message: `${currF(depositVal)} was deposited to your Account`,
           iat: Date.now(),
           expiresIn,
         },
@@ -101,7 +101,7 @@ const Profile = () => {
               type="button"
               onClick={depositFunds}
             >
-              Add {currencyF(depositVal)} to your account
+              Add {currF(depositVal)} to your account
             </button>,
           ]}
         >

@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { Table } from "antd";
 
-import { currencyF } from "utils/format";
+import { currF } from "utils/format";
 
 // const d = require("dayjs");
 var utc = require("dayjs/plugin/utc"); // dependent on utc plugin
@@ -28,7 +28,7 @@ const createInnerAndOuterTables = (data) => {
         ({ order_price, quantity, createdAt }, key) => ({
           key,
           quantity,
-          order_price: currencyF(order_price),
+          order_price: currF(order_price),
           createdAt: dayjs(createdAt)
             .tz("Asia/Singapore")
             .format("DD MMM YY hh:mma"),
@@ -52,8 +52,8 @@ const createInnerAndOuterTables = (data) => {
     ([ticker, { totalQty, totalVal }]) => ({
       key: ticker,
       ticker: <Link to={`/stock/${ticker}`}>{ticker}</Link>,
-      avgPrice: currencyF(totalVal / totalQty),
-      totalVal: currencyF(totalVal),
+      avgPrice: currF(totalVal / totalQty),
+      totalVal: currF(totalVal),
       totalQty,
     })
   );

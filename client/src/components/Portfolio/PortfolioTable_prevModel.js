@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Table } from "antd";
 
-import { currencyF } from "utils/format";
+import { currF } from "utils/format";
 
 const createInnerAndOuterTables = (data) => {
   if (!Array.isArray(data)) return { innerTableData: [], outerTableData: [] };
@@ -29,12 +29,12 @@ const createInnerAndOuterTables = (data) => {
     outerTableData: Object.entries(innerTableData).map((e) => ({
       key: e[0],
       ticker: <Link to={`/stock/${e[0]}`}>{e[0]}</Link>,
-      avgPrice: currencyF(
+      avgPrice: currF(
         aggregateDataOn[e[0]]["totalValue"] /
           aggregateDataOn[e[0]]["totalQuantity"]
       ),
       totalQuantity: aggregateDataOn[e[0]]["totalQuantity"],
-      totalValue: currencyF(aggregateDataOn[e[0]]["totalValue"]),
+      totalValue: currF(aggregateDataOn[e[0]]["totalValue"]),
     })),
     innerTableData,
   };

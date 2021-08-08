@@ -1,5 +1,5 @@
 import React from "react";
-import { currencyF } from "utils/format";
+import { currF } from "utils/format";
 
 const BuyModalContent = ({
   price,
@@ -8,7 +8,7 @@ const BuyModalContent = ({
   setNoOfSharesToBuy,
   funds,
 }) => {
-  const onNoOfShareToBuyChange = (e) => {
+  const onBuySharesChange = (e) => {
     const val = +e.target.value;
     const limit = ~~(funds / (price?.regularMarketPrice?.raw * forex));
 
@@ -42,16 +42,16 @@ const BuyModalContent = ({
           name="shares"
           id="price"
           value={noOfSharesToBuy}
-          onChange={onNoOfShareToBuyChange}
+          onChange={onBuySharesChange}
           className="focus:indigo-500 focus:border-indigo-500 block w-full pl-10 py-3 pr-12 sm:text-sm border-gray-300 rounded-md"
           placeholder="0"
         />
 
         <div className="absolute inset-y-0 right-0 px-3 flex items-center pointer-events-none">
           <span className="text-gray-500 sm:text-sm">
-            shares x {currencyF(price.regularMarketPrice?.raw, price.currency)}
+            shares x {currF(price.regularMarketPrice?.raw, price.currency)}
             /share =
-            {` ${currencyF(
+            {` ${currF(
               noOfSharesToBuy * price.regularMarketPrice.raw,
               price.currency
             )} ${price.currency}`}
@@ -59,13 +59,13 @@ const BuyModalContent = ({
         </div>
       </div>
       <div className="text-right px-3">
-        {`Total: ${currencyF(
+        {`Total: ${currF(
           noOfSharesToBuy * price.regularMarketPrice.raw * forex,
           "SGD"
         )}`}
       </div>
       <div className="text-right px-3">
-        {`Your New Balance: ${currencyF(
+        {`Your New Balance: ${currF(
           funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex,
           "SGD"
         )}`}

@@ -14,7 +14,7 @@ import { getCompanyInfo } from "api/YF";
 import { currConv } from "api/apiUtils";
 
 import { api_editWatchlist, api_buyStock, api_sellStock } from "api/user";
-import { currencyF } from "utils/format";
+import { currF } from "utils/format";
 
 import Graph from "./Graph";
 import SellModalContent from "./SellModalContent";
@@ -131,6 +131,8 @@ const Stock = (props) => {
           forex,
         }),
       });
+      setNoOfSharesToBuy(0);
+      setBuyModalVisible(false);
     } catch ({ message }) {
       console.log(message);
     }
@@ -164,7 +166,7 @@ const Stock = (props) => {
             footerButtons={[
               <ButtonTWP
                 key={1}
-                text={`Buy ${noOfSharesToBuy} shares for ${currencyF(
+                text={`Buy ${noOfSharesToBuy} shares for ${currF(
                   noOfSharesToBuy *
                     coyInfo.price.regularMarketPrice.raw *
                     forex,
@@ -191,7 +193,7 @@ const Stock = (props) => {
             footerButtons={[
               <ButtonTWP
                 key={1}
-                text={`Sell ${noOfSharesToSell} shares for ${currencyF(
+                text={`Sell ${noOfSharesToSell} shares for ${currF(
                   noOfSharesToSell *
                     coyInfo.price.regularMarketPrice.raw *
                     forex,
@@ -253,7 +255,7 @@ const Stock = (props) => {
             </div>
 
             <h1 className="di mtb-0">
-              {currencyF(
+              {currF(
                 coyInfo.price.regularMarketPrice.raw,
                 coyInfo.price.currency
               )}{" "}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { currencyF } from "utils/format";
+import { currF } from "utils/format";
 
 const SellModalContent = ({
   ticker,
@@ -48,9 +48,9 @@ const SellModalContent = ({
 
         <div className="absolute inset-y-0 right-0 px-3 flex items-center pointer-events-none">
           <span className="text-gray-500 sm:text-sm">
-            shares x {currencyF(price.regularMarketPrice?.raw, price.currency)}
+            shares x {currF(price.regularMarketPrice?.raw, price.currency)}
             /share =
-            {` ${currencyF(
+            {` ${currF(
               noOfSharesToSell * price.regularMarketPrice.raw,
               price.currency
             )} ${price.currency}`}
@@ -58,13 +58,13 @@ const SellModalContent = ({
         </div>
       </div>
       <div className="text-right px-3">
-        {`Total: ${currencyF(
+        {`Total: ${currF(
           noOfSharesToSell * price.regularMarketPrice.raw * forex,
           "SGD"
         )}`}
       </div>
       <div className="text-right px-3">
-        {`Your New Balance: ${currencyF(
+        {`Your New Balance: ${currF(
           funds + noOfSharesToSell * price.regularMarketPrice.raw * forex,
           "SGD"
         )}`}

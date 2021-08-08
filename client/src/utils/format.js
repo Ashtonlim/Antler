@@ -1,4 +1,4 @@
-export const currencyF = (val, currency = "USD") => {
+export const currF = (val, currency = "USD") => {
   if (val === undefined) return 0;
 
   // rounds the val

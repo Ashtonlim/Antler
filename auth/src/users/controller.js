@@ -258,7 +258,7 @@ export const register = async (req, res) => {
   const body = req.body
   try {
     // createdAt: new Date().toISOString() // add this back if oid cant give timestamp
-    const userObj = new users({ ...body, funds: 0 })
+    const userObj = new users({ ...body, funds: 100000 })
     userObj.setPassword(body.password)
 
     console.log('@controller.js: saving... ', userObj)
