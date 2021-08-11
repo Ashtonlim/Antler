@@ -14,7 +14,7 @@ const Modal = ({
         setVisible(false);
       }
     });
-  }, [visible, footerButtons]);
+  }, [visible, footerButtons, setVisible]);
 
   return visible ? (
     <>

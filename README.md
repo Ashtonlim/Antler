@@ -15,8 +15,8 @@ Search for
 1. Check if can even purchase 1 stock. e.g. cant buy BTC with funds < BTC price.
 2. Buy, sell and sell all btns on portfolio pg.
 3. AC search use YF api
-4. Trf out money
-5. Portfolio stats. Affected by tfr out money. Figure how to determine gain in % despite trf out money.
+4. Withdraw money
+5. Portfolio stats. Affected by tfr out money. Figure how to determine gain in % despite withdraw money.
 6. (MAJOR) Websocket to YF for portfolio, stocks, etc for realtime data.
 7. (MAJOR) Social - Friends, DMs, view portfolio, etc.
 8. Top performing investors/users.

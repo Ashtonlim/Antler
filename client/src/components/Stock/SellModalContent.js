@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { currF } from "utils/format";
+import { currF, dollarsToCents } from "utils/format";
 
 const SellModalContent = ({
   ticker,
@@ -11,7 +11,6 @@ const SellModalContent = ({
   stock_portfolio,
 }) => {
   const [limit, setLimit] = useState(0);
-  //   const [limit] = useState(0);
 
   // account for changes in portfolio? (i.e. user opens another tab)
   useEffect(() => {
@@ -74,7 +73,23 @@ const SellModalContent = ({
         )}`}
       </div>
       <div className="text-right px-3">
-        {`Your New Balance: ${currF(
+        {`Your New Balance: ${console.log("sell", {
+          funds,
+          noOfSharesToSell,
+          forex,
+          price: price.regularMarketPrice.raw,
+          OG: funds + noOfSharesToSell * price.regularMarketPrice.raw * forex,
+          OGdtc: dollarsToCents(
+            noOfSharesToSell * price.regularMarketPrice.raw * forex
+          ),
+          dtc: dollarsToCents(
+            funds + noOfSharesToSell * price.regularMarketPrice.raw * forex
+          ),
+          currF: currF(
+            funds + noOfSharesToSell * price.regularMarketPrice.raw * forex,
+            "SGD"
+          ),
+        })} ${currF(
           funds + noOfSharesToSell * price.regularMarketPrice.raw * forex,
           "SGD"
         )}`}

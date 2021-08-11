@@ -168,7 +168,7 @@ export const sellStock = async (req, res) => {
       console.log('===============')
       console.log('===============')
       console.log('===============')
-
+      // print what's going on
       // for (let [toDeduct, i] = [quantity, 0]; toDeduct > 0 && orders.length > i; i++) {
       //   if (orders[i].quantity <= toDeduct) {
       //     console.log(`${toDeduct} After Removing[${i}]: `, orders[i])
@@ -186,13 +186,13 @@ export const sellStock = async (req, res) => {
 
       while (toDeduct > 0 && orders.length > 0) {
         if (orders[0].quantity <= toDeduct) {
-          console.log(`${toDeduct} After Removing: `, orders[0])
+          // console.log(`${toDeduct} After Removing: `, orders[0])
           toDeduct -= orders[0].quantity
           // orders.splice(0, 1)
           orders.shift()
         } else {
           // orders[0].quantity > toDeduct
-          console.log(`${toDeduct} After Deducting: `, orders[0])
+          // console.log(`${toDeduct} After Deducting: `, orders[0])
           orders[0].quantity -= toDeduct
           orders[0].updates += 1
           toDeduct = 0

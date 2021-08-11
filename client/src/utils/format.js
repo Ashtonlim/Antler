@@ -7,3 +7,11 @@ export const currF = (val, currency = "USD") => {
     currency,
   }).format(val);
 };
+// --RMV--
+export const dollarsToCents = (val) => {
+  val = (val + "").replace(/[^\d.-]/g, "");
+  if (val && val.includes(".")) {
+    val = val.substring(0, val.indexOf(".") + 4);
+  }
+  return val ? Math.round(parseFloat(val) * 100) : 0;
+};

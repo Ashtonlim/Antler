@@ -1,5 +1,5 @@
 import React from "react";
-import { currF } from "utils/format";
+import { currF, dollarsToCents } from "utils/format";
 
 const BuyModalContent = ({
   price,
@@ -67,7 +67,20 @@ const BuyModalContent = ({
         )}`}
       </div>
       <div className="text-right px-3">
-        {`Your New Balance: ${currF(
+        {`Your New Balance: ${console.log("sell", {
+          funds,
+          noOfSharesToBuy,
+          forex,
+          price: price.regularMarketPrice.raw,
+          OG: funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex,
+          dtc: dollarsToCents(
+            funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex
+          ),
+          currF: currF(
+            funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex,
+            "SGD"
+          ),
+        })} ${currF(
           funds - noOfSharesToBuy * price.regularMarketPrice.raw * forex,
           "SGD"
         )}`}
