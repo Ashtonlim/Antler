@@ -2,15 +2,21 @@ import React, { useEffect } from "react";
 
 const Modal = ({
   title = "Modal Title",
-  visibility,
-  onClose,
+  visible,
+  setVisible,
   children,
   allowClose = true,
   footerButtons,
 }) => {
-  useEffect(() => {}, [visibility, footerButtons]);
+  useEffect(() => {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        setVisible(false);
+      }
+    });
+  }, [visible, footerButtons, setVisible]);
 
-  return visibility ? (
+  return visible ? (
     <>
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
         <div className="relative my-6 mx-auto w-4/5 sm:w-3/5 lg:w-2/5">
@@ -21,7 +27,7 @@ const Modal = ({
               <div className="text-2xl font-semibold">{title}</div>
               <button
                 className="ml-auto border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                onClick={onClose}
+                onClick={() => setVisible(false)}
               >
                 <span className="text-black block outline-none focus:outline-none">
                   ×
@@ -36,7 +42,7 @@ const Modal = ({
                 <button
                   className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
                   type="button"
-                  onClick={onClose}
+                  onClick={() => setVisible(false)}
                 >
                   Close
                 </button>
