@@ -9,11 +9,11 @@ import GC from "context";
 import { api_addFunds } from "api/user";
 import { DEPOSIT_FUNDS } from "actionTypes";
 import { expiresIn } from "consts";
-import { currencyF } from "utils/format";
+import { currF } from "utils/format";
 
 const Profile = () => {
   const { state, dispatch } = useContext(GC);
-  const [visibility, setVisibility] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [depositVal, setDepositVal] = useState("1.00");
   const [msgList, setMsgList] = useState([]);
 
@@ -57,12 +57,12 @@ const Profile = () => {
         ...removeEnded(msgList),
         {
           type: "success",
-          message: `${currencyF(depositVal)} was deposited to your Account`,
+          message: `${currF(depositVal)} was deposited to your Account`,
           iat: Date.now(),
           expiresIn,
         },
       ]);
-      // setVisibility(false);
+      // setVisible(false);
     } catch ({ message }) {
       console.log(msgList);
       setMsgList([
@@ -87,10 +87,11 @@ const Profile = () => {
           ))}
         </div>
       )}
-      {visibility && (
+      {visible && (
         <Modal
-          visibility={visibility}
-          onClose={() => setVisibility(false)}
+          title="Fund Your Account"
+          visible={visible}
+          setVisible={setVisible}
           msgList={msgList}
           setMsgList={setMsgList}
           footerButtons={[
@@ -100,11 +101,12 @@ const Profile = () => {
               type="button"
               onClick={depositFunds}
             >
-              Add {currencyF(depositVal)} to your account
+              Add {currF(depositVal)} to your account
             </button>,
           ]}
         >
           <div className="relative p-6 flex-auto">
+            {/* remove this div and should work? removed in Stock.js, Review: if any issues (di#01) */}
             <div>
               <label
                 htmlFor="price"
@@ -182,7 +184,7 @@ const Profile = () => {
                       <button
                         className="eDM align-middle bg-blue-500 hover:bg-blue-600 uppercase text-white font-bold hover:shadow-md px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1"
                         onClick={() => {
-                          setVisibility(true);
+                          setVisible(true);
                         }}
                         style={{ transition: "all .15s ease" }}
                       >

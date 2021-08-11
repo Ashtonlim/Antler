@@ -6,6 +6,7 @@ import Register from "./Register";
 import Logout from "./Logout";
 import Login from "./Login";
 import Profile from "./Profile/Profile";
+import Portfolio from "./Portfolio/Portfolio";
 import Stock from "./Stock/Stock";
 
 const Routes = () => (
@@ -15,6 +16,7 @@ const Routes = () => (
     <Route path="/logout" component={Logout} />
     <Route path="/login" component={Login} />
     <Route path="/profile/:username" component={Profile} />
+    <Route path="/portfolio" component={Portfolio} />
     <Route path="/stock/:ticker" component={Stock} />
   </Switch>
 );

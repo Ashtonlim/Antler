@@ -11,24 +11,26 @@ const Graph = ({ ticker, range, history }) => {
     const initGraph = async () => {
       try {
         const { priceData, max, min } = await getChartInfo({ ticker, range });
-        console.log({ priceData, max, min });
-        if (!priceData) return history.push("/");
-        if (priceData.length === 0) return history.push("/");
+        // console.log({ priceData, max, min });
+        // if (!priceData) return history.push("/");
+        // if (priceData.length === 0) return history.push("/");
 
         let chart = new Chart({
           container: "antg",
           autoFit: true,
-          height: 500,
+          height: 300,
         });
 
+        let tickCount = priceData.length <= 10 ? priceData.length : "10";
         chart.data(priceData);
         chart.scale({
           price: {
-            max: max * 1.02,
-            min: min * 0.98,
+            // expla: use "max - min" prob more suitable. works well w high stock prices and small stock price fluctuation
+            max: max + (max - min) * 0.1,
+            min: min - (max - min) * 0.1, // min has to be > 0
           },
           date: {
-            tickCount: 10,
+            tickCount,
           },
         });
 
@@ -49,7 +51,6 @@ const Graph = ({ ticker, range, history }) => {
         chart.render();
       } catch (err) {
         console.log("graph.js", err);
-        // history.push("/");
       }
     };
 

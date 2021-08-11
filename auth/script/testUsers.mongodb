@@ -1,0 +1,30 @@
+// MongoDB Playground
+// To disable this template go to Settings | MongoDB | Use Default Template For Playground.
+// Make sure you are connected to enable completions and to be able to run a playground.
+// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
+
+// Select the database to use.
+use('myFirstDatabase');
+// ObjectId("610ab818edaef93e5cda5329") // original ash
+// ObjectId("610b575b942ba154302924f3") // test
+
+up = db.users.updateOne(        
+    // 'stock_portfolio.ticker': 'TIGR' -> Needed to identify what to push
+    {
+        _id: ObjectId("610b575b942ba154302924f3"),
+        'stock_portfolio.ticker': 'TIGR'  
+    },
+    {
+        // $set: { funds: 100000, stock_portfolio: [] },
+        $set: { 
+            funds: 100000,
+            // stock_portfolio: []
+        },
+        $addToSet: { stock_portfolio: { ticker: 'TIGR',  stock_orders: [{ order_price: 3, quantity: 5 }] }},
+        // $push: { stock_portfolio: { ticker: 'TSLA', order_price: 12, quantity: 5 } },
+    },
+    { runValidators: true }
+)
+
+res = db.users.findOne({ _id: ObjectId("610b575b942ba154302924f3")})
+res

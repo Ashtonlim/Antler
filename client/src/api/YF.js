@@ -11,6 +11,14 @@ const BASE = REACT_APP_AUTH;
 // https://query1.finance.yahoo.com/v10/finance/quoteSummary/TSLA?modules=calendarEvents
 // https://stackoverflow.com/questions/44030983/yahoo-finance-url-not-working Ref here for some how tos
 
+// TODO:
+// implement yahoo search API
+// https://query2.finance.yahoo.com/v1/finance/search?q=a&lang=en-US&region=US&quotesCount=10&newsCount=0&listsCount=0
+
+// USEFUL: (taken from https://quant.stackexchange.com/questions/1640/where-to-download-list-of-all-common-stocks-traded-on-nyse-nasdaq-and-amex)
+// change otherlisted.txt to nasdaqlisted.txt
+// echo "[\"$(echo -n "$(echo -en "$(curl -s --compressed 'ftp://ftp.nasdaqtrader.com/SymbolDirectory/otherlisted.txt' | tail -n+2 | head -n-1 | perl -pe 's/ //g' | tr '|' ' ' | awk '{printf $1" "} {print $4}')\n$(curl -s --compressed 'ftp://ftp.nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt' | tail -n+2 | head -n-1 | perl -pe 's/ //g' | tr '|' ' ' | awk '{printf $1" "} {print $7}')" | grep -v 'Y$' | awk '{print $1}' | grep -v '[^a-zA-Z]' | sort)" | perl -pe 's/\n/","/g')\"]"
+
 export const getStockInfo = async (symbol = "TSLA", range = "5d", interval) => {
   const api = `${BASE}/${v8}/finance/chart/${symbol}?symbol=${symbol}&range=${range}&interval=${interval}`;
   return await resHandler(await fetch(api));
@@ -45,7 +53,7 @@ const normalDataTransform = ({
   range,
   priceData = [],
   max = 0,
-  min = 99999,
+  min = 4294967295, // must be more than most expensive stock
 }) => {
   const close = chart.result[0].indicators.quote[0].close;
   let i = 0;

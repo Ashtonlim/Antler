@@ -13,10 +13,11 @@ export const verifyAndGetUserId = (req, res, message = 'Unauthenticated, Please 
 
 // from https://timleland.com/money-in-javascript/
 export const dollarsToCents = (val) => {
+  // ^\d.- = not(^) any digit(\d), period(.) or dash(-)
   val = (val + '').replace(/[^\d.-]/g, '')
-  if (val && val.includes('.')) {
-    val = val.substring(0, val.indexOf('.') + 3)
-  }
+
+  // val.indexOf('.') + 4 rounds off to 3d.p.
+  if (val && val.includes('.')) val = val.substring(0, val.indexOf('.') + 4)
   return val ? Math.round(parseFloat(val) * 100) : 0
 }
 

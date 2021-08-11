@@ -21,7 +21,7 @@ const LoggedInOutView = ({ loggedIn, userObj }) => {
           content={
             <div>
               <li>
-                <Link to="/">Portfolio</Link>
+                <Link to="/portfolio">Portfolio</Link>
               </li>
               <li>
                 <Link to="/">Friends</Link>
@@ -139,7 +139,7 @@ const Header = () => {
                 <Link to="/">Learn</Link>
               </li>
               <li className="nav-item">
-                <Link to="/">Portfolio</Link>
+                <Link to="/portfolio">Portfolio</Link>
               </li>
 
               <LoggedInOutView
@@ -147,8 +147,10 @@ const Header = () => {
                 userObj={state.userObj}
               />
 
-              {state.userObj?.funds && (
+              {state.userObj?.funds >= 0 ? (
                 <li className="nav-item">Funds ${state.userObj.funds}</li>
+              ) : (
+                ""
               )}
             </ul>
           </nav>

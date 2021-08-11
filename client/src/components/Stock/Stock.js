@@ -9,16 +9,20 @@ import TinyStockChart from "components/subComponents/TinyStockChart";
 import ButtonTWP from "components/subComponents/ButtonTWP";
 
 import GC from "context";
+import { EDIT_TO_WATCHLIST, BUY_STOCK, SELL_STOCK } from "actionTypes";
 import { getCompanyInfo } from "api/YF";
-import { api_editWatchlist } from "api/user";
-import { EDIT_TO_WATCHLIST } from "actionTypes";
+import { currConv } from "api/apiUtils";
+
+import { api_editWatchlist, api_buyStock, api_sellStock } from "api/user";
+import { currF } from "utils/format";
 
 import Graph from "./Graph";
+import SellModalContent from "./SellModalContent";
+import BuyModalContent from "./BuyModalContent";
 import StockCalendarDates from "./StockCalendarDates";
 import StockMetrics from "./StockMetrics";
-import StockOfficers from "./StockOfficers";
-
-// import BuySellModal from "./subComponents/BuySellModal";
+// import StockOfficers from "./StockOfficers";
+import Modal from "components/subComponents/Modal";
 
 const Stock = (props) => {
   const { state, dispatch } = useContext(GC);
@@ -28,27 +32,48 @@ const Stock = (props) => {
   const [onFocus, setOnFocus] = useState(1);
   const [coyInfo, setCoyInfo] = useState("");
   const [ticker, setTicker] = useState(symbol.toUpperCase());
+  const [forex, setForex] = useState(0);
+  const [buyModalVisible, setBuyModalVisible] = useState(false);
+  const [sellModalVisible, setSellModalVisible] = useState(false);
+  const [noOfSharesToBuy, setNoOfSharesToBuy] = useState(1);
+  const [noOfSharesToSell, setNoOfSharesToSell] = useState(1);
 
   useEffect(() => {
+    console.log(symbol);
     setTicker(symbol.toUpperCase());
     const getInfo = async () => {
       try {
-        const { quoteSummary } = await getCompanyInfo(symbol, [
+        const res = await getCompanyInfo(symbol, [
           "assetProfile",
           "summaryDetail",
           "price",
         ]);
+        const apiData = res.quoteSummary?.result[0];
 
-        console.log("quoteSummary", quoteSummary);
-        setCoyInfo(quoteSummary.result[0]);
+        // use api results directly, probably easier/fewer issues
+        document.title =
+          apiData.price?.shortName && symbol
+            ? `${
+                apiData.price?.shortName
+              } ${symbol.toUpperCase()} Stock Price | Antler`
+            : "Antler Company Stock Price";
+
+        setCoyInfo(apiData);
+        setForex(
+          (
+            await currConv({
+              from: apiData.price?.currency,
+              to: "SGD",
+            })
+          )[`${apiData.price?.currency.toUpperCase()}_SGD`]
+        );
       } catch (err) {
         // props.history.push("/stocks/TSLA");
         console.log(err);
       }
     };
     getInfo();
-    console.log("change range", range[onFocus]);
-  }, [props, onFocus]);
+  }, [props, onFocus, symbol]);
 
   const handleClick = (e) => {
     console.log("change date", range[onFocus]);
@@ -81,19 +106,113 @@ const Stock = (props) => {
     }
   };
 
+  const buyShares = async () => {
+    try {
+      dispatch({
+        type: BUY_STOCK,
+        payload: await api_buyStock({
+          ticker,
+          quantity: noOfSharesToBuy,
+          unitCost: coyInfo.price.regularMarketPrice.raw,
+          totalCost: noOfSharesToBuy * coyInfo.price.regularMarketPrice.raw,
+          forex,
+        }),
+      });
+      // setNoOfSharesToBuy(0);
+      // setBuyModalVisible(false);
+    } catch ({ message }) {
+      console.log(message);
+    }
+  };
+
+  const sellShares = async () => {
+    try {
+      dispatch({
+        type: SELL_STOCK,
+        payload: await api_sellStock({
+          ticker,
+          quantity: noOfSharesToSell,
+          unitCost: coyInfo.price.regularMarketPrice.raw,
+          totalCost: noOfSharesToSell * coyInfo.price.regularMarketPrice.raw,
+          forex,
+        }),
+      });
+      // setNoOfSharesToSell(0);
+      // setSellModalVisible(false);
+    } catch ({ message }) {
+      console.log({ action: "sell stock", message });
+    }
+  };
+
   return (
     <MainLayout>
+      {coyInfo.price ? (
+        <>
+          <Modal
+            title={`Buy ${coyInfo.price?.shortName} Shares`}
+            visible={buyModalVisible}
+            setVisible={setBuyModalVisible}
+            footerButtons={[
+              <ButtonTWP
+                key={1}
+                text={`Buy ${noOfSharesToBuy} shares for ${currF(
+                  noOfSharesToBuy *
+                    coyInfo.price.regularMarketPrice.raw *
+                    forex,
+                  "SGD"
+                )}`}
+                onClick={buyShares}
+                disabled={noOfSharesToBuy === 0}
+              />,
+            ]}
+          >
+            <BuyModalContent
+              price={coyInfo.price}
+              forex={forex}
+              ticker={ticker}
+              noOfSharesToBuy={noOfSharesToBuy}
+              setNoOfSharesToBuy={setNoOfSharesToBuy}
+              funds={state.userObj.funds}
+            />
+          </Modal>
+          <Modal
+            title={`Sell ${coyInfo.price?.shortName} Shares`}
+            visible={sellModalVisible}
+            setVisible={setSellModalVisible}
+            footerButtons={[
+              <ButtonTWP
+                key={1}
+                text={`Sell ${noOfSharesToSell} shares for ${currF(
+                  noOfSharesToSell *
+                    coyInfo.price.regularMarketPrice.raw *
+                    forex,
+                  "SGD"
+                )}`}
+                onClick={sellShares}
+                disabled={noOfSharesToSell === 0}
+              />,
+            ]}
+          >
+            <SellModalContent
+              ticker={ticker}
+              price={coyInfo.price}
+              forex={forex}
+              noOfSharesToSell={noOfSharesToSell}
+              setNoOfSharesToSell={setNoOfSharesToSell}
+              funds={state.userObj.funds}
+              stock_portfolio={state.userObj.stock_portfolio}
+            />
+          </Modal>
+        </>
+      ) : (
+        <div></div>
+      )}
       <section className="card mb-3">
         {coyInfo && ticker && (
           <div>
             <div style={{ float: "right" }}>
               {state.loggedIn ? (
                 <>
-                  {/* <BuySellModal
-                    coyInfo={coyInfo}
-                    symbol={symbol}
-                    state={state}
-                  /> */}
                   {state.userObj.stock_watchlist.includes(ticker) ? (
                     <ButtonTWP
                       text="Remove from Watchlist"
@@ -105,6 +224,17 @@ const Stock = (props) => {
                       onClick={addToWatchlist}
                     />
                   )}
+                  <ButtonTWP
+                    className="ml-12 mr-5"
+                    text="Buy"
+                    color="green"
+                    onClick={setBuyModalVisible}
+                  />
+                  <ButtonTWP
+                    text="Sell"
+                    color="red"
+                    onClick={setSellModalVisible}
+                  />
                 </>
               ) : (
                 <Link to="/login">
@@ -114,7 +244,11 @@ const Stock = (props) => {
             </div>
 
             <h1 className="di mtb-0">
-              {coyInfo.price.regularMarketPrice.raw} {coyInfo.price.currency}
+              {currF(
+                coyInfo.price.regularMarketPrice.raw,
+                coyInfo.price.currency
+              )}{" "}
+              {coyInfo.price.currency}
               <span
                 className={`ml-2 p-1 px-3 ${
                   coyInfo.price.regularMarketChangePercent?.raw >= 0
@@ -150,7 +284,7 @@ const Stock = (props) => {
           ))}
         </div>
 
-        <div style={{ height: "500px" }} id="g">
+        <div style={{ height: "300px" }} id="g">
           {ticker && <Graph ticker={symbol} range={range[onFocus]} />}
         </div>
       </section>
@@ -167,9 +301,10 @@ const Stock = (props) => {
       )}
 
       <StockCalendarDates />
-      {coyInfo.assetProfile && (
+
+      {/* {coyInfo.assetProfile && (
         <StockOfficers companyOfficers={coyInfo.assetProfile.companyOfficers} />
-      )}
+      )} */}
     </MainLayout>
   );
 };
