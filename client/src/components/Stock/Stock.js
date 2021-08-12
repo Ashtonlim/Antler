@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 
 import MainLayout from "components/layouts/MainLayout";
-import TinyStockChart from "components/subComponents/TinyStockChart";
-import ButtonTWP from "components/subComponents/ButtonTWP";
+import TinyStockChart from "components/common/TinyStockChart";
+import ButtonTWP from "components/common/ButtonTWP";
 
 import GC from "context";
 import { EDIT_TO_WATCHLIST, BUY_STOCK, SELL_STOCK } from "actionTypes";
@@ -22,7 +22,7 @@ import BuyModalContent from "./BuyModalContent";
 import StockCalendarDates from "./StockCalendarDates";
 import StockMetrics from "./StockMetrics";
 // import StockOfficers from "./StockOfficers";
-import Modal from "components/subComponents/Modal";
+import Modal from "components/common/Modal";
 
 const Stock = (props) => {
   const { state, dispatch } = useContext(GC);

@@ -6,6 +6,7 @@ import { getCompanyInfo } from "api/YF";
 import { currF } from "utils/format";
 
 const HomeHero = () => {
+  // hardcoded
   const selCoyLogoURL = [
     "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
     "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Tesla_Motors.svg/1200px-Tesla_Motors.svg.png",
@@ -66,6 +67,7 @@ const HomeHero = () => {
             {selCoyData &&
               selCoyData.map((e, i) => (
                 <Link
+                  key={`${e.quoteSummary.result[0].price.symbol}`}
                   to={`/stock/${e.quoteSummary.result[0].price.symbol}`}
                   className="bg-gray-200 inline-flex py-3 px-5 rounded-lg items-center lg:mr-4 md:mr-0 mr-4 md:mt-4 mt-0 lg:mt-0 hover:bg-gray-300 focus:outline-none"
                 >

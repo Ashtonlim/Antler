@@ -8,7 +8,10 @@ export const getUsers = async (id = null) => {
 
 export const registerUser = async (regDetails) => {
   console.log("regDetails", regDetails);
-  const res = await fetch(`${BASE}/users`, createReqParams("POST", regDetails));
+  const res = await fetch(
+    `${BASE}/users/reg`,
+    createReqParams("POST", regDetails)
+  );
   return await resHandler(res);
 };
 
@@ -19,6 +22,22 @@ export const loginUser = async (loginDetails) => {
     createReqParams("POST", loginDetails)
   );
 
+  return await resHandler(res);
+};
+
+export const api_followUser = async (info) => {
+  const res = await fetch(
+    `${BASE}/users/follow`,
+    createReqParams("POST", info)
+  );
+  return await resHandler(res);
+};
+
+export const api_unfollowUser = async (info) => {
+  const res = await fetch(
+    `${BASE}/users/unfollow`,
+    createReqParams("POST", info)
+  );
   return await resHandler(res);
 };
 

@@ -46,10 +46,13 @@ export const resHandler = async (res) => {
 
   console.log("@factory.js: res from server is not okay :(");
   const jsonResErr = await res.json();
-  if ("message" in jsonResErr) {
-    console.log(jsonResErr.message);
-    throw new Error(jsonResErr.message);
+  if (jsonResErr instanceof Object) {
+    if ("message" in jsonResErr) {
+      console.log(jsonResErr.message);
+      throw new Error(jsonResErr.message);
+    }
   }
+
   return await jsonResErr;
 };
 

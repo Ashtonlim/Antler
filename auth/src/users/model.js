@@ -81,13 +81,16 @@ const userSchema = mongoose.Schema(
       required: true,
       default: 0,
     },
-    stock_watchlist: {
-      type: [String],
-      required: true,
-      default: [],
-
-      sparse: true,
-    },
+    stock_watchlist: [
+      {
+        type: String,
+        required: true,
+        default: [],
+        unique: true,
+        // what is sparse for again?
+        sparse: true,
+      },
+    ],
     stock_portfolio: [
       {
         type: stockPortfolioSchema,
@@ -95,6 +98,24 @@ const userSchema = mongoose.Schema(
         default: [],
       },
     ],
+    following: [
+      {
+        type: String,
+        required: true,
+        default: [],
+      },
+    ],
+    followers: [
+      {
+        type: String,
+        required: true,
+        default: [],
+      },
+    ],
+    // Review: count may be necessary in the future when acc's have many followers. More research needs to be done here
+    // followingCount: { type: Number, required: true, default: 0 },
+    // followerCount: { type: Number, required: true, default: 0 },
+
     // order_history: {
     //   type: ObjectId,
     //   required: true,
