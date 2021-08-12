@@ -9,6 +9,8 @@ import {
   EDIT_TO_WATCHLIST,
   BUY_STOCK,
   SELL_STOCK,
+  FOLLOW_USER,
+  UNFOLLOW_USER,
 } from "./actionTypes";
 import { saveState, loadState } from "./localStorage";
 const GC = React.createContext();
@@ -46,6 +48,8 @@ const reducer = (state = {}, action) => {
     case EDIT_TO_WATCHLIST:
     case BUY_STOCK:
     case SELL_STOCK:
+    case FOLLOW_USER:
+    case UNFOLLOW_USER:
       return stateResolver(state, action);
     default:
       return state;

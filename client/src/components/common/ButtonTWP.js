@@ -1,3 +1,7 @@
+// ButtonTailWindPrimary = ButtonTWP
+// ButtonTailWindPrimary = ButtonTWP
+// ButtonTailWindPrimary = ButtonTWP
+
 import React from "react";
 
 const ButtonTWP = ({

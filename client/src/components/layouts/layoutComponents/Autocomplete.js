@@ -10,7 +10,7 @@ const renderUser = ({ username }) => {
   return {
     value: username,
     label: (
-      <Link to={`/friendprofile/${username}`}>
+      <Link to={`/profile/${username}`}>
         <div className="ruRow">
           {username}
           <span>
