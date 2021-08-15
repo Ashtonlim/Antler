@@ -8,7 +8,7 @@ export const addUserFunds = async (req, res) => {
 
     // check if deposit is correct format, could convert to 2d.p. but it shouldn't be the case is > 2d.p. since frontend sends it as 2d.p.
     if (`${depositVal}`.split('.')[1]?.length > 2) return res.status(400).json(createErrMsg({ message: 'Specify deposit to the correct decimals' }))
-    if (depositVal > 999900) return res.status(400).json(createErrMsg({ message: 'Max deposit is only $9999' }))
+    if (depositVal > 9999) return res.status(400).json(createErrMsg({ message: 'Max deposit is only $9999' }))
 
     // Note: careful with runValidators (https://mongoosejs.com/docs/validation.html#update-validators -> caveats with 'this' and 'context')
     const updateRes = await users.updateOne({ _id }, { $inc: { funds: dollarsToCents(depositVal) } }, { runValidators: true })

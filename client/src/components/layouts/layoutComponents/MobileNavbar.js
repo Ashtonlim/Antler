@@ -87,7 +87,7 @@ const MobileNavbar = () => {
                 className={`bottom-nav-item ${
                   sel.includes("/profile") ? "active" : ""
                 }`}
-                to={`/profile/${state.userObj.name}`}
+                to={`/profile/${state.userObj?.name}`}
               >
                 <div className="bottom-nav-link">
                   <UserOutlined />

@@ -1,4 +1,4 @@
-const INITIAL_STATE = { loggedIn: false, darkMode: false };
+const INITIAL_STATE = { loggedIn: false, userObj: {}, darkMode: false };
 
 export const loadState = (key = "state") => {
   try {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { currF, dollarsToCents } from "utils/format";
 
 const BuyModalContent = ({
@@ -9,9 +9,14 @@ const BuyModalContent = ({
   funds,
 }) => {
   // setNoOfSharesToBuy
+  const [limit] = useState(
+    ~~(funds / (price?.regularMarketPrice?.raw * forex))
+  );
+  useEffect(() => {
+    if (limit === 0) setNoOfSharesToBuy(limit);
+  }, [limit, setNoOfSharesToBuy]);
   const onBuySharesChange = (e) => {
     const val = +e.target.value;
-    const limit = ~~(funds / (price?.regularMarketPrice?.raw * forex));
 
     if (isNaN(val) || val < 0) return;
     if (val > limit) setNoOfSharesToBuy(limit);
@@ -22,12 +27,7 @@ const BuyModalContent = ({
   return (
     <div className="relative p-6 flex-auto">
       {/* Review: removed a div here, not sure if will cause issues... check di#01 */}
-      <span className="link px-3">
-        {`Max shares buyable: ${~~(
-          funds /
-          (price?.regularMarketPrice?.raw * forex)
-        )}`}
-      </span>
+      <span className="link px-3">{`Max shares buyable: ${limit}`}</span>
       {/* <label
         htmlFor="price"
         className="block text-sm font-medium text-gray-700"

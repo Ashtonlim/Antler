@@ -1,55 +1,74 @@
-import React from "react";
-import dayjs from "dayjs";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { Table } from "antd";
+import protobuf from "protobufjs";
 
-import { currF } from "utils/format";
+import { currF, round } from "utils/format";
 
-const createInnerAndOuterTables = (data) => {
-  if (!Array.isArray(data)) return { innerTableData: [], outerTableData: [] };
-
-  const innerTableData = data.reduce((acc, { ticker, stock_orders }) => {
-    acc[ticker] = {
-      // need to add key, quite unnecessary computational cost
-      stock_orders: stock_orders.map(
-        ({ order_price, quantity, createdAt }, key) => ({
-          key,
-          quantity,
-          order_price: currF(order_price),
-          createdAt: dayjs(createdAt)
-            .tz("Asia/Singapore")
-            .format("DD MMM YY hh:mma"),
-        })
-      ),
-      ...stock_orders.reduce(
-        (totalAcc, { quantity, order_price }) => ({
-          totalQty: totalAcc.totalQty + quantity,
-          // review: totalVal is rounded later but will it ever accumalate to a rounding error if enough rows of trades?
-          totalVal: totalAcc.totalVal + order_price * quantity,
-        }),
-        { totalQty: 0, totalVal: 0 }
-      ),
-    };
-
-    return acc;
-  }, {});
-
-  // Object.entries({key1: val1, key2, val2}) -> [[key1, val1], [key2, val2]]
-  const outerTableData = Object.entries(innerTableData).map(
-    ([ticker, { totalQty, totalVal }]) => ({
-      key: ticker,
-      ticker: <Link to={`/stock/${ticker}`}>{ticker}</Link>,
-      avgPrice: currF(totalVal / totalQty),
-      totalVal: currF(totalVal),
-      totalQty,
-    })
+const UpDown = ({ val }) => {
+  return (
+    <span
+      className={`p-1 px-3 ${
+        val >= 0 ? "text-green-700 bg-green-100" : "text-red-700 bg-red-100"
+      } rounded`}
+    >
+      {val}%
+    </span>
   );
-
-  // console.log({ innerTableData, outerTableData });
-  return { data, outerTableData, innerTableData };
 };
 
-const PortfolioTable = ({ portfolio }) => {
+const PortfolioTable = ({ innerTableData, outerTableData, setOuter }) => {
+  const [OTB, setOTB] = useState(outerTableData);
+  useEffect(() => {
+    if (OTB.length) {
+      // do open here, prevent running it twice????
+      protobuf.load("./YPricingData.proto", (error, root) => {
+        if (error) {
+          return alert(error);
+        }
+
+        const yfticker = root.lookupType("yfticker");
+        const ws = new WebSocket("wss://streamer.finance.yahoo.com/");
+        ws.onopen = function open() {
+          ws.send(
+            JSON.stringify({
+              subscribe: OTB.map((e) => e.key.toUpperCase()),
+            })
+          );
+          console.log("connected");
+        };
+
+        // when does this dc?
+        ws.onclose = function close() {
+          console.log("disconnected");
+        };
+
+        ws.onmessage = function incoming(message) {
+          // new Buffer(data, "base64") ===  Uint8Array.from(window.atob(data), (c) => c.charCodeAt(0))
+          // avoiding Buffer to avoid installing Buffer package.
+          // data is a Base64 encoded binary string (binary represented as ascii) that is converted to arr of integers.
+          // atob converts the Ascii TO Binary -> (ATOB) and
+          // the following => fn is just mapping the binary array produced into integers
+          // to test: window.atob(message.data).split('').map(c => c.charCodeAt(0))
+          // atob produces a string, split converts to arr, map so u can return arr of integers
+          // const next = yfticker.decode(new Buffer(message.data, "base64")); // prev usage
+
+          let next = yfticker.decode(
+            Uint8Array.from(window.atob(message.data), (c) => c.charCodeAt(0))
+          );
+
+          console.log({ root, yfticker, next, OTB });
+
+          let i = OTB.findIndex((e) => e.key === next.id);
+
+          OTB[i]["mktPrice"] = [next.price, next.currency];
+          OTB[i]["pnl"] =
+            ((next.price - OTB[i].avgPrice) / OTB[i].avgPrice) * 100;
+          setOTB([...OTB]);
+        };
+      });
+    }
+  }, [outerTableData]);
+
   const expandedRowRender = (e) => {
     const columns = [
       { title: "Price", dataIndex: "order_price", key: "order_price" },
@@ -57,7 +76,6 @@ const PortfolioTable = ({ portfolio }) => {
       { title: "Order date", dataIndex: "createdAt", key: "createdAt" },
     ];
 
-    console.log({ innerTableData });
     return (
       <Table
         columns={columns}
@@ -69,21 +87,56 @@ const PortfolioTable = ({ portfolio }) => {
 
   const columns = [
     { title: "Ticker", dataIndex: "ticker", key: "ticker" },
-    { title: "Avg price", dataIndex: "avgPrice", key: "avgPrice" },
-    { title: "Total value", dataIndex: "totalVal", key: "totalVal" },
+    {
+      title: "Avg price",
+      dataIndex: "avgPrice",
+      key: "avgPrice",
+      render: (t) => currF(t),
+    },
+    {
+      title: "Total value",
+      dataIndex: "totalVal",
+      key: "totalVal",
+      render: (t) => currF(t),
+    },
     { title: "Total shares", dataIndex: "totalQty", key: "totalQty" },
+    {
+      title: "Current market price",
+      dataIndex: "mktPrice",
+      key: "mktPrice",
+      render: (t) =>
+        !t && !Array.isArray(t) && isNaN(t[0]) ? "-" : `${currF(t[0], t[1])}`,
+    },
+    {
+      title: "Profit/Loss %",
+      dataIndex: "pnl",
+      key: "pnl",
+      // incase YF provides invalid type?
+      render: (t) => (isNaN(t) ? "-" : <UpDown val={round(t, 2)} />),
+    },
+    {
+      title: "Weightage in %",
+      dataIndex: "weightage",
+      key: "weightage",
+      render: (t) => `${round(t, 3)}%`,
+    },
+
+    {
+      title: "action",
+      dataIndex: "action",
+      key: "action",
+    },
   ];
 
-  const { outerTableData, innerTableData } =
-    createInnerAndOuterTables(portfolio);
-
   return (
-    <Table
-      className="components-table-demo-nested"
-      columns={columns}
-      expandable={{ expandedRowRender }}
-      dataSource={outerTableData}
-    />
+    <>
+      <Table
+        className="components-table-demo-nested"
+        columns={columns}
+        expandable={{ expandedRowRender }}
+        dataSource={outerTableData}
+      />
+    </>
   );
 };
 

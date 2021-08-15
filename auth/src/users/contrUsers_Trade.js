@@ -41,11 +41,9 @@ export const buyStock = async (req, res) => {
       if (isNaN(price.regularMarketPrice.raw) && isNaN(quantity) && isNaN(forex))
         return res.status(400).json(createErrMsg({ message: 'Issue with price, quantity or exchange rate' }))
 
-      const purchaseCost = dollarsToCents(-(price.regularMarketPrice.raw * quantity * forex))
+      const purchaseCost = dollarsToCents(price.regularMarketPrice.raw * quantity * forex)
       // check if there is enuf funds for purchase
       if (userObj.funds < purchaseCost) return res.status(400).json(createErrMsg({ message: 'Purchase exceeds available funds' }))
-      const newAccBalance = purchaseCost + userObj.funds
-      // console.log(price.regularMarketPrice.raw, { purchaseCost, newAccBalance, quantity, forex, funds: userObj.funds, _id })
 
       let updateRes
       // why is there _id and id in stock_portfolio?
@@ -53,8 +51,8 @@ export const buyStock = async (req, res) => {
         updateRes = await users.updateOne(
           { _id, 'stock_portfolio.ticker': ticker },
           {
-            $set: {
-              funds: newAccBalance,
+            $inc: {
+              funds: -purchaseCost,
               // stock_portfolio: [], // uncomment to reset to empty portfolio
             },
             $push: {
@@ -74,8 +72,8 @@ export const buyStock = async (req, res) => {
           { _id },
           {
             // $set: { funds: 100000, stock_portfolio: [] }, // uncomment to reset to empty portfolio
-            $set: {
-              funds: newAccBalance,
+            $inc: {
+              funds: -purchaseCost,
             },
             $push: {
               stock_portfolio: {
