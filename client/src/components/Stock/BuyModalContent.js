@@ -9,12 +9,19 @@ const BuyModalContent = ({
   funds,
 }) => {
   // setNoOfSharesToBuy
-  const [limit] = useState(
+  const [limit, setLimit] = useState(
     ~~(funds / (price?.regularMarketPrice?.raw * forex))
   );
   useEffect(() => {
-    if (limit === 0) setNoOfSharesToBuy(limit);
-  }, [limit, setNoOfSharesToBuy]);
+    let max = ~~(funds / (price?.regularMarketPrice?.raw * forex));
+    console.log({ noOfSharesToBuy });
+    if (max === 0) {
+      console.log({ max });
+      setNoOfSharesToBuy(max);
+    }
+    setLimit(max);
+  }, [setNoOfSharesToBuy, funds, price, forex]);
+
   const onBuySharesChange = (e) => {
     const val = +e.target.value;
 
@@ -27,13 +34,8 @@ const BuyModalContent = ({
   return (
     <div className="relative p-6 flex-auto">
       {/* Review: removed a div here, not sure if will cause issues... check di#01 */}
-      <span className="link px-3">{`Max shares buyable: ${limit}`}</span>
-      {/* <label
-        htmlFor="price"
-        className="block text-sm font-medium text-gray-700"
-      >
-        Number of Shares:
-      </label> */}
+      <span className="link px-3">{`Buy max : ${limit} shares`}</span>
+
       <div className="mt-1 relative rounded-md shadow-sm">
         <div className="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none">
           <span className="text-gray-500 sm:text-sm">Buy</span>
@@ -67,20 +69,7 @@ const BuyModalContent = ({
         )}`}
       </div>
       <div className="text-right px-3">
-        {`Your New Balance: ${console.log("sell", {
-          funds,
-          noOfSharesToBuy,
-          forex,
-          price: price.regularMarketPrice.raw,
-          OG: funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex,
-          dtc: dollarsToCents(
-            funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex
-          ),
-          currF: currF(
-            funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex,
-            "SGD"
-          ),
-        })} ${currF(
+        {`Your New Balance: ${currF(
           funds - noOfSharesToBuy * price.regularMarketPrice.raw * forex,
           "SGD"
         )}`}
@@ -90,3 +79,18 @@ const BuyModalContent = ({
 };
 
 export default BuyModalContent;
+
+// ${console.log("sell", {
+//   funds,
+//   noOfSharesToBuy,
+//   forex,
+//   price: price.regularMarketPrice.raw,
+//   OG: funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex,
+//   dtc: dollarsToCents(
+//     funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex
+//   ),
+//   currF: currF(
+//     funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex,
+//     "SGD"
+//   ),
+// })}

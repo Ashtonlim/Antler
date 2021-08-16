@@ -1,6 +1,7 @@
 import React, { useReducer } from "react";
 
 import {
+  GET_LATEST_STATE,
   LOGIN,
   LOGIN_REJECTED,
   LOGOUT,
@@ -18,6 +19,7 @@ const GC = React.createContext();
 const user = loadState();
 
 const stateResolver = (state, action) => {
+  console.log({ wat: action.payload });
   const newState = { ...state, ...action.payload };
   saveState(newState);
   return newState;
@@ -44,6 +46,7 @@ const reducer = (state = {}, action) => {
       const mode = { ...state, ...action.payload };
       saveState(mode);
       return mode;
+    case GET_LATEST_STATE:
     case DEPOSIT_FUNDS:
     case EDIT_TO_WATCHLIST:
     case BUY_STOCK:

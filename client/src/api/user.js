@@ -6,6 +6,12 @@ export const getUsers = async (id = null) => {
   return await resHandler(await fetch(`${BASE}/users${id ? "/" + id : ""}`));
 };
 
+export const api_getLatestState = async () => {
+  return await resHandler(
+    await fetch(`${BASE}/users/latest/state`, createReqParams("get"))
+  );
+};
+
 export const registerUser = async (regDetails) => {
   console.log("regDetails", regDetails);
   const res = await fetch(

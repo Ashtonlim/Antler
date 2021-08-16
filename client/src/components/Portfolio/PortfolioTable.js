@@ -101,7 +101,7 @@ const PortfolioTable = ({ innerTableData, outerTableData, setOuter }) => {
     },
     { title: "Total shares", dataIndex: "totalQty", key: "totalQty" },
     {
-      title: "Current market price",
+      title: "Market price",
       dataIndex: "mktPrice",
       key: "mktPrice",
       render: (t) =>
@@ -122,7 +122,7 @@ const PortfolioTable = ({ innerTableData, outerTableData, setOuter }) => {
     },
 
     {
-      title: "action",
+      title: "Action",
       dataIndex: "action",
       key: "action",
     },

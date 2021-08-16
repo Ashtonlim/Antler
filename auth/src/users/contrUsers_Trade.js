@@ -45,10 +45,10 @@ export const buyStock = async (req, res) => {
       // check if there is enuf funds for purchase
       if (userObj.funds < purchaseCost) return res.status(400).json(createErrMsg({ message: 'Purchase exceeds available funds' }))
 
-      let updateRes
+      let upRes
       // why is there _id and id in stock_portfolio?
       if (tickerExists) {
-        updateRes = await users.updateOne(
+        upRes = await users.updateOne(
           { _id, 'stock_portfolio.ticker': ticker },
           {
             $inc: {
@@ -68,13 +68,11 @@ export const buyStock = async (req, res) => {
           { runValidators: true }
         )
       } else {
-        updateRes = await users.updateOne(
+        upRes = await users.updateOne(
           { _id },
           {
             // $set: { funds: 100000, stock_portfolio: [] }, // uncomment to reset to empty portfolio
-            $inc: {
-              funds: -purchaseCost,
-            },
+            $inc: { funds: -purchaseCost },
             $push: {
               stock_portfolio: {
                 ticker,
@@ -91,8 +89,8 @@ export const buyStock = async (req, res) => {
         )
       }
 
-      // Review: or updateRes.nModified? what's the diff between n and nModified
-      if (updateRes.ok && updateRes.n > 0) {
+      // Review: or upRes.nModified? what's the diff between n and nModified
+      if (upRes.ok && upRes.n > 0) {
         res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
       } else {
         res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))
@@ -136,9 +134,9 @@ export const sellStock = async (req, res) => {
       if (orders === undefined) return res.status(400).json(createErrMsg({ message: 'Could not find any orders for ticker?' }))
 
       // console.log(orders, orders.length)
-      console.log('===============')
-      console.log('===============')
-      console.log('===============')
+      // console.log('===============')
+      // console.log('===============')
+      // console.log('===============')
       // print what's going on
       // for (let [toDeduct, i] = [quantity, 0]; toDeduct > 0 && orders.length > i; i++) {
       //   if (orders[i].quantity <= toDeduct) {
@@ -177,19 +175,19 @@ export const sellStock = async (req, res) => {
       if (saleVal < 0) return res.status(400).json(createErrMsg({ message: 'Earnings is negative?' }))
       // console.log(orders, orders.length)
 
-      let updateRes
+      let upRes
       console.log(orders)
       if (orders.length === 0) {
         // remove dict
-        updateRes = await users.updateOne(
+        upRes = await users.updateOne(
           // based on the ticker specified for 'stock_portfolio.ticker', it knows to set 'stock_portfolio.$.stock_orders'
           { _id, 'stock_portfolio.ticker': ticker },
-          // pullAll if somehow > 1 obj with same ticker, tho should'nt be possible.
-          { $inc: { funds: saleVal }, $pullAll: { stock_portfolio: { ticker } } },
+          // should it be pullAll if somehow > 1 obj with same ticker, tho should'nt be possible.
+          { $inc: { funds: saleVal }, $pull: { stock_portfolio: { ticker } } },
           { runValidators: true }
         )
       } else {
-        updateRes = await users.updateOne(
+        upRes = await users.updateOne(
           // based on the ticker specified for 'stock_portfolio.ticker', it knows to set 'stock_portfolio.$.stock_orders'
           { _id, 'stock_portfolio.ticker': ticker },
           { $inc: { funds: saleVal }, $set: { 'stock_portfolio.$.stock_orders': orders } },
@@ -197,7 +195,7 @@ export const sellStock = async (req, res) => {
         )
       }
 
-      if (updateRes.ok && updateRes.n > 0) {
+      if (upRes.ok && upRes.n > 0) {
         res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
       } else {
         res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))

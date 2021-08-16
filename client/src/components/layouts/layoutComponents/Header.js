@@ -5,7 +5,8 @@ import { Row, Col, Avatar, Badge, Popover, Switch } from "antd";
 
 import Autocomplete from "./Autocomplete";
 import GC from "context";
-import { TOGGLE_DARK_MODE } from "actionTypes";
+import { TOGGLE_DARK_MODE, GET_LATEST_STATE } from "actionTypes";
+import { api_getLatestState } from "api/user";
 
 const LoggedInOutView = ({ loggedIn, userObj }) => {
   const [visible, setVisible] = useState(false);
@@ -78,6 +79,23 @@ const LoggedInOutView = ({ loggedIn, userObj }) => {
 const Header = () => {
   const { state, dispatch } = useContext(GC);
 
+  useEffect(() => {
+    const resetUserState = async () => {
+      try {
+        console.log("i am reseting");
+        dispatch({
+          type: GET_LATEST_STATE,
+          payload: await api_getLatestState(),
+        });
+        console.log("reseted");
+      } catch (err) {
+        alert(err);
+      }
+    };
+    resetUserState();
+    toggleDarkModeStyle(state.darkMode);
+  }, [state.darkMode]);
+
   const toggleDarkModeStyle = (darkMode) => {
     if (darkMode) {
       const style = document.createElement("style");
@@ -99,11 +117,9 @@ const Header = () => {
 
   const toggleDarkModeState = (darkMode = false) => {
     dispatch({ type: TOGGLE_DARK_MODE, payload: { darkMode } });
+
     toggleDarkModeStyle(darkMode);
   };
-  useEffect(() => {
-    toggleDarkModeStyle(state.darkMode);
-  }, [state.darkMode]);
 
   return (
     <header className="App-header bg-white">
