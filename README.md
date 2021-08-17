@@ -22,6 +22,10 @@ Search for
 8. (MAJOR) Social - Friends, DMs, view portfolio, etc.
 9. Top performing investors/users.
 10. Contact us, about, hiring, site map, etc.
+11. Edit user info
+12. Forget pwd
+13. Email and sms confirmation
+14. Login with google
 
 ### Bugs?
 
