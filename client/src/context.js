@@ -19,7 +19,6 @@ const GC = React.createContext();
 const user = loadState();
 
 const stateResolver = (state, action) => {
-  console.log({ wat: action.payload });
   const newState = { ...state, ...action.payload };
   saveState(newState);
   return newState;

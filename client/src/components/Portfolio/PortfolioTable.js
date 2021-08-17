@@ -5,18 +5,15 @@ import protobuf from "protobufjs";
 import { currF, round } from "utils/format";
 
 const UpDown = ({ val }) => {
+  const c = val >= 0 ? "green" : "red";
   return (
-    <span
-      className={`p-1 px-3 ${
-        val >= 0 ? "text-green-700 bg-green-100" : "text-red-700 bg-red-100"
-      } rounded`}
-    >
+    <span className={`p-1 px-3 rounded text-${c}-700 bg-${c}-100 font-bold`}>
       {val}%
     </span>
   );
 };
 
-const PortfolioTable = ({ innerTableData, outerTableData, setOuter }) => {
+const PortfolioTable = ({ innerTableData, outerTableData }) => {
   const [OTB, setOTB] = useState(outerTableData);
   useEffect(() => {
     if (OTB.length) {
@@ -28,7 +25,7 @@ const PortfolioTable = ({ innerTableData, outerTableData, setOuter }) => {
 
         const yfticker = root.lookupType("yfticker");
         const ws = new WebSocket("wss://streamer.finance.yahoo.com/");
-        ws.onopen = function open() {
+        ws.onopen = () => {
           ws.send(
             JSON.stringify({
               subscribe: OTB.map((e) => e.key.toUpperCase()),
@@ -38,11 +35,11 @@ const PortfolioTable = ({ innerTableData, outerTableData, setOuter }) => {
         };
 
         // when does this dc?
-        ws.onclose = function close() {
+        ws.onclose = () => {
           console.log("disconnected");
         };
 
-        ws.onmessage = function incoming(message) {
+        ws.onmessage = (message) => {
           // new Buffer(data, "base64") ===  Uint8Array.from(window.atob(data), (c) => c.charCodeAt(0))
           // avoiding Buffer to avoid installing Buffer package.
           // data is a Base64 encoded binary string (binary represented as ascii) that is converted to arr of integers.
@@ -56,13 +53,11 @@ const PortfolioTable = ({ innerTableData, outerTableData, setOuter }) => {
             Uint8Array.from(window.atob(message.data), (c) => c.charCodeAt(0))
           );
 
+          let i = OTB.findIndex((e) => e.key === next.id);
+          OTB[i]["mktPrice"] = [next.price, next.currency];
+          OTB[i]["pnl"] = ((next.price - OTB[i].avgVal) / OTB[i].avgVal) * 100;
           console.log({ root, yfticker, next, OTB });
 
-          let i = OTB.findIndex((e) => e.key === next.id);
-
-          OTB[i]["mktPrice"] = [next.price, next.currency];
-          OTB[i]["pnl"] =
-            ((next.price - OTB[i].avgPrice) / OTB[i].avgPrice) * 100;
           setOTB([...OTB]);
         };
       });
@@ -89,8 +84,8 @@ const PortfolioTable = ({ innerTableData, outerTableData, setOuter }) => {
     { title: "Ticker", dataIndex: "ticker", key: "ticker" },
     {
       title: "Avg price",
-      dataIndex: "avgPrice",
-      key: "avgPrice",
+      dataIndex: "avgVal",
+      key: "avgVal",
       render: (t) => currF(t),
     },
     {
@@ -111,8 +106,7 @@ const PortfolioTable = ({ innerTableData, outerTableData, setOuter }) => {
       title: "Profit/Loss %",
       dataIndex: "pnl",
       key: "pnl",
-      // incase YF provides invalid type?
-      render: (t) => (isNaN(t) ? "-" : <UpDown val={round(t, 2)} />),
+      render: (t) => (isNaN(t) ? "-" : <UpDown val={round(t, 2)} />), // incase YF provides invalid type?
     },
     {
       title: "Weightage in %",
@@ -120,7 +114,6 @@ const PortfolioTable = ({ innerTableData, outerTableData, setOuter }) => {
       key: "weightage",
       render: (t) => `${round(t, 3)}%`,
     },
-
     {
       title: "Action",
       dataIndex: "action",

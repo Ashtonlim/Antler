@@ -68,3 +68,7 @@ This project backend was created with Node js
 > npm install
 > npm start
 ```
+
+# Resources
+
+1. understanding hooks https://medium.com/@sdolidze/the-iceberg-of-react-hooks-af0b588f43fb

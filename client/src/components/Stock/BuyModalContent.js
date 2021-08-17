@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { currF, dollarsToCents } from "utils/format";
+import { currF } from "utils/format";
 
 const BuyModalContent = ({
   price,
@@ -14,11 +14,7 @@ const BuyModalContent = ({
   );
   useEffect(() => {
     let max = ~~(funds / (price?.regularMarketPrice?.raw * forex));
-    console.log({ noOfSharesToBuy });
-    if (max === 0) {
-      console.log({ max });
-      setNoOfSharesToBuy(max);
-    }
+    if (max === 0) setNoOfSharesToBuy(max);
     setLimit(max);
   }, [setNoOfSharesToBuy, funds, price, forex]);
 

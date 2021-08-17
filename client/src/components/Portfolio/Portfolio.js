@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 
-import GC from "context";
+import useResetState from "components/hooks/useResetState";
 import MainLayout from "components/layouts/MainLayout";
 import ButtonTWP from "components/common/ButtonTWP";
 import { getCompanyInfo } from "api/YF";
@@ -11,15 +11,14 @@ import { currF } from "utils/format";
 import PortfolioTable from "./PortfolioTable";
 
 const Portfolio = () => {
-  const { state } = useContext(GC);
-  const [outer, setOuter] = useState([]);
-  const [inner, setInner] = useState([]);
+  const [inOut, setInOut] = useState([[], []]);
+  const { state } = useResetState();
 
   useEffect(() => {
     const data = state.userObj?.stock_portfolio;
     if (typeof data === "undefined" || !Array.isArray(data)) return;
 
-    let invested = 0;
+    let investedInX = 0;
 
     const innie = data.reduce((acc, { ticker, stock_orders }) => {
       acc[ticker] = {
@@ -47,16 +46,13 @@ const Portfolio = () => {
       return acc;
     }, {});
 
-    setInner(innie);
-
     const initData = async () => {
-      console.log("params");
       try {
         // Object.entries({key1: val1, key2, val2}) -> [[key1, val1], [key2, val2]]
-        let outer = await Promise.all(
+        let outie = await Promise.all(
           Object.entries(innie).map(
             async ([ticker, { totalQty, totalVal }]) => {
-              invested += totalVal;
+              investedInX += totalVal;
 
               const {
                 quoteSummary: {
@@ -67,7 +63,7 @@ const Portfolio = () => {
               return {
                 key: ticker,
                 ticker: <Link to={`/stock/${ticker}`}>{ticker}</Link>,
-                avgPrice: totalVal / totalQty,
+                avgVal: totalVal / totalQty,
                 totalVal: totalVal,
                 totalQty,
                 mktPrice: [price?.regularMarketPrice?.raw, price?.currency],
@@ -90,32 +86,31 @@ const Portfolio = () => {
             }
           )
         );
-        outer = outer.map((e) => {
+
+        outie = outie.map((e) => {
           return {
             ...e,
-            weightage: (e.totalVal / invested) * 100,
-            pnl: ((e.mktPrice[0] - e.avgPrice) / e.avgPrice) * 100,
+            weightage: (e.totalVal / investedInX) * 100,
+            pnl: ((e.mktPrice[0] - e.avgVal) / e.avgVal) * 100,
           };
         });
 
-        setOuter(outer);
+        // console.log("params", { inner, outer, innie, outie });
+        setInOut([innie, outie]);
+        // setInner(innie);
+        // setOuter(outie);
       } catch (err) {
         alert(err);
       }
     };
 
     initData();
-  }, [state, inner.length, outer.length]);
+  }, [state]);
 
   return (
     <MainLayout>
-      {state.userObj?.stock_portfolio ? (
-        <PortfolioTable
-          innerTableData={inner}
-          outerTableData={outer}
-          setOuter={setOuter}
-          setInner={setInner}
-        />
+      {state?.userObj?.stock_portfolio ? (
+        <PortfolioTable innerTableData={inOut[0]} outerTableData={inOut[1]} />
       ) : (
         ""
       )}
