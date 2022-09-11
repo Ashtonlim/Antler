@@ -2,10 +2,13 @@ import React from "react";
 import MainLayout from "components/layouts/MainLayout";
 
 import useData from "./useData";
+import useYfws from "components/hooks/useYfws";
 
 const Learn = () => {
   const { URL, start, stop, reset } = useData(0, 500);
-  console.log({ URL });
+
+  const { next } = useYfws(["jpy=x"]);
+  console.log(next);
 
   return (
     <MainLayout>
