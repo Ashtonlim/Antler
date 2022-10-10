@@ -16,15 +16,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ashtonlim/antler-backend.git"
+    "url": "git+https://github.com/Ashtonlim/antler.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Ashtonlim/antler-backend/issues"
+    "url": "https://github.com/Ashtonlim/antler/issues"
   },
-  "homepage": "https://github.com/Ashtonlim/antler-backend#readme",
+  "homepage": "https://github.com/Ashtonlim/antler#readme",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",

@@ -1,34 +1,36 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
-import AllTheData from "media/AllTheData";
-import { getCompanyInfo } from "api/YF";
-import { currF } from "utils/format";
+import AllTheData from 'media/AllTheData'
+import { getCompanyInfo } from 'api/YF'
+import { currF } from 'utils/format'
+
+const { REACT_APP_APP_NAME } = process.env
 
 const HomeHero = () => {
   // hardcoded
   const selCoyLogoURL = [
-    "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Tesla_Motors.svg/1200px-Tesla_Motors.svg.png",
-    "https://logodownload.org/wp-content/uploads/2016/10/airbnb-logo-3-1.png",
-  ];
-  const [selCoyData, setSelCoyData] = useState([]);
+    'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Tesla_Motors.svg/1200px-Tesla_Motors.svg.png',
+    'https://logodownload.org/wp-content/uploads/2016/10/airbnb-logo-3-1.png',
+  ]
+  const [selCoyData, setSelCoyData] = useState([])
   useEffect(() => {
     const initData = async () => {
       try {
         setSelCoyData(
           await Promise.all([
-            getCompanyInfo("aapl"),
-            getCompanyInfo("tsla"),
-            getCompanyInfo("abnb"),
+            getCompanyInfo('aapl'),
+            getCompanyInfo('tsla'),
+            getCompanyInfo('abnb'),
           ])
-        );
+        )
       } catch (err) {
-        console.log(err);
+        console.log(err)
       }
-    };
-    initData();
-  }, []);
+    }
+    initData()
+  }, [])
   return (
     <section className="text-gray-600 body-font">
       <div className="container mx-auto flex px-5 py-0 md:flex-row flex-col items-center">
@@ -37,9 +39,9 @@ const HomeHero = () => {
             A Social Hub For Investing.
           </h1>
           <p className="mb-8 leading-relaxed">
-            Antler makes it easier than ever to track your investments. Follow
-            other investors and find amazing research by other users and our own
-            analysts.
+            {REACT_APP_APP_NAME} makes it easier than ever to track your
+            investments. Follow other investors and find amazing research by
+            other users and our own analysts.
           </p>
           <div className="flex w-full md:justify-start justify-center items-end">
             <div className="relative mr-4 md:w-full lg:w-full xl:w-1/2 w-2/4">
@@ -81,7 +83,7 @@ const HomeHero = () => {
                       {currF(
                         e.quoteSummary.result[0].price.regularMarketPrice.raw,
                         e.quoteSummary.result[0].price.currency
-                      )}{" "}
+                      )}{' '}
                       {e.quoteSummary.result[0].price.currency}
                     </span>
                     <span className="title-font font-medium">
@@ -102,7 +104,7 @@ const HomeHero = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default HomeHero;
+export default HomeHero

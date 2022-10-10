@@ -1,70 +1,72 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Redirect, Link } from "react-router-dom";
+import React, { useState, useEffect, useContext } from 'react'
+import { Redirect, Link } from 'react-router-dom'
 
-import { Form, Input, Button, Checkbox, Row, Col } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { Form, Input, Button, Checkbox, Row, Col } from 'antd'
+import { UserOutlined, LockOutlined } from '@ant-design/icons'
 
-import MainLayout from "./layouts/MainLayout";
-import GC from "context";
-import { loginUser } from "api/user";
-import { LOGIN } from "actionTypes";
+import MainLayout from './layouts/MainLayout'
+import GC from 'context'
+import { loginUser } from 'api/user'
+import { LOGIN } from 'actionTypes'
+
+const { REACT_APP_APP_NAME } = process.env
 
 const Login = () => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
   const [vals, setVals] = useState({
-    username: "",
-    password: "",
+    username: '',
+    password: '',
     usernameReqPF: false,
     pwdReqPF: false,
-    errMsg: "",
+    errMsg: '',
     redirect: null,
-    loginErrMsg: "",
+    loginErrMsg: '',
     loginTries: 10,
-  });
+  })
 
-  const { state, dispatch } = useContext(GC);
+  const { state, dispatch } = useContext(GC)
 
   useEffect(() => {
-    document.title = "Log In | Antler";
+    document.title = `Log In | ${REACT_APP_APP_NAME}`
     // this is to add background img
-    const mainContentEle = document.querySelector("#mainContent");
+    const mainContentEle = document.querySelector('#mainContent')
     if (mainContentEle) {
-      mainContentEle.classList.add("bgsx1");
+      mainContentEle.classList.add('bgsx1')
     }
-  });
+  })
 
   const handleInput = (e) => {
-    console.log(vals);
-    let { name, val } = e.target;
-    setVals({ ...vals, [name]: val });
-  };
+    console.log(vals)
+    let { name, val } = e.target
+    setVals({ ...vals, [name]: val })
+  }
 
   const onFinish = async (values) => {
-    delete values.remember; // temp
+    delete values.remember // temp
     try {
-      dispatch({ type: LOGIN, payload: await loginUser(values) });
+      dispatch({ type: LOGIN, payload: await loginUser(values) })
     } catch ({ message }) {
       if (vals.loginTries >= 0) {
         setVals({
           ...vals,
           loginErrMsg: `${message}, ${vals.loginTries} attempts left`,
           loginTries: --vals.loginTries,
-        });
+        })
       } else {
         setVals({
           ...vals,
           loginErrMsg: `${message}, please reset your username or password`,
-        });
+        })
       }
     }
-  };
+  }
 
   const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
-  if (state.loggedIn) return <Redirect to="/" />;
+  if (state.loggedIn) return <Redirect to="/" />
 
   return (
     <MainLayout>
@@ -96,7 +98,7 @@ const Login = () => {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your username!",
+                      message: 'Please input your username!',
                     },
                   ]}
                 >
@@ -116,7 +118,7 @@ const Login = () => {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your password!",
+                      message: 'Please input your password!',
                     },
                   ]}
                 >
@@ -164,7 +166,7 @@ const Login = () => {
 
         <Col md={{ span: 9 }} xl={{ span: 10 }}>
           <section>
-            <h2>Start Investing at Antler</h2>
+            <h2>Start Investing at {REACT_APP_APP_NAME}</h2>
             <Row className="mtb-5">
               <Col span={3}>
                 <img
@@ -188,7 +190,7 @@ const Login = () => {
                 />
               </Col>
               <Col span={16} className="ml-3">
-                <h3>Antler Makes Investing Simple</h3>
+                <h3>{REACT_APP_APP_NAME} Makes Investing Simple</h3>
                 <p>
                   Most brokerage platforms are too complicated. We're focused on
                   the best investing experience for retail investors
@@ -214,6 +216,6 @@ const Login = () => {
         </Col>
       </Row>
     </MainLayout>
-  );
-};
-export default Login;
+  )
+}
+export default Login
