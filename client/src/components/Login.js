@@ -9,6 +9,8 @@ import GC from 'context'
 import { loginUser } from 'api/user'
 import { LOGIN } from 'actionTypes'
 
+const { REACT_APP_NAME } = process.env
+
 const Login = () => {
   const [form] = Form.useForm()
 
@@ -26,7 +28,7 @@ const Login = () => {
   const { state, dispatch } = useContext(GC)
 
   useEffect(() => {
-    document.title = 'Log In | Antler'
+    document.title = `Log In | ${REACT_APP_NAME}`
     // this is to add background img
     const mainContentEle = document.querySelector('#mainContent')
     if (mainContentEle) {
@@ -164,7 +166,7 @@ const Login = () => {
 
         <Col md={{ span: 9 }} xl={{ span: 10 }}>
           <section>
-            <h2>Start Investing at Antler</h2>
+            <h2>Start Investing at {REACT_APP_NAME}</h2>
             <Row className="mtb-5">
               <Col span={3}>
                 <img alt="social" src="https://i.imgur.com/xMwZoiP.png" />
@@ -182,7 +184,7 @@ const Login = () => {
                 <img alt="investing" src="https://i.imgur.com/3OtXZOg.png" />
               </Col>
               <Col span={16} className="ml-3">
-                <h3>Antler Makes Investing Simple</h3>
+                <h3>{REACT_APP_NAME} Makes Investing Simple</h3>
                 <p>
                   Most brokerage platforms are too complicated. We're focused on
                   the best investing experience for retail investors

@@ -1,90 +1,92 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from 'react'
 
-import MainLayout from "components/layouts/MainLayout";
-import NotificationPopups from "components/common/NotificationPopups";
-import Modal from "components/common/Modal";
-import ButtonTWP from "components/common/ButtonTWP";
-import ModalContentAddFunds from "./ModalContentAddFunds";
-import ProfileContent from "./ProfileContent";
+import MainLayout from 'components/layouts/MainLayout'
+import NotificationPopups from 'components/common/NotificationPopups'
+import Modal from 'components/common/Modal'
+import ButtonTWP from 'components/common/ButtonTWP'
+import ModalContentAddFunds from './ModalContentAddFunds'
+import ProfileContent from './ProfileContent'
 
-import GC from "context";
-import { api_addFunds, getUsers } from "api/user";
-import { DEPOSIT_FUNDS } from "actionTypes";
-import { expiresIn } from "consts";
-import { currF } from "utils/format";
+import GC from 'context'
+import { api_addFunds, getUsers } from 'api/user'
+import { DEPOSIT_FUNDS } from 'actionTypes'
+import { expiresIn } from 'consts'
+import { currF } from 'utils/format'
+
+const { REACT_APP_NAME } = process.env
 
 const Profile = ({ match }) => {
-  const { state, dispatch } = useContext(GC);
-  const [userInfo, setUserInfo] = useState({});
-  const [depositVal, setDepositVal] = useState("1.00");
-  const [msgList, setMsgList] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [isMyProfile, setIsMyProfile] = useState(false);
+  const { state, dispatch } = useContext(GC)
+  const [userInfo, setUserInfo] = useState({})
+  const [depositVal, setDepositVal] = useState('1.00')
+  const [msgList, setMsgList] = useState([])
+  const [modalVisible, setModalVisible] = useState(false)
+  const [isMyProfile, setIsMyProfile] = useState(false)
 
   useEffect(() => {
-    const pn = match.url.split("/").pop().toLowerCase();
+    const pn = match.url.split('/').pop().toLowerCase()
 
     const initData = async () => {
       try {
         if (state.userObj?.username?.toLowerCase() === pn) {
-          setIsMyProfile(true);
-          setUserInfo(state.userObj);
+          setIsMyProfile(true)
+          setUserInfo(state.userObj)
         } else {
-          setIsMyProfile(false);
-          setUserInfo(await getUsers(pn));
+          setIsMyProfile(false)
+          setUserInfo(await getUsers(pn))
         }
       } catch (err) {
-        alert(err);
+        alert(err)
       }
-    };
+    }
 
     // console.log(
     //   { pn, match, isMyProfile },
     //   state.userObj?.username?.toUpperCase(),
     // );
-    initData();
-    document.title = `${pn} Profile | Antler`;
-  }, [match, state, isMyProfile]);
+    initData()
+    document.title = `${pn} Profile | ${REACT_APP_NAME}`
+  }, [match, state, isMyProfile])
 
   const removeEnded = (listOfPopups) => {
     // once items in msgList expires, remove it
     // calculated by seeing if current time is past > initialised at time + duration to exists
     return listOfPopups.reduce((acc, msg) => {
       if (msg.iat + msg.expiresIn > Date.now()) {
-        acc.push(msg);
+        acc.push(msg)
       }
-      return acc;
-    }, []);
-  };
+      return acc
+    }, [])
+  }
 
   const depositFunds = async () => {
-    console.log({ depositVal });
+    console.log({ depositVal })
     try {
       dispatch({
         type: DEPOSIT_FUNDS,
         payload: await api_addFunds({ value: depositVal }),
-      });
+      })
 
-      console.log(msgList);
+      console.log(msgList)
       setMsgList([
         // Review: Not ideal, only clears msgList if user deposits funds again.
         ...removeEnded(msgList),
         {
-          type: "success",
+          type: 'success',
           message: `${currF(depositVal)} was deposited to your Account`,
           iat: Date.now(),
           expiresIn,
         },
-      ]);
+      ])
       // setVisible(false);
     } catch ({ message }) {
-      console.log(msgList);
+      console.log(msgList)
       setMsgList([
         ...removeEnded(msgList),
-        { type: "error", message, iat: Date.now(), expiresIn },
-      ]);
+        { type: 'error', message, iat: Date.now(), expiresIn },
+      ])
     }
-  };
+  }
 
   return (
     <MainLayout width="24">
@@ -124,7 +126,7 @@ const Profile = ({ match }) => {
         </Modal>
       )}
       <div className="profile-page -mt-24">
-        <section className="relative block" style={{ height: "500px" }}>
+        <section className="relative block" style={{ height: '500px' }}>
           <div
             className="eDM absolute top-0 w-full h-full bg-center bg-cover"
             style={{
@@ -147,7 +149,7 @@ const Profile = ({ match }) => {
         />
       </div>
     </MainLayout>
-  );
-};
+  )
+}
 
-export default Profile;
+export default Profile
