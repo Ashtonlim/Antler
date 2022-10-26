@@ -1,24 +1,24 @@
-import React, { useState, useContext } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState, useContext } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import {
   HomeOutlined,
   PieChartOutlined,
   StockOutlined,
   UserOutlined,
   FileOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons'
 
-import GC from "context";
+import GC from 'context'
 
 const MobileNavbar = () => {
-  const { pathname } = useLocation();
-  const [sel, setSel] = useState(pathname);
+  const { pathname } = useLocation()
+  const [sel, setSel] = useState(pathname)
 
   const handleClick = (e) => {
-    setSel(e.currentTarget.innerText);
-  };
+    setSel(e.currentTarget.innerText)
+  }
 
-  const { state } = useContext(GC);
+  const { state } = useContext(GC)
   return (
     <section className="mobileNavbar">
       <div className="container">
@@ -39,7 +39,7 @@ const MobileNavbar = () => {
           <nav className="bottom-nav">
             <Link
               onClick={handleClick}
-              className={`bottom-nav-item ${sel === "/" ? "active" : ""}`}
+              className={`bottom-nav-item ${sel === '/' ? 'active' : ''}`}
               to={`/`}
             >
               <div className="bottom-nav-link">
@@ -49,7 +49,7 @@ const MobileNavbar = () => {
             </Link>
             <Link
               onClick={handleClick}
-              className={`bottom-nav-item ${sel === "/feed" ? "active" : ""}`}
+              className={`bottom-nav-item ${sel === '/feed' ? 'active' : ''}`}
               to={`/feed`}
             >
               <div className="bottom-nav-link">
@@ -60,7 +60,7 @@ const MobileNavbar = () => {
             <Link
               onClick={handleClick}
               className={`bottom-nav-item ${
-                sel === "/markets" ? "active" : ""
+                sel === '/markets' ? 'active' : ''
               }`}
               to={`/markets`}
             >
@@ -72,7 +72,7 @@ const MobileNavbar = () => {
             <Link
               onClick={handleClick}
               className={`bottom-nav-item ${
-                sel === "/portfolio" ? "active" : ""
+                sel === '/portfolio' ? 'active' : ''
               }`}
               to={`/portfolio`}
             >
@@ -85,7 +85,7 @@ const MobileNavbar = () => {
               <Link
                 onClick={handleClick}
                 className={`bottom-nav-item ${
-                  sel.includes("/profile") ? "active" : ""
+                  sel.includes('/profile') ? 'active' : ''
                 }`}
                 to={`/profile/${state.userObj?.name}`}
               >
@@ -99,7 +99,7 @@ const MobileNavbar = () => {
               <Link
                 onClick={handleClick}
                 className={`bottom-nav-item ${
-                  sel === "/login" ? "active" : ""
+                  sel === '/login' ? 'active' : ''
                 }`}
                 to={`/login`}
               >
@@ -113,7 +113,7 @@ const MobileNavbar = () => {
         </nav>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default MobileNavbar;
+export default MobileNavbar

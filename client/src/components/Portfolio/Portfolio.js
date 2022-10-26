@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from "react";
-import dayjs from "dayjs";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import dayjs from 'dayjs'
+import { Link } from 'react-router-dom'
 
-import useResetState from "components/hooks/useResetState";
-import MainLayout from "components/layouts/MainLayout";
-import ButtonTWP from "components/common/ButtonTWP";
-import { getCompanyInfo } from "api/YF";
-import { currF } from "utils/format";
+import useResetState from 'components/hooks/useResetState'
+import MainLayout from 'components/layouts/MainLayout'
+import ButtonTWP from 'components/common/ButtonTWP'
+import { getCompanyInfo } from 'api/YF'
+import { currF } from 'utils/format'
 
-import PortfolioTable from "./PortfolioTable";
+import PortfolioTable from './PortfolioTable'
 
 const Portfolio = () => {
-  const [inOut, setInOut] = useState([[], []]);
-  const { state } = useResetState();
+  const [inOut, setInOut] = useState([[], []])
+  const { state } = useResetState()
 
   useEffect(() => {
-    const data = state.userObj?.stock_portfolio;
-    if (typeof data === "undefined" || !Array.isArray(data)) return;
+    const data = state.userObj?.stock_portfolio
+    if (typeof data === 'undefined' || !Array.isArray(data)) return
 
-    let investedInX = 0;
+    let investedInX = 0
 
     const innie = data.reduce((acc, { ticker, stock_orders }) => {
       acc[ticker] = {
@@ -29,8 +29,8 @@ const Portfolio = () => {
             quantity,
             order_price: currF(order_price),
             createdAt: dayjs(createdAt)
-              .tz("Asia/Singapore")
-              .format("DD MMM YY hh:mma"),
+              .tz('Asia/Singapore')
+              .format('DD MMM YY hh:mma'),
           })
         ),
         ...stock_orders.reduce(
@@ -41,10 +41,10 @@ const Portfolio = () => {
           }),
           { totalQty: 0, totalVal: 0 }
         ),
-      };
+      }
 
-      return acc;
-    }, {});
+      return acc
+    }, {})
 
     const initData = async () => {
       try {
@@ -52,13 +52,13 @@ const Portfolio = () => {
         let outie = await Promise.all(
           Object.entries(innie).map(
             async ([ticker, { totalQty, totalVal }]) => {
-              investedInX += totalVal;
+              investedInX += totalVal
 
               const {
                 quoteSummary: {
                   result: [{ price }],
                 },
-              } = await getCompanyInfo(ticker);
+              } = await getCompanyInfo(ticker)
 
               return {
                 key: ticker,
@@ -82,40 +82,40 @@ const Portfolio = () => {
                     />
                   </span>
                 ),
-              };
+              }
             }
           )
-        );
+        )
 
         outie = outie.map((e) => {
           return {
             ...e,
             weightage: (e.totalVal / investedInX) * 100,
             pnl: ((e.mktPrice[0] - e.avgVal) / e.avgVal) * 100,
-          };
-        });
+          }
+        })
 
         // console.log("params", { inner, outer, innie, outie });
-        setInOut([innie, outie]);
+        setInOut([innie, outie])
         // setInner(innie);
         // setOuter(outie);
       } catch (err) {
-        alert(err);
+        alert(err)
       }
-    };
+    }
 
-    initData();
-  }, [state]);
+    initData()
+  }, [state])
 
   return (
     <MainLayout>
       {state?.userObj?.stock_portfolio ? (
         <PortfolioTable innerTableData={inOut[0]} outerTableData={inOut[1]} />
       ) : (
-        ""
+        ''
       )}
     </MainLayout>
-  );
-};
+  )
+}
 
-export default Portfolio;
+export default Portfolio

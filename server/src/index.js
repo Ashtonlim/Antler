@@ -24,8 +24,17 @@ const PORT = process.env.PORT || 8000
 //   })
 // )
 
+const Pub = './public'
+// app.get('/public', function (req, res) {
+//   res.sendFile(path.join(Pub, 'index.html'))
+// })
+
+let options = {}
+app.use(express.static('public'))
+
 app.use(express.json())
 app.use(cors())
+
 app.use('/users', usersRoute)
 app.use('/stocks', stocksRoute)
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc))

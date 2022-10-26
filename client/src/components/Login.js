@@ -1,70 +1,70 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Redirect, Link } from "react-router-dom";
+import React, { useState, useEffect, useContext } from 'react'
+import { Redirect, Link } from 'react-router-dom'
 
-import { Form, Input, Button, Checkbox, Row, Col } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { Form, Input, Button, Checkbox, Row, Col } from 'antd'
+import { UserOutlined, LockOutlined } from '@ant-design/icons'
 
-import MainLayout from "./layouts/MainLayout";
-import GC from "context";
-import { loginUser } from "api/user";
-import { LOGIN } from "actionTypes";
+import MainLayout from './layouts/MainLayout'
+import GC from 'context'
+import { loginUser } from 'api/user'
+import { LOGIN } from 'actionTypes'
 
 const Login = () => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
   const [vals, setVals] = useState({
-    username: "",
-    password: "",
+    username: '',
+    password: '',
     usernameReqPF: false,
     pwdReqPF: false,
-    errMsg: "",
+    errMsg: '',
     redirect: null,
-    loginErrMsg: "",
+    loginErrMsg: '',
     loginTries: 10,
-  });
+  })
 
-  const { state, dispatch } = useContext(GC);
+  const { state, dispatch } = useContext(GC)
 
   useEffect(() => {
-    document.title = "Log In | Antler";
+    document.title = 'Log In | Antler'
     // this is to add background img
-    const mainContentEle = document.querySelector("#mainContent");
+    const mainContentEle = document.querySelector('#mainContent')
     if (mainContentEle) {
-      mainContentEle.classList.add("bgsx1");
+      mainContentEle.classList.add('bgsx1')
     }
-  });
+  })
 
   const handleInput = (e) => {
-    console.log(vals);
-    let { name, val } = e.target;
-    setVals({ ...vals, [name]: val });
-  };
+    console.log(vals)
+    let { name, val } = e.target
+    setVals({ ...vals, [name]: val })
+  }
 
   const onFinish = async (values) => {
-    delete values.remember; // temp
+    delete values.remember // temp
     try {
-      dispatch({ type: LOGIN, payload: await loginUser(values) });
+      dispatch({ type: LOGIN, payload: await loginUser(values) })
     } catch ({ message }) {
       if (vals.loginTries >= 0) {
         setVals({
           ...vals,
           loginErrMsg: `${message}, ${vals.loginTries} attempts left`,
           loginTries: --vals.loginTries,
-        });
+        })
       } else {
         setVals({
           ...vals,
           loginErrMsg: `${message}, please reset your username or password`,
-        });
+        })
       }
     }
-  };
+  }
 
   const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
-  if (state.loggedIn) return <Redirect to="/" />;
+  if (state.loggedIn) return <Redirect to="/" />
 
   return (
     <MainLayout>
@@ -96,7 +96,7 @@ const Login = () => {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your username!",
+                      message: 'Please input your username!',
                     },
                   ]}
                 >
@@ -116,7 +116,7 @@ const Login = () => {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your password!",
+                      message: 'Please input your password!',
                     },
                   ]}
                 >
@@ -167,25 +167,19 @@ const Login = () => {
             <h2>Start Investing at Antler</h2>
             <Row className="mtb-5">
               <Col span={3}>
-                <img
-                  alt="social"
-                  src="https://image.flaticon.com/icons/png/512/2065/2065157.png"
-                />
+                <img alt="social" src="https://i.imgur.com/xMwZoiP.png" />
               </Col>
               <Col span={16} className="ml-3">
                 <h3>Discuss About Companies and Discover Great Research</h3>
                 <p>
-                  Post your analysis on compnaies and find what others have to
+                  Post your analysis on companies and find what others have to
                   say about your favourite companies
                 </p>
               </Col>
             </Row>
             <Row className="mtb-5">
               <Col span={3}>
-                <img
-                  alt="investing"
-                  src="https://image.flaticon.com/icons/png/512/2737/2737448.png"
-                />
+                <img alt="investing" src="https://i.imgur.com/3OtXZOg.png" />
               </Col>
               <Col span={16} className="ml-3">
                 <h3>Antler Makes Investing Simple</h3>
@@ -197,10 +191,7 @@ const Login = () => {
             </Row>
             <Row className="mtb-5">
               <Col span={3}>
-                <img
-                  alt="Reporting"
-                  src="https://image.flaticon.com/icons/png/512/3280/3280890.png"
-                />
+                <img alt="Reporting" src="https://i.imgur.com/n6npIbv.png" />
               </Col>
               <Col span={16} className="ml-3">
                 <h3>Track your Investments</h3>
@@ -214,6 +205,6 @@ const Login = () => {
         </Col>
       </Row>
     </MainLayout>
-  );
-};
-export default Login;
+  )
+}
+export default Login

@@ -1,0 +1,4 @@
+extract-mongo-schema -d "mongodb+srv://ash:qwe@antler-main.5lwsp.mongodb.net/myFirstDatabase" -o schema.html -f html-diagram
+extract-mongo-schema -d "mongodb+srv://ash:qwe@antler-main.5lwsp.mongodb.net/myFirstDatabase" -o schema.html -f html-diagram -n createdBy -n users:modifiedBy
+
+extract-mongo-schema -d "mongodb+srv://ash:qwe@antler-main.5lwsp.mongodb.net/myFirstDatabase?readPreference=primary&retryWrites=true&ssl=true" -u admin -o schema.html -f html-diagram -n createdBy -n users:modifiedBy
