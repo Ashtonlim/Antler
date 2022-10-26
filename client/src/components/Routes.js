@@ -8,6 +8,7 @@ import Login from './Login'
 import Profile from './Profile/Profile'
 import Portfolio from './Portfolio/Portfolio'
 import Stock from './Stock/Stock'
+import Watchlist from './Watchlist/Watchlist'
 
 const Routes = () => (
   <Switch>
@@ -18,6 +19,7 @@ const Routes = () => (
     <Route path="/profile/:username" component={Profile} />
     <Route path="/portfolio" component={Portfolio} />
     <Route path="/stock/:ticker" component={Stock} />
+    <Route path="/watchlist" component={Watchlist} />
   </Switch>
 )
 
