@@ -1,0 +1,24 @@
+// MongoDB Playground
+// To disable this template go to Settings | MongoDB | Use Default Template For Playground.
+// Make sure you are connected to enable completions and to be able to run a playground.
+// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
+
+// Select the database to use.
+
+use('tapChampionship');
+// db.createCollection('full_stock_list')
+// const teams = [
+//     {team_name: "test2", date_reg: "99/11", grp_num: 2}, {team_name: "test1", date_reg: "11/11", grp_num: 2}]
+// let x = db.teams.insertMany(teams)
+
+// let c = db.teams.aggregate([
+
+//     { 
+//       $group: { _id: '$grp_num', count: { $sum: 1 } }
+//     },
+//   ])
+
+// // console.log(c)
+// c
+
+db.teams.find({}, { _id: 0, team_name: 1, date_reg: 1, grp_num: 1 })

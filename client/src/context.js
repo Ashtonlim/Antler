@@ -1,6 +1,7 @@
 import React, { useReducer } from "react";
 
 import {
+  GET_LATEST_STATE,
   LOGIN,
   LOGIN_REJECTED,
   LOGOUT,
@@ -44,6 +45,7 @@ const reducer = (state = {}, action) => {
       const mode = { ...state, ...action.payload };
       saveState(mode);
       return mode;
+    case GET_LATEST_STATE:
     case DEPOSIT_FUNDS:
     case EDIT_TO_WATCHLIST:
     case BUY_STOCK:

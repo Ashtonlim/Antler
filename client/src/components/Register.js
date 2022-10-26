@@ -1,59 +1,59 @@
-import React, { useState, useContext, useEffect } from "react";
-import { Redirect, Link } from "react-router-dom";
+import React, { useState, useContext, useEffect } from 'react'
+import { Redirect, Link } from 'react-router-dom'
 
-import { Form, Input, Button, Row, Col } from "antd";
-import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
+import { Form, Input, Button, Row, Col } from 'antd'
+import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons'
 
-import MainLayout from "./layouts/MainLayout";
-import GC from "context";
-import { registerUser } from "api/user";
-import { LOGIN } from "actionTypes";
+import MainLayout from './layouts/MainLayout'
+import GC from 'context'
+import { registerUser } from 'api/user'
+import { LOGIN } from 'actionTypes'
 
 const Register = () => {
   const [vals, setVals] = useState({
-    email: "",
-    username: "",
-    password: "",
-    repassword: "",
-    name: "",
-    phone_num: "",
-  });
+    email: '',
+    username: '',
+    password: '',
+    repassword: '',
+    name: '',
+    phone_num: '',
+  })
 
-  const { state, dispatch } = useContext(GC);
-  const [form] = Form.useForm();
+  const { state, dispatch } = useContext(GC)
+  const [form] = Form.useForm()
 
   useEffect(() => {
-    document.title = "Register | Antler";
-    const mainContentEle = document.querySelector("#mainContent");
+    document.title = 'Register | Antler'
+    const mainContentEle = document.querySelector('#mainContent')
     if (mainContentEle) {
-      mainContentEle.classList.add("bgsx1");
+      mainContentEle.classList.add('bgsx1')
     }
-  });
+  })
 
   const handleInput = (e) => {
-    let { name, val } = e.target;
-    setVals({ ...vals, [name]: val });
-  };
+    let { name, val } = e.target
+    setVals({ ...vals, [name]: val })
+  }
 
   const onFinish = async (values) => {
-    console.log("Success:", values);
+    console.log('Success:', values)
 
-    delete values.repassword;
+    delete values.repassword
     try {
       dispatch({
         type: LOGIN,
         payload: await registerUser({ ...values }),
-      });
+      })
     } catch (err) {
-      alert("@register.js" + err + "change this to proper err on frontend");
+      alert('@register.js' + err + 'change this to proper err on frontend')
     }
-  };
+  }
 
   const onFinishFailed = (errorInfo) => {
-    console.log("Failed@register.js:", errorInfo);
-  };
+    console.log('Failed@register.js:', errorInfo)
+  }
 
-  if (state.loggedIn) return <Redirect to="/" />;
+  if (state.loggedIn) return <Redirect to="/" />
 
   return (
     <MainLayout>
@@ -83,12 +83,12 @@ const Register = () => {
                   name="email"
                   rules={[
                     {
-                      type: "email",
-                      message: "The input is not valid E-mail!",
+                      type: 'email',
+                      message: 'The input is not valid E-mail!',
                     },
                     {
                       required: true,
-                      message: "Please input your Email!",
+                      message: 'Please input your Email!',
                     },
                   ]}
                 >
@@ -106,7 +106,7 @@ const Register = () => {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your username!",
+                      message: 'Please input your username!',
                     },
                   ]}
                 >
@@ -125,7 +125,7 @@ const Register = () => {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your password!",
+                      message: 'Please input your password!',
                     },
                   ]}
                 >
@@ -141,22 +141,22 @@ const Register = () => {
                 <Form.Item
                   label="Re-type password"
                   name="repassword"
-                  dependencies={["password"]}
+                  dependencies={['password']}
                   hasFeedback
                   rules={[
                     {
                       required: true,
-                      message: "Please Re-type your password!",
+                      message: 'Please Re-type your password!',
                     },
                     ({ getFieldValue }) => ({
                       validator(rule, value) {
                         // getFieldValue is case-sensitive
-                        if (!value || getFieldValue("password") === value) {
-                          return Promise.resolve();
+                        if (!value || getFieldValue('password') === value) {
+                          return Promise.resolve()
                         }
                         return Promise.reject(
-                          "The two passwords that you entered do not match!"
-                        );
+                          'The two passwords that you entered do not match!'
+                        )
                       },
                     }),
                   ]}
@@ -176,7 +176,7 @@ const Register = () => {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your name!",
+                      message: 'Please input your name!',
                     },
                   ]}
                 >
@@ -195,7 +195,7 @@ const Register = () => {
                   rules={[
                     {
                       required: true,
-                      message: "Please input your phone number!",
+                      message: 'Please input your phone number!',
                     },
                   ]}
                 >
@@ -204,7 +204,7 @@ const Register = () => {
                     addonBefore="+65"
                     value={vals.phone_num}
                     onChange={handleInput}
-                    style={{ width: "100%" }}
+                    style={{ width: '100%' }}
                   />
                 </Form.Item>
 
@@ -226,25 +226,19 @@ const Register = () => {
             <h2>Start Investing at Antler</h2>
             <Row className="mtb-5">
               <Col span={3}>
-                <img
-                  alt="social"
-                  src="https://image.flaticon.com/icons/png/512/2065/2065157.png"
-                />
+                <img alt="social" src="https://i.imgur.com/xMwZoiP.png" />
               </Col>
               <Col span={16} className="ml-3">
                 <h3>Discuss About Companies and Discover Great Research</h3>
                 <p>
-                  Post your analysis on compnaies and find what others have to
+                  Post your analysis on companies and find what others have to
                   say about your favourite companies
                 </p>
               </Col>
             </Row>
             <Row className="mtb-5">
               <Col span={3}>
-                <img
-                  alt="investing"
-                  src="https://image.flaticon.com/icons/png/512/2737/2737448.png"
-                />
+                <img alt="investing" src="https://i.imgur.com/3OtXZOg.png" />
               </Col>
               <Col span={16} className="ml-3">
                 <h3>Antler Makes Investing Simple</h3>
@@ -256,10 +250,7 @@ const Register = () => {
             </Row>
             <Row className="mtb-5">
               <Col span={3}>
-                <img
-                  alt="Reporting"
-                  src="https://image.flaticon.com/icons/png/512/3280/3280890.png"
-                />
+                <img alt="Reporting" src="https://i.imgur.com/n6npIbv.png" />
               </Col>
               <Col span={16} className="ml-3">
                 <h3>Track your Investments</h3>
@@ -273,7 +264,7 @@ const Register = () => {
         </Col>
       </Row>
     </MainLayout>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register

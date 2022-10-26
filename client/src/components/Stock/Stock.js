@@ -43,12 +43,12 @@ const Stock = (props) => {
     setTicker(symbol.toUpperCase());
     const getInfo = async () => {
       try {
-        const res = await getCompanyInfo(symbol, [
+        const { quoteSummary } = await getCompanyInfo(symbol, [
           "assetProfile",
           "summaryDetail",
           "price",
         ]);
-        const apiData = res.quoteSummary?.result[0];
+        const apiData = quoteSummary?.result[0];
 
         // use api results directly, probably easier/fewer issues
         document.title =
@@ -56,7 +56,7 @@ const Stock = (props) => {
             ? `${
                 apiData.price?.shortName
               } ${symbol.toUpperCase()} Stock Price | Antler`
-            : "Antler Company Stock Price";
+            : "Company Stock Price | Antler";
 
         setCoyInfo(apiData);
         setForex(
@@ -65,10 +65,9 @@ const Stock = (props) => {
               from: apiData.price?.currency,
               to: "SGD",
             })
-          )[`${apiData.price?.currency.toUpperCase()}_SGD`]
+          )[`${apiData.price?.currency?.toUpperCase()}_SGD`]
         );
       } catch (err) {
-        // props.history.push("/stocks/TSLA");
         console.log(err);
       }
     };
@@ -84,9 +83,7 @@ const Stock = (props) => {
     try {
       dispatch({
         type: EDIT_TO_WATCHLIST,
-        payload: await api_editWatchlist({
-          value: { action: "update", tickers: [ticker] },
-        }),
+        payload: await api_editWatchlist({ val: { action: "add", ticker } }),
       });
     } catch ({ message }) {
       console.log(message);
@@ -97,9 +94,7 @@ const Stock = (props) => {
     try {
       dispatch({
         type: EDIT_TO_WATCHLIST,
-        payload: await api_editWatchlist({
-          value: { action: "delete", tickers: [ticker] },
-        }),
+        payload: await api_editWatchlist({ val: { action: "del", ticker } }),
       });
     } catch ({ message }) {
       console.log(message);

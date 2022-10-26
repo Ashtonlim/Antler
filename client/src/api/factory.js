@@ -8,9 +8,9 @@ export const createHeaders = (args) => ({
 
 // Client should be responsible for what's sent to backend.
 // Ideally, backend should be able to understand what to do based on info sent.
-export const createReqParams = (method, body, headers = "json") => {
+export const createReqParams = (method = "GET", body, headers = "json") => {
   const params = {};
-  if (method) params["method"] = method;
+  if (method) params["method"] = method.toUpperCase();
   if (body) params["body"] = JSON.stringify(body);
 
   if (headers === "json") {

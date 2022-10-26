@@ -9,7 +9,6 @@ import { TOGGLE_DARK_MODE } from "actionTypes";
 
 const LoggedInOutView = ({ loggedIn, userObj }) => {
   const [visible, setVisible] = useState(false);
-
   const handleVisibleChange = (visible) => {
     setVisible(visible);
   };
@@ -37,7 +36,7 @@ const LoggedInOutView = ({ loggedIn, userObj }) => {
               </li>
             </div>
           }
-          title={`${userObj.username?.toUpperCase()} - ${userObj.funds} SGD`}
+          title={`${userObj?.username?.toUpperCase()} - ${userObj?.funds} SGD`}
           placement="bottom"
           trigger="hover"
           visible={visible}
@@ -45,9 +44,9 @@ const LoggedInOutView = ({ loggedIn, userObj }) => {
         >
           <span className="avatar-item">
             {userObj ? (
-              <Link to={`/profile/${encodeURIComponent(userObj.username)}`}>
+              <Link to={`/profile/${encodeURIComponent(userObj?.username)}`}>
                 <Badge count={1}>
-                  <Avatar>{userObj.username?.slice(0, 1)}</Avatar>
+                  <Avatar>{userObj?.username?.slice(0, 1)}</Avatar>
                 </Badge>
               </Link>
             ) : (
@@ -78,6 +77,10 @@ const LoggedInOutView = ({ loggedIn, userObj }) => {
 const Header = () => {
   const { state, dispatch } = useContext(GC);
 
+  useEffect(() => {
+    toggleDarkModeStyle(state.darkMode);
+  }, [state.darkMode]);
+
   const toggleDarkModeStyle = (darkMode) => {
     if (darkMode) {
       const style = document.createElement("style");
@@ -101,9 +104,6 @@ const Header = () => {
     dispatch({ type: TOGGLE_DARK_MODE, payload: { darkMode } });
     toggleDarkModeStyle(darkMode);
   };
-  useEffect(() => {
-    toggleDarkModeStyle(state.darkMode);
-  }, [state.darkMode]);
 
   return (
     <header className="App-header bg-white">
@@ -136,7 +136,7 @@ const Header = () => {
                 <Link to="/">Discover</Link>
               </li>
               <li className="nav-item">
-                <Link to="/">Learn</Link>
+                <Link to="/learn">Learn</Link>
               </li>
               <li className="nav-item">
                 <Link to="/portfolio">Portfolio</Link>
@@ -148,7 +148,7 @@ const Header = () => {
               />
 
               {state.userObj?.funds >= 0 ? (
-                <li className="nav-item">Funds ${state.userObj.funds}</li>
+                <li className="nav-item">Funds ${state.userObj?.funds}</li>
               ) : (
                 ""
               )}

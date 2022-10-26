@@ -8,13 +8,13 @@ export const addUserFunds = async (req, res) => {
 
     // check if deposit is correct format, could convert to 2d.p. but it shouldn't be the case is > 2d.p. since frontend sends it as 2d.p.
     if (`${depositVal}`.split('.')[1]?.length > 2) return res.status(400).json(createErrMsg({ message: 'Specify deposit to the correct decimals' }))
-    if (depositVal > 999900) return res.status(400).json(createErrMsg({ message: 'Max deposit is only $9999' }))
+    if (depositVal > 9999) return res.status(400).json(createErrMsg({ message: 'Max deposit is only $9999' }))
 
     // Note: careful with runValidators (https://mongoosejs.com/docs/validation.html#update-validators -> caveats with 'this' and 'context')
-    const updateRes = await users.updateOne({ _id }, { $inc: { funds: dollarsToCents(depositVal) } }, { runValidators: true })
+    const upRes = await users.updateOne({ _id }, { $inc: { funds: dollarsToCents(depositVal) } }, { runValidators: true })
 
     // nModified only updates funds so === 1
-    if (updateRes.ok && updateRes.nModified === 1) {
+    if (upRes.ok && upRes.nModified === 1) {
       res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
     } else {
       res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))
@@ -28,20 +28,20 @@ export const addUserFunds = async (req, res) => {
 export const editUserWatchlist = async (req, res) => {
   try {
     const _id = verifyAndGetUserId(req, res)
-    const { action, tickers } = req.body?.value
+    const { action, ticker } = req.body?.val
 
     // check if ticker exists
     // Review: ignore for now cuz im lazy to implement
     // if (!tickerIsLegit(ticker)) return res.status(400).json(createErrMsg({ message: 'Invalid Ticker' }))
 
-    let updateRes
+    let upRes
 
     // review: is it btr to split this into own api endpoint? check if following same person results in err
-    if (action === 'update') updateRes = await users.updateOne({ _id }, { $addToSet: { stock_watchlist: tickers } })
-    if (action === 'delete') updateRes = await users.updateOne({ _id }, { $pull: { stock_watchlist: tickers } })
+    if (action === 'add') upRes = await users.updateOne({ _id }, { $addToSet: { stock_watchlist: ticker } })
+    if (action === 'del') upRes = await users.updateOne({ _id }, { $pull: { stock_watchlist: ticker } })
 
     // funds to be in dollars but not
-    if (updateRes.ok && updateRes.nModified > 0) {
+    if (upRes.ok && upRes.nModified > 0) {
       res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
     } else {
       res.status(400).json(createErrMsg({ message: 'Could not edit your watchlist' }))
@@ -61,10 +61,18 @@ export const getUsers = async (req, res) => {
 }
 
 export const getUser = async (req, res) => {
-  const { username } = req.params
   try {
-    const user = await users.findOne({ username }, { __v: 0, password: 0, email: 0, phone_num: 0, funds: 0, portfolio_private: 0 })
-    res.json(user)
+    const { username } = req.params
+    res.json(await users.findOne({ username }, { __v: 0, password: 0, email: 0, phone_num: 0, funds: 0, portfolio_private: 0 }))
+  } catch (err) {
+    res.status(404).json(err.message)
+  }
+}
+
+export const getLatestUserState = async (req, res) => {
+  try {
+    const _id = verifyAndGetUserId(req, res)
+    res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
   } catch (err) {
     res.status(404).json(err.message)
   }
@@ -75,6 +83,8 @@ export const follow = async (req, res) => {
   try {
     const _id = verifyAndGetUserId(req, res)
     const { username } = req.body
+
+    // Review: Should i check if I am alr following the person???
 
     // Either both updates must pass, or neither.
     // 1. add to my following list
@@ -118,6 +128,8 @@ export const unfollow = async (req, res) => {
   try {
     const _id = verifyAndGetUserId(req, res)
     const { username } = req.body
+
+    // Review: Should i check if even following person???
 
     const isunfollowed = await users.updateOne({ _id }, { $pull: { following: username } })
     if (isunfollowed.ok && isunfollowed.nModified > 0) {
