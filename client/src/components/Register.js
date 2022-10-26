@@ -228,25 +228,19 @@ const Register = () => {
             <h2>Start Investing at {REACT_APP_APP_NAME}</h2>
             <Row className="mtb-5">
               <Col span={3}>
-                <img
-                  alt="social"
-                  src="https://image.flaticon.com/icons/png/512/2065/2065157.png"
-                />
+                <img alt="social" src="https://i.imgur.com/xMwZoiP.png" />
               </Col>
               <Col span={16} className="ml-3">
                 <h3>Discuss About Companies and Discover Great Research</h3>
                 <p>
-                  Post your analysis on compnaies and find what others have to
+                  Post your analysis on companies and find what others have to
                   say about your favourite companies
                 </p>
               </Col>
             </Row>
             <Row className="mtb-5">
               <Col span={3}>
-                <img
-                  alt="investing"
-                  src="https://image.flaticon.com/icons/png/512/2737/2737448.png"
-                />
+                <img alt="investing" src="https://i.imgur.com/3OtXZOg.png" />
               </Col>
               <Col span={16} className="ml-3">
                 <h3>{REACT_APP_APP_NAME} Makes Investing Simple</h3>
@@ -258,10 +252,7 @@ const Register = () => {
             </Row>
             <Row className="mtb-5">
               <Col span={3}>
-                <img
-                  alt="Reporting"
-                  src="https://image.flaticon.com/icons/png/512/3280/3280890.png"
-                />
+                <img alt="Reporting" src="https://i.imgur.com/n6npIbv.png" />
               </Col>
               <Col span={16} className="ml-3">
                 <h3>Track your Investments</h3>

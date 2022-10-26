@@ -57,8 +57,8 @@ const Stock = (props) => {
           apiData.price?.shortName && symbol
             ? `${
                 apiData.price?.shortName
-              } ${symbol.toUpperCase()} Stock Price | ${REACT_APP_APP_NAME}`
-            : `${REACT_APP_APP_NAME} Company Stock Price`
+              } ${symbol.toUpperCase()} Stock Price | Antler`
+            : 'Antler Company Stock Price'
 
         setCoyInfo(apiData)
         setForex(

@@ -1,9 +1,8 @@
-/* eslint-disable no-undef */
 import React, { useState, useEffect } from "react";
 import { Table } from "antd";
+import protobuf from "protobufjs";
 
 import { currF, round } from "utils/format";
-import useYfws from "components/hooks/useYfws";
 
 const UpDown = ({ val }) => {
   const c = val >= 0 ? "green" : "red";
@@ -16,17 +15,52 @@ const UpDown = ({ val }) => {
 
 const PortfolioTable = ({ innerTableData, outerTableData }) => {
   const [OTB, setOTB] = useState(outerTableData);
-  const { next } = useYfws(outerTableData.map((e) => e.key.toUpperCase()));
-  console.log({ s: next });
   useEffect(() => {
     if (OTB.length) {
       // do open here, prevent running it twice????
-      let i = OTB.findIndex((e) => e.key === next.id);
-      OTB[i]["mktPrice"] = [next.price, next.currency];
-      OTB[i]["pnl"] = ((next.price - OTB[i].avgVal) / OTB[i].avgVal) * 100;
-      console.log({ next, OTB });
+      protobuf.load("./YPricingData.proto", (error, root) => {
+        if (error) {
+          return alert(error);
+        }
 
-      setOTB([...OTB]);
+        const yfticker = root.lookupType("yfticker");
+        const ws = new WebSocket("wss://streamer.finance.yahoo.com/");
+        ws.onopen = () => {
+          ws.send(
+            JSON.stringify({
+              subscribe: OTB.map((e) => e.key.toUpperCase()),
+            })
+          );
+          console.log("connected");
+        };
+
+        // when does this dc?
+        ws.onclose = () => {
+          console.log("disconnected");
+        };
+
+        ws.onmessage = (message) => {
+          // new Buffer(data, "base64") ===  Uint8Array.from(window.atob(data), (c) => c.charCodeAt(0))
+          // avoiding Buffer to avoid installing Buffer package.
+          // data is a Base64 encoded binary string (binary represented as ascii) that is converted to arr of integers.
+          // atob converts the Ascii TO Binary -> (ATOB) and
+          // the following => fn is just mapping the binary array produced into integers
+          // to test: window.atob(message.data).split('').map(c => c.charCodeAt(0))
+          // atob produces a string, split converts to arr, map so u can return arr of integers
+          // const next = yfticker.decode(new Buffer(message.data, "base64")); // prev usage
+
+          let next = yfticker.decode(
+            Uint8Array.from(window.atob(message.data), (c) => c.charCodeAt(0))
+          );
+
+          let i = OTB.findIndex((e) => e.key === next.id);
+          OTB[i]["mktPrice"] = [next.price, next.currency];
+          OTB[i]["pnl"] = ((next.price - OTB[i].avgVal) / OTB[i].avgVal) * 100;
+          console.log({ root, yfticker, next, OTB });
+
+          setOTB([...OTB]);
+        };
+      });
     }
   }, [outerTableData]);
 

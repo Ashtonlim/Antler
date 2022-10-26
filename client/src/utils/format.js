@@ -15,3 +15,7 @@ export const dollarsToCents = (val) => {
   }
   return val ? Math.round(parseFloat(val) * 100) : 0;
 };
+
+export const round = (val, places = 0) => {
+  return Math.round(val * 10 ** places) / 10 ** places;
+};

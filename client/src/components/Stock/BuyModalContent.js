@@ -1,5 +1,5 @@
-import React from "react";
-import { currF, dollarsToCents } from "utils/format";
+import React, { useState, useEffect } from "react";
+import { currF } from "utils/format";
 
 const BuyModalContent = ({
   price,
@@ -9,9 +9,17 @@ const BuyModalContent = ({
   funds,
 }) => {
   // setNoOfSharesToBuy
+  const [limit, setLimit] = useState(
+    ~~(funds / (price?.regularMarketPrice?.raw * forex))
+  );
+  useEffect(() => {
+    let max = ~~(funds / (price?.regularMarketPrice?.raw * forex));
+    if (max === 0) setNoOfSharesToBuy(max);
+    setLimit(max);
+  }, [setNoOfSharesToBuy, funds, price, forex]);
+
   const onBuySharesChange = (e) => {
     const val = +e.target.value;
-    const limit = ~~(funds / (price?.regularMarketPrice?.raw * forex));
 
     if (isNaN(val) || val < 0) return;
     if (val > limit) setNoOfSharesToBuy(limit);
@@ -22,18 +30,8 @@ const BuyModalContent = ({
   return (
     <div className="relative p-6 flex-auto">
       {/* Review: removed a div here, not sure if will cause issues... check di#01 */}
-      <span className="link px-3">
-        {`Max shares buyable: ${~~(
-          funds /
-          (price?.regularMarketPrice?.raw * forex)
-        )}`}
-      </span>
-      {/* <label
-        htmlFor="price"
-        className="block text-sm font-medium text-gray-700"
-      >
-        Number of Shares:
-      </label> */}
+      <span className="link px-3">{`Buy max : ${limit} shares`}</span>
+
       <div className="mt-1 relative rounded-md shadow-sm">
         <div className="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none">
           <span className="text-gray-500 sm:text-sm">Buy</span>
@@ -67,20 +65,7 @@ const BuyModalContent = ({
         )}`}
       </div>
       <div className="text-right px-3">
-        {`Your New Balance: ${console.log("sell", {
-          funds,
-          noOfSharesToBuy,
-          forex,
-          price: price.regularMarketPrice.raw,
-          OG: funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex,
-          dtc: dollarsToCents(
-            funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex
-          ),
-          currF: currF(
-            funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex,
-            "SGD"
-          ),
-        })} ${currF(
+        {`Your New Balance: ${currF(
           funds - noOfSharesToBuy * price.regularMarketPrice.raw * forex,
           "SGD"
         )}`}
@@ -90,3 +75,18 @@ const BuyModalContent = ({
 };
 
 export default BuyModalContent;
+
+// ${console.log("sell", {
+//   funds,
+//   noOfSharesToBuy,
+//   forex,
+//   price: price.regularMarketPrice.raw,
+//   OG: funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex,
+//   dtc: dollarsToCents(
+//     funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex
+//   ),
+//   currF: currF(
+//     funds + noOfSharesToBuy * price.regularMarketPrice.raw * forex,
+//     "SGD"
+//   ),
+// })}

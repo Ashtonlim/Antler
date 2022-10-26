@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { addUserFunds, editUserWatchlist, getUsers, getUser, follow, unfollow } from './controller'
+import { addUserFunds, editUserWatchlist, getUsers, getUser, getLatestUserState, follow, unfollow } from './controller'
 import { buyStock, sellStock } from './contrUsers_Trade'
 import { login, register } from './contrUsers_Auth'
 import { auth } from './middleware'
@@ -7,6 +7,7 @@ const router = Router()
 
 router.get('/', getUsers)
 router.get('/:username', getUser)
+router.get('/latest/state', auth, getLatestUserState)
 router.post('/reg', register)
 router.post('/login', login)
 router.post('/addfunds', auth, addUserFunds)
