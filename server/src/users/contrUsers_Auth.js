@@ -39,8 +39,8 @@ export const register = async (req, res) => {
     // createdAt: new Date().toISOString() // add this back if oid cant give timestamp
     const userObj = new users({ ...body, funds: 100000 })
     userObj.setPassword(body.password)
-
     console.log('@controller.js: registering new user... ', userObj)
+
     // what happens to destructuring if await returns err obj?
     const { email, _id } = await userObj.save()
     const token = sign({ email, _id }, process.env.JWTSECRET, { expiresIn })
