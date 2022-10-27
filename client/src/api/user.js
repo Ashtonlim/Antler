@@ -1,29 +1,29 @@
 import { createReqParams, resHandler } from './factory'
-import { BASE_YF } from './apiConsts'
+import { BASE } from './apiConsts'
 
 export const getUsers = async (id = null) => {
-  return await resHandler(await fetch(`${BASE_YF}/users${id ? '/' + id : ''}`))
+  return await resHandler(await fetch(`${BASE}/users${id ? '/' + id : ''}`))
 }
 
 export const api_getLatestState = async () => {
   return await resHandler(
-    await fetch(`${BASE_YF}/users/latest/state`, createReqParams())
+    await fetch(`${BASE}/users/latest/state`, createReqParams())
   )
 }
 
 export const registerUser = async (regDetails) => {
   console.log('regDetails', regDetails)
   const res = await fetch(
-    `${BASE_YF}/users/reg`,
+    `${BASE}/users/reg`,
     createReqParams('POST', regDetails)
   )
   return await resHandler(res)
 }
 
 export const loginUser = async (loginDetails) => {
-  console.log(`${BASE_YF}/users/login`, BASE_YF)
+  console.log(`${BASE}/users/login`, BASE)
   const res = await fetch(
-    `${BASE_YF}/users/login`,
+    `${BASE}/users/login`,
     createReqParams('POST', loginDetails)
   )
 
@@ -31,16 +31,13 @@ export const loginUser = async (loginDetails) => {
 }
 
 export const api_followUser = async (info) => {
-  const res = await fetch(
-    `${BASE_YF}/users/follow`,
-    createReqParams('POST', info)
-  )
+  const res = await fetch(`${BASE}/users/follow`, createReqParams('POST', info))
   return await resHandler(res)
 }
 
 export const api_unfollowUser = async (info) => {
   const res = await fetch(
-    `${BASE_YF}/users/unfollow`,
+    `${BASE}/users/unfollow`,
     createReqParams('POST', info)
   )
   return await resHandler(res)
@@ -48,7 +45,7 @@ export const api_unfollowUser = async (info) => {
 
 export const api_addFunds = async (info) => {
   const res = await fetch(
-    `${BASE_YF}/users/addfunds`,
+    `${BASE}/users/addfunds`,
     createReqParams('POST', info)
   )
   return await resHandler(res)
@@ -56,7 +53,7 @@ export const api_addFunds = async (info) => {
 
 export const api_editWatchlist = async (info) => {
   const res = await fetch(
-    `${BASE_YF}/users/editwatchlist`,
+    `${BASE}/users/editwatchlist`,
     createReqParams('POST', info)
   )
   return await resHandler(res)
@@ -64,7 +61,7 @@ export const api_editWatchlist = async (info) => {
 
 export const api_buyStock = async (info) => {
   const res = await fetch(
-    `${BASE_YF}/users/buystock`,
+    `${BASE}/users/buystock`,
     createReqParams('POST', info)
   )
   return await resHandler(res)
@@ -72,7 +69,7 @@ export const api_buyStock = async (info) => {
 
 export const api_sellStock = async (info) => {
   const res = await fetch(
-    `${BASE_YF}/users/sellstock`,
+    `${BASE}/users/sellstock`,
     createReqParams('POST', info)
   )
   return await resHandler(res)
@@ -81,7 +78,7 @@ export const api_sellStock = async (info) => {
 // export const editUser = async (userDetails) => {
 //   const userData = loadState();
 //   const res = await fetch(
-//     `${BASE_YF}/users/${userData.id}`,
+//     `${BASE}/users/${userData.id}`,
 //     createReqParams("PUT", userDetails)
 //   );
 //   return await resHandler(res);
@@ -89,7 +86,7 @@ export const api_sellStock = async (info) => {
 
 // export const editPass = async (passDetails) => {
 //   const res = await fetch(
-//     `${BASE_YF}/users/reset_password`,
+//     `${BASE}/users/reset_password`,
 //     createReqParams("PUT", passDetails)
 //   );
 //   return await resHandler(res);

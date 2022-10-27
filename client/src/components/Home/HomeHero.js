@@ -21,7 +21,7 @@ const HomeHero = () => {
         setSelCoyData(
           await Promise.all([
             getCompanyInfo('aapl'),
-            getCompanyInfo('tsla'),
+            getCompanyInfo('msft'),
             getCompanyInfo('abnb'),
           ])
         )
@@ -63,7 +63,7 @@ const HomeHero = () => {
             </button>
           </div>
           <p className="text-sm mt-2 text-gray-500 mb-8 w-full">
-            Try Tesla or TSLA, Apple or AAPL.
+            Try Microsoft or their ticker MSFT.
           </p>
           <div className="flex lg:flex-row md:flex-col">
             {selCoyData &&
@@ -93,7 +93,38 @@ const HomeHero = () => {
                 </Link>
               ))}
           </div>
+
+          <div className="flex lg:flex-row md:flex-col">
+            <h2 className="mb-8 leading-relaxed">Indexes</h2>
+            {selCoyData &&
+              selCoyData.map((e, i) => (
+                <Link
+                  key={`${e.quoteSummary.result[0].price.symbol}`}
+                  to={`/stock/${e.quoteSummary.result[0].price.symbol}`}
+                  className="bg-gray-200 inline-flex py-3 px-5 rounded-lg items-center lg:mr-4 md:mr-0 mr-4 md:mt-4 mt-0 lg:mt-0 hover:bg-gray-300 focus:outline-none"
+                >
+                  <img
+                    src={selCoyLogoURL[i]}
+                    alt={`${e.quoteSummary.result[0].price.longName} logo`}
+                    className="w-6"
+                  />
+                  <span className="ml-4 flex items-start flex-col leading-none">
+                    <span className="text-xs text-gray-600 mb-1">
+                      {currF(
+                        e.quoteSummary.result[0].price.regularMarketPrice.raw,
+                        e.quoteSummary.result[0].price.currency
+                      )}{' '}
+                      {e.quoteSummary.result[0].price.currency}
+                    </span>
+                    <span className="title-font font-medium">
+                      {e.quoteSummary.result[0].price.symbol}
+                    </span>
+                  </span>
+                </Link>
+              ))}
+          </div>
         </div>
+
         <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6">
           <AllTheData />
           {/* <img

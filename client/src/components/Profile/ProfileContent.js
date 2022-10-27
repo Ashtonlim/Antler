@@ -1,10 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react'
+import { Link } from 'react-router-dom'
 
-import ButtonTWP from "components/common/ButtonTWP";
+import ButtonTWP from 'components/common/ButtonTWP'
 
-import { FOLLOW_USER, UNFOLLOW_USER } from "actionTypes";
-import { api_unfollowUser, api_followUser } from "api/user";
+import { FOLLOW_USER, UNFOLLOW_USER } from 'actionTypes'
+import { api_unfollowUser, api_followUser } from 'api/user'
 
 const ProfileContent = ({
   dispatch,
@@ -18,22 +18,22 @@ const ProfileContent = ({
       dispatch({
         type: FOLLOW_USER,
         payload: await api_followUser({ username: userInfo?.username }),
-      });
+      })
     } catch (err) {
-      alert(err);
+      alert(err)
     }
-  };
+  }
 
   const unfollow = async () => {
     try {
       dispatch({
         type: UNFOLLOW_USER,
         payload: await api_unfollowUser({ username: userInfo?.username }),
-      });
+      })
     } catch (err) {
-      alert(err);
+      alert(err)
     }
-  };
+  }
   return (
     <section className="relative py-16">
       <div className="container mx-auto px-4">
@@ -43,12 +43,12 @@ const ProfileContent = ({
               <div className="w-full lg:w-3/12 lg:order-2 flex justify-center">
                 <img
                   alt="Profile"
-                  src="https://dummyimage.com/150x150"
+                  src="https://imgur.com/4l2Vc4V.png"
                   className="shadow-xl rounded-full h-auto border-none -mt-20"
                   style={{
-                    width: "150px",
-                    height: "150px",
-                    maxWidth: "150px",
+                    width: '150px',
+                    height: '150px',
+                    maxWidth: '150px',
                   }}
                 />
               </div>
@@ -58,7 +58,7 @@ const ProfileContent = ({
                     <ButtonTWP
                       text="Add funds"
                       onClick={() => {
-                        setVisible(true);
+                        setVisible(true)
                       }}
                     />
                   </div>
@@ -124,7 +124,7 @@ const ProfileContent = ({
                 </>
               )}
               <div className="mb-2 text-gray-700">Lorum epsum</div>
-            </div>{" "}
+            </div>{' '}
             <div className="mt-10 py-10 text-center">
               <div className="flex flex-wrap justify-center">
                 {isMyProfile && (
@@ -132,7 +132,7 @@ const ProfileContent = ({
                     <Link
                       className="eDM align-middle bg-blue-500 hover:bg-blue-600 uppercase text-white font-bold hover:shadow-md hover:text-white px-4 py-2 rounded outline-none focus:outline-none mb-1"
                       to="/logout"
-                      style={{ transition: "all .15s ease" }}
+                      style={{ transition: 'all .15s ease' }}
                     >
                       Logout
                     </Link>
@@ -144,7 +144,7 @@ const ProfileContent = ({
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default ProfileContent;
+export default ProfileContent
