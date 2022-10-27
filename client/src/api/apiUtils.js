@@ -1,12 +1,7 @@
 import { resHandler } from './factory'
-
-const { REACT_APP_AUTH } = process.env
-
-const forex = `api/v7`
-const BASE = REACT_APP_AUTH
-const key = 'e4522a915b50a3abd0b7'
+import { BASE_FX, FX_API_KEY } from './apiConsts'
 
 export const currConv = async ({ from = 'USD', to = 'SGD' } = {}) => {
-  const api = `${BASE}/${forex}/convert?q=${from}_${to}&compact=ultra&apiKey=${key}`
+  const api = `${BASE_FX}/convert?q=${from}_${to}&compact=ultra&apiKey=${FX_API_KEY}`
   return await resHandler(await fetch(api))
 }
