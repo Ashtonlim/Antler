@@ -9,20 +9,30 @@ const { REACT_APP_NAME } = process.env
 
 const HomeHero = () => {
   // hardcoded
-  const selCoyLogoURL = [
+  const companyLogoURL = [
     'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg',
     'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Tesla_Motors.svg/1200px-Tesla_Motors.svg.png',
     'https://logodownload.org/wp-content/uploads/2016/10/airbnb-logo-3-1.png',
   ]
-  const [selCoyData, setSelCoyData] = useState([])
+
+  const [companyData, setCompanyData] = useState([])
+  const [indexData, setIndexData] = useState([])
+
   useEffect(() => {
     const initData = async () => {
       try {
-        setSelCoyData(
+        setCompanyData(
           await Promise.all([
             getCompanyInfo('aapl'),
             getCompanyInfo('msft'),
             getCompanyInfo('abnb'),
+          ])
+        )
+        setIndexData(
+          await Promise.all([
+            getCompanyInfo('%5EGSPC'),
+            getCompanyInfo('%5EIXIC'),
+            getCompanyInfo('%5EDJI'),
           ])
         )
       } catch (err) {
@@ -65,59 +75,56 @@ const HomeHero = () => {
           <p className="text-sm mt-2 text-gray-500 mb-8 w-full">
             Try Microsoft or their ticker MSFT.
           </p>
-          <div className="flex lg:flex-row md:flex-col">
-            {selCoyData &&
-              selCoyData.map((e, i) => (
+
+          <p className="font-bold text-2xl mb-3 leading-relaxed">Indexes</p>
+          <div className="mb-8 flex lg:flex-row md:flex-col">
+            {indexData &&
+              indexData.map((e, i) => (
                 <Link
                   key={`${e.quoteSummary.result[0].price.symbol}`}
                   to={`/stock/${e.quoteSummary.result[0].price.symbol}`}
                   className="bg-gray-200 inline-flex py-3 px-5 rounded-lg items-center lg:mr-4 md:mr-0 mr-4 md:mt-4 mt-0 lg:mt-0 hover:bg-gray-300 focus:outline-none"
                 >
-                  <img
-                    src={selCoyLogoURL[i]}
-                    alt={`${e.quoteSummary.result[0].price.longName} logo`}
-                    className="w-6"
-                  />
-                  <span className="ml-4 flex items-start flex-col leading-none">
-                    <span className="text-xs text-gray-600 mb-1">
+                  <span className="flex items-start flex-col leading-none">
+                    <span className="title-font font-medium mb-1">
+                      {e.quoteSummary.result[0].price.shortName}
+                    </span>
+                    <span className="text-xs text-gray-600">
                       {currF(
                         e.quoteSummary.result[0].price.regularMarketPrice.raw,
                         e.quoteSummary.result[0].price.currency
                       )}{' '}
                       {e.quoteSummary.result[0].price.currency}
-                    </span>
-                    <span className="title-font font-medium">
-                      {e.quoteSummary.result[0].price.symbol}
                     </span>
                   </span>
                 </Link>
               ))}
           </div>
 
+          <p className="font-bold text-2xl mb-3 leading-relaxed">Stocks</p>
           <div className="flex lg:flex-row md:flex-col">
-            <h2 className="mb-8 leading-relaxed">Indexes</h2>
-            {selCoyData &&
-              selCoyData.map((e, i) => (
+            {companyData &&
+              companyData.map((e, i) => (
                 <Link
                   key={`${e.quoteSummary.result[0].price.symbol}`}
                   to={`/stock/${e.quoteSummary.result[0].price.symbol}`}
                   className="bg-gray-200 inline-flex py-3 px-5 rounded-lg items-center lg:mr-4 md:mr-0 mr-4 md:mt-4 mt-0 lg:mt-0 hover:bg-gray-300 focus:outline-none"
                 >
                   <img
-                    src={selCoyLogoURL[i]}
+                    src={companyLogoURL[i]}
                     alt={`${e.quoteSummary.result[0].price.longName} logo`}
                     className="w-6"
                   />
                   <span className="ml-4 flex items-start flex-col leading-none">
-                    <span className="text-xs text-gray-600 mb-1">
+                    <span className="title-font font-medium mb-1">
+                      {e.quoteSummary.result[0].price.symbol}
+                    </span>
+                    <span className="text-xs text-gray-600">
                       {currF(
                         e.quoteSummary.result[0].price.regularMarketPrice.raw,
                         e.quoteSummary.result[0].price.currency
                       )}{' '}
                       {e.quoteSummary.result[0].price.currency}
-                    </span>
-                    <span className="title-font font-medium">
-                      {e.quoteSummary.result[0].price.symbol}
                     </span>
                   </span>
                 </Link>

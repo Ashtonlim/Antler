@@ -115,8 +115,6 @@ const Stock = (props) => {
           forex,
         }),
       })
-      // setNoOfSharesToBuy(0);
-      // setBuyModalVisible(false);
     } catch ({ message }) {
       console.log(message)
     }

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { currF } from "utils/format";
+import React, { useState, useEffect } from 'react'
+import { currF } from 'utils/format'
 
 const BuyModalContent = ({
   price,
@@ -11,26 +11,26 @@ const BuyModalContent = ({
   // setNoOfSharesToBuy
   const [limit, setLimit] = useState(
     ~~(funds / (price?.regularMarketPrice?.raw * forex))
-  );
+  )
   useEffect(() => {
-    let max = ~~(funds / (price?.regularMarketPrice?.raw * forex));
-    if (max === 0) setNoOfSharesToBuy(max);
-    setLimit(max);
-  }, [setNoOfSharesToBuy, funds, price, forex]);
+    let max = ~~(funds / (price?.regularMarketPrice?.raw * forex))
+    if (max === 0) setNoOfSharesToBuy(max)
+    setLimit(max)
+  }, [setNoOfSharesToBuy, funds, price, forex])
 
   const onBuySharesChange = (e) => {
-    const val = +e.target.value;
+    const val = +e.target.value
 
-    if (isNaN(val) || val < 0) return;
-    if (val > limit) setNoOfSharesToBuy(limit);
-    else if (limit === 0) setNoOfSharesToBuy(0);
-    else setNoOfSharesToBuy(val);
-  };
+    if (isNaN(val) || val < 0) return
+    if (val > limit) setNoOfSharesToBuy(limit)
+    else if (limit === 0) setNoOfSharesToBuy(0)
+    else setNoOfSharesToBuy(val)
+  }
 
   return (
     <div className="relative p-6 flex-auto">
       {/* Review: removed a div here, not sure if will cause issues... check di#01 */}
-      <span className="link px-3">{`Buy max : ${limit} shares`}</span>
+      {/* <span className="link px-3">{`Buy max : ${limit} shares`}</span> */}
 
       <div className="mt-1 relative rounded-md shadow-sm">
         <div className="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none">
@@ -49,8 +49,7 @@ const BuyModalContent = ({
 
         <div className="absolute inset-y-0 right-0 px-3 flex items-center pointer-events-none">
           <span className="text-gray-500 sm:text-sm">
-            shares x {currF(price.regularMarketPrice?.raw, price.currency)}
-            /share =
+            shares for {currF(price.regularMarketPrice?.raw, price.currency)} =
             {` ${currF(
               noOfSharesToBuy * price.regularMarketPrice.raw,
               price.currency
@@ -59,22 +58,22 @@ const BuyModalContent = ({
         </div>
       </div>
       <div className="text-right px-3">
-        {`Total: ${currF(
+        {`Total ${currF(
           noOfSharesToBuy * price.regularMarketPrice.raw * forex,
-          "SGD"
+          'SGD'
         )}`}
       </div>
       <div className="text-right px-3">
         {`Your New Balance: ${currF(
           funds - noOfSharesToBuy * price.regularMarketPrice.raw * forex,
-          "SGD"
+          'SGD'
         )}`}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BuyModalContent;
+export default BuyModalContent
 
 // ${console.log("sell", {
 //   funds,

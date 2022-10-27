@@ -20,7 +20,7 @@ app.use('/stocks', stocksRoute)
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc))
 
 app.use('/api/v7', createProxyMiddleware({ target: 'https://free.currconv.com', changeOrigin: true }))
-app.use('/', createProxyMiddleware({ target: 'https://query1.finance.yahoo.com', changeOrigin: true }))
+app.use('/yf', createProxyMiddleware({ target: 'https://query2.finance.yahoo.com', changeOrigin: true, pathRewrite: { '/yf': '/' } }))
 
 const start = async () => {
   try {

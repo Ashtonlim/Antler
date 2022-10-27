@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer } from 'react'
 
 import {
   GET_LATEST_STATE,
@@ -12,39 +12,39 @@ import {
   SELL_STOCK,
   FOLLOW_USER,
   UNFOLLOW_USER,
-} from "./actionTypes";
-import { saveState, loadState } from "./localStorage";
-const GC = React.createContext();
+} from './actionTypes'
+import { saveState, loadState } from './localStorage'
 
-const user = loadState();
+const GC = React.createContext()
+const user = loadState()
 
 const stateResolver = (state, action) => {
-  const newState = { ...state, ...action.payload };
-  saveState(newState);
-  return newState;
-};
+  const newState = { ...state, ...action.payload }
+  saveState(newState)
+  return newState
+}
 
 // uses something similar to redux pattern.
 // google redux for more info
 const reducer = (state = {}, action) => {
   switch (action.type) {
     case LOGIN:
-      const loginState = { ...state, ...action.payload, loggedIn: true };
-      saveState(loginState);
-      console.log("From reducers.js, LOG_IN");
-      return loginState;
+      const loginState = { ...state, ...action.payload, loggedIn: true }
+      saveState(loginState)
+      console.log('From reducers.js, LOG_IN')
+      return loginState
     case LOGIN_REJECTED:
-      console.log("From reducers.js, LOG_IN_REJECTED");
-      return { ...state, ...action.payload };
+      console.log('From reducers.js, LOG_IN_REJECTED')
+      return { ...state, ...action.payload }
     case LOGOUT:
-      const logoutState = { ...state, loggedIn: false, userObj: {}, token: {} };
-      saveState(logoutState);
-      return logoutState;
+      const logoutState = { ...state, loggedIn: false, userObj: {}, token: {} }
+      saveState(logoutState)
+      return logoutState
     case TOGGLE_DARK_MODE:
       // Search: REVIEW tdm#01
-      const mode = { ...state, ...action.payload };
-      saveState(mode);
-      return mode;
+      const mode = { ...state, ...action.payload }
+      saveState(mode)
+      return mode
     case GET_LATEST_STATE:
     case DEPOSIT_FUNDS:
     case EDIT_TO_WATCHLIST:
@@ -52,19 +52,19 @@ const reducer = (state = {}, action) => {
     case SELL_STOCK:
     case FOLLOW_USER:
     case UNFOLLOW_USER:
-      return stateResolver(state, action);
+      return stateResolver(state, action)
     default:
-      return state;
+      return state
   }
-};
+}
 
 // allows different component to access state held in a context
 export const ContextProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, user);
-  return <GC.Provider value={{ state, dispatch }}>{children}</GC.Provider>;
-};
+  const [state, dispatch] = useReducer(reducer, user)
+  return <GC.Provider value={{ state, dispatch }}>{children}</GC.Provider>
+}
 
-export default GC;
+export default GC
 
 // ====== REVIEW tdm#01 ======
 // ====== REVIEW tdm#01 ======
