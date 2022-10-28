@@ -23,6 +23,7 @@ import StockCalendarDates from './StockCalendarDates'
 import StockMetrics from './StockMetrics'
 // import StockOfficers from "./StockOfficers";
 import Modal from 'components/common/Modal'
+import CommentSection from './CommentSection'
 
 const { REACT_APP_NAME } = process.env
 
@@ -202,7 +203,7 @@ const Stock = (props) => {
       ) : (
         <div></div>
       )}
-      <section className="card mb-3">
+      <section className="card mb-3 w-3/5">
         {coyInfo && ticker && (
           <div>
             <div style={{ float: 'right' }}>
@@ -284,6 +285,7 @@ const Stock = (props) => {
         </div>
       </section>
 
+      <h3 className="text-xl mt-8">Discover More</h3>
       <div className="mb-5">
         <TinyStockChart ticker={'GOOG'} />
         <TinyStockChart ticker={'FUTU'} />

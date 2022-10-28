@@ -11,7 +11,8 @@ const HomeHero = () => {
   // hardcoded
   const companyLogoURL = [
     'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Tesla_Motors.svg/1200px-Tesla_Motors.svg.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Microsoft_icon.svg/512px-Microsoft_icon.svg.png',
+    // 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Tesla_Motors.svg/1200px-Tesla_Motors.svg.png',
     'https://logodownload.org/wp-content/uploads/2016/10/airbnb-logo-3-1.png',
   ]
 
@@ -72,7 +73,7 @@ const HomeHero = () => {
               Search
             </button>
           </div>
-          <p className="text-sm mt-2 text-gray-500 mb-8 w-full">
+          <p className="text-sm mt-2 text-gray-500 mb-8 w-full text-align">
             Try Microsoft or their ticker MSFT.
           </p>
 
@@ -86,7 +87,7 @@ const HomeHero = () => {
                   className="bg-gray-200 inline-flex py-3 px-5 rounded-lg items-center lg:mr-4 md:mr-0 mr-4 md:mt-4 mt-0 lg:mt-0 hover:bg-gray-300 focus:outline-none"
                 >
                   <span className="flex items-start flex-col leading-none">
-                    <span className="title-font font-medium mb-1">
+                    <span className="title-font font-medium mb-1 text-left">
                       {e.quoteSummary.result[0].price.shortName}
                     </span>
                     <span className="text-xs text-gray-600">

@@ -21,6 +21,8 @@ const Register = () => {
     phone_num: '',
   })
 
+  const [emailIsOk, setEmailIsOk] = useState([true, ''])
+
   const { state, dispatch } = useContext(GC)
   const [form] = Form.useForm()
 
@@ -48,11 +50,13 @@ const Register = () => {
       })
     } catch (err) {
       alert('@register.js' + err + 'change this to proper err on frontend')
+      setEmailIsOk([true, err])
     }
   }
 
   const onFinishFailed = (errorInfo) => {
     console.log('Failed@register.js:', errorInfo)
+    setEmailIsOk([true, errorInfo])
   }
 
   if (state.loggedIn) return <Redirect to="/" />
@@ -180,6 +184,10 @@ const Register = () => {
                       required: true,
                       message: 'Please input your name!',
                     },
+                    {
+                      pattern: new RegExp(/^[a-zA-Z`_=+\']+$/i),
+                      message: 'Only alphabets allowed',
+                    },
                   ]}
                 >
                   <Input
@@ -211,8 +219,13 @@ const Register = () => {
                 </Form.Item>
 
                 <Form.Item>
-                  <Button size="large" type="primary" htmlType="submit">
-                    Submit
+                  <Button
+                    className="mt-5"
+                    size="large"
+                    type="primary"
+                    htmlType="submit"
+                  >
+                    Register Account
                   </Button>
                 </Form.Item>
               </Form>

@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import ButtonTWP from 'components/common/ButtonTWP'
+import Modal from 'components/common/Modal'
+import ModalContentFF from './ModalContentFF'
 
 import { FOLLOW_USER, UNFOLLOW_USER } from 'actionTypes'
 import { api_unfollowUser, api_followUser } from 'api/user'
@@ -13,6 +15,22 @@ const ProfileContent = ({
   setVisible,
   myFollowingList,
 }) => {
+  const [ffModalVisible, setFFModalVisible] = useState(false)
+  const [title, setTitle] = useState('Followers')
+  const [data, setData] = useState(myFollowingList)
+  const [followerList, setFollowerList] = useState()
+  const [followingList, setFollowingList] = useState(myFollowingList)
+
+  const showFollowers = () => {
+    setTitle('Followers')
+    setFFModalVisible(true)
+  }
+
+  const showFollowing = () => {
+    setTitle('Following')
+    setFFModalVisible(true)
+  }
+
   const follow = async () => {
     try {
       dispatch({
@@ -36,6 +54,14 @@ const ProfileContent = ({
   }
   return (
     <section className="relative py-16">
+      <Modal
+        title={title}
+        visible={ffModalVisible}
+        setVisible={setFFModalVisible}
+      >
+        <ModalContentFF data={data} setVis={setFFModalVisible} />
+      </Modal>
+
       <div className="container mx-auto px-4">
         <div className="augDM relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
           <div className="px-6">
@@ -87,13 +113,13 @@ const ProfileContent = ({
                       <span className="text-sm text-gray-500">Funds</span>
                     </div>
                   )}
-                  <div className="mr-4 p-3 text-center">
+                  <div className="mr-4 p-3 text-center" onClick={showFollowers}>
                     <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
                       {userInfo?.followers ? userInfo.followers.length : 0}
                     </span>
                     <span className="text-sm text-gray-500">Followers</span>
                   </div>
-                  <div className="mr-4 p-3 text-center">
+                  <div className="mr-4 p-3 text-center" onClick={showFollowing}>
                     <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
                       {userInfo?.following ? userInfo.following.length : 0}
                     </span>
@@ -101,7 +127,7 @@ const ProfileContent = ({
                   </div>
                   <div className="lg:mr-4 p-3 text-center">
                     <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
-                      89
+                      0
                     </span>
                     <span className="text-sm text-gray-500">Posts</span>
                   </div>

@@ -20,7 +20,7 @@ const Profile = ({ match }) => {
   const [userInfo, setUserInfo] = useState({})
   const [depositVal, setDepositVal] = useState('1.00')
   const [msgList, setMsgList] = useState([])
-  const [modalVisible, setModalVisible] = useState(false)
+  const [addFundsModalVisible, setAddFundsModalVisible] = useState(false)
   const [isMyProfile, setIsMyProfile] = useState(false)
 
   useEffect(() => {
@@ -107,8 +107,8 @@ const Profile = ({ match }) => {
       {isMyProfile && (
         <Modal
           title="Fund Your Account"
-          visible={modalVisible}
-          setVisible={setModalVisible}
+          visible={addFundsModalVisible}
+          setVisible={setAddFundsModalVisible}
           msgList={msgList}
           setMsgList={setMsgList}
           footerButtons={[
@@ -144,7 +144,7 @@ const Profile = ({ match }) => {
           dispatch={dispatch}
           userInfo={userInfo}
           isMyProfile={isMyProfile}
-          setVisible={setModalVisible}
+          setVisible={setAddFundsModalVisible}
           myFollowingList={state?.userObj?.following}
         />
       </div>

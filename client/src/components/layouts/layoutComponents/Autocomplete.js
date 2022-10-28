@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Input, AutoComplete } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Input, AutoComplete } from 'antd'
+import { UserOutlined } from '@ant-design/icons'
 
-import { getUsers } from "api/user";
-import stockData from "./stocks.json";
+import { getUsers } from 'api/user'
+import stockData from './stocks.json'
 
 const renderUser = ({ username }) => {
   return {
@@ -19,8 +19,8 @@ const renderUser = ({ username }) => {
         </div>
       </Link>
     ),
-  };
-};
+  }
+}
 
 const renderStock = ({ symbol, name }) => {
   return {
@@ -35,37 +35,40 @@ const renderStock = ({ symbol, name }) => {
         </li>
       </Link>
     ),
-  };
-};
+  }
+}
 
 const Autocomplete = () => {
-  const [searchPredict, setSearchPredict] = useState("");
-  const [users, setUsers] = useState([]);
-  const [stocks, setStocks] = useState([]);
-  let options = [];
+  const [searchPredict, setSearchPredict] = useState('')
+  const [users, setUsers] = useState([])
+  const [stocks, setStocks] = useState([])
+  let options = []
 
   useEffect(() => {
     // Review: It should be the case the user has the most recent set of stocks and users
     // To fix: requires api req everytime a user types something into search bar (finds latest lists)
     const initData = async () => {
-      setStocks(stockData);
-      setUsers(await getUsers());
-    };
-    initData();
-  }, []);
+      setStocks(stockData)
+      setUsers(await getUsers())
+    }
+    initData()
+  }, [])
 
   if (Array.isArray(stocks) && stocks.length > 0) {
     options.push({
-      label: <span>Stocks</span>,
+      label: <span>Security</span>,
       options: stocks
         .filter(
           (stock) =>
             stock.symbol.includes(searchPredict) ||
-            stock["name"].toUpperCase().includes(searchPredict)
+            stock['name'].toUpperCase().includes(searchPredict)
+          // ||
+          // stock.symbol.startsWith(searchPredict) ||
+          // stock['name'].toUpperCase().startsWith(searchPredict)
         )
         .slice(0, 5)
         .map((stock) => renderStock(stock)),
-    });
+    })
   } else {
     // console.log("--RMV-- Autocomplete.js: AC either empty or not array");
   }
@@ -74,21 +77,21 @@ const Autocomplete = () => {
     options.push({
       label: (
         <span>
-          Users{users.length === 0 ? " cannot be retrieved right now" : ""}
+          Users{users.length === 0 ? ' cannot be retrieved right now' : ''}
         </span>
       ),
       options: users
         .filter((user) => user.username.toUpperCase().includes(searchPredict))
         .slice(0, 5)
         .map((user) => renderUser(user)),
-    });
+    })
   } else {
     // console.log("--RMV-- users either empty or not array");
   }
 
   const handleSymbol = (values) => {
-    setSearchPredict(values.toUpperCase());
-  };
+    setSearchPredict(values.toUpperCase())
+  }
 
   return (
     <AutoComplete
@@ -103,7 +106,7 @@ const Autocomplete = () => {
         placeholder="Search for Companies or Users..."
       />
     </AutoComplete>
-  );
-};
+  )
+}
 
-export default Autocomplete;
+export default Autocomplete
