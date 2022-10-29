@@ -49,14 +49,19 @@ const BuyModalContent = ({
 
         <div className="absolute inset-y-0 right-0 px-3 flex items-center pointer-events-none">
           <span className="text-gray-500 sm:text-sm">
-            shares for {currF(price.regularMarketPrice?.raw, price.currency)} =
-            {` ${currF(
-              noOfSharesToBuy * price.regularMarketPrice.raw,
-              price.currency
-            )} ${price.currency}`}
+            shares for {price.currency}{' '}
+            {currF(price.regularMarketPrice?.raw, price.currency)} each
           </span>
         </div>
       </div>
+      {price.currency !== 'SGD' && (
+        <div className="text-right px-3">
+          {`Total ${price.currency} ${currF(
+            noOfSharesToBuy * price.regularMarketPrice.raw,
+            price.currency
+          )} `}
+        </div>
+      )}
       <div className="text-right px-3">
         {`Total ${currF(
           noOfSharesToBuy * price.regularMarketPrice.raw * forex,

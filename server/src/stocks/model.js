@@ -1,6 +1,28 @@
 import mongoose from 'mongoose'
-// import { Schema, model } from 'mongoose'
-import { pbkdf2Sync } from 'crypto'
 
+const stockComment = mongoose.Schema(
+  {
+    postText: { type: String, required: true },
+    author: { type: String, required: true },
+    userID: { type: String, required: true },
+  },
+  { timestamps: true }
+)
 
-// export default mongoose.model('User', userSchema)
+const tickerSchema = mongoose.Schema(
+  {
+    ticker: { type: String, required: true, unique: true },
+    comments: [
+      {
+        type: stockComment,
+        required: true,
+        default: [],
+      },
+    ],
+  },
+  { timestamps: true }
+)
+
+tickerSchema.methods = {}
+
+export default mongoose.model('Stock', tickerSchema)

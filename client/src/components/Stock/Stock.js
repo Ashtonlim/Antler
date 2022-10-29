@@ -17,8 +17,8 @@ import { api_editWatchlist, api_buyStock, api_sellStock } from 'api/user'
 import { currF } from 'utils/format'
 
 import Graph from './Graph'
-import SellModalContent from './SellModalContent'
-import BuyModalContent from './BuyModalContent'
+import ModalContentSell from './ModalContentSell'
+import ModalContentBuy from './ModalContentBuy'
 import StockCalendarDates from './StockCalendarDates'
 import StockMetrics from './StockMetrics'
 // import StockOfficers from "./StockOfficers";
@@ -27,12 +27,31 @@ import CommentSection from './CommentSection'
 
 const { REACT_APP_NAME } = process.env
 
+const x = [
+  'GOOG',
+  'MSFT',
+  'NFLX',
+  'AMD',
+  'ABNB',
+  'INTC',
+  'KO',
+  // '%5EGSPC',
+  // '%5EIXIC',
+  'AMZN',
+  'MC.PA',
+  'NKE',
+]
+const ra = (arr) => arr.splice(Math.random() * arr.length, 1)
+const rTickers = [ra(x), ra(x), ra(x), ra(x)]
+
 const Stock = (props) => {
   const { state, dispatch } = useContext(GC)
   const symbol = useLocation().pathname.split('/').pop()
   const range = ['1D', '5D', '3MO', '6MO', '1Y', '5Y', 'MAX']
 
   const [onFocus, setOnFocus] = useState(1)
+  const [randomTickers] = useState(rTickers)
+
   const [coyInfo, setCoyInfo] = useState('')
   const [ticker, setTicker] = useState(symbol.toUpperCase())
   const [forex, setForex] = useState(0)
@@ -42,7 +61,6 @@ const Stock = (props) => {
   const [noOfSharesToSell, setNoOfSharesToSell] = useState(1)
 
   useEffect(() => {
-    console.log(symbol)
     setTicker(symbol.toUpperCase())
     const getInfo = async () => {
       try {
@@ -162,7 +180,7 @@ const Stock = (props) => {
               />,
             ]}
           >
-            <BuyModalContent
+            <ModalContentBuy
               price={coyInfo.price}
               forex={forex}
               ticker={ticker}
@@ -189,7 +207,7 @@ const Stock = (props) => {
               />,
             ]}
           >
-            <SellModalContent
+            <ModalContentSell
               ticker={ticker}
               price={coyInfo.price}
               forex={forex}
@@ -203,94 +221,114 @@ const Stock = (props) => {
       ) : (
         <div></div>
       )}
-      <section className="card mb-3 w-3/5">
-        {coyInfo && ticker && (
-          <div>
-            <div style={{ float: 'right' }}>
-              {state.loggedIn ? (
-                <>
-                  {state.userObj.stock_watchlist.includes(ticker) ? (
+      <div className="flex justify-between">
+        <section className="card mb-3" style={{ width: '65%' }}>
+          {coyInfo && ticker && (
+            <div>
+              <div style={{ float: 'right' }}>
+                {state.loggedIn ? (
+                  <>
+                    {state.userObj.stock_watchlist.includes(ticker) ? (
+                      <ButtonTWP
+                        text="Remove from Watchlist"
+                        onClick={rmFromWatchlist}
+                      />
+                    ) : (
+                      <ButtonTWP
+                        text="Add to Watchlist"
+                        onClick={addToWatchlist}
+                      />
+                    )}
                     <ButtonTWP
-                      text="Remove from Watchlist"
-                      onClick={rmFromWatchlist}
+                      className="ml-12 mr-5"
+                      text="Buy"
+                      color="green"
+                      onClick={setBuyModalVisible}
                     />
-                  ) : (
                     <ButtonTWP
-                      text="Add to Watchlist"
-                      onClick={addToWatchlist}
+                      text="Sell"
+                      color="red"
+                      onClick={setSellModalVisible}
                     />
-                  )}
-                  <ButtonTWP
-                    className="ml-12 mr-5"
-                    text="Buy"
-                    color="green"
-                    onClick={setBuyModalVisible}
-                  />
-                  <ButtonTWP
-                    text="Sell"
-                    color="red"
-                    onClick={setSellModalVisible}
-                  />
-                </>
-              ) : (
-                <Link to="/login">
-                  <ButtonTWP text="Login to Trade" />
-                </Link>
-              )}
-            </div>
-
-            <h1 className="di mtb-0">
-              {currF(
-                coyInfo.price.regularMarketPrice.raw,
-                coyInfo.price.currency
-              )}{' '}
-              {coyInfo.price.currency}
-              <span
-                className={`ml-2 p-1 px-3 ${
-                  coyInfo.price.regularMarketChangePercent?.raw >= 0
-                    ? 'text-green-700 bg-green-100'
-                    : 'text-red-700 bg-red-100'
-                } rounded`}
-              >
-                Today{' '}
-                {coyInfo.price.regularMarketChange?.raw > 0 ? (
-                  <ArrowUpOutlined />
+                  </>
                 ) : (
-                  <ArrowDownOutlined />
+                  <Link to="/login">
+                    <ButtonTWP text="Login to Trade" />
+                  </Link>
+                )}
+              </div>
+
+              <h1 className="di mtb-0">
+                {currF(
+                  coyInfo.price.regularMarketPrice.raw,
+                  coyInfo.price.currency
                 )}{' '}
-                {coyInfo.price.regularMarketChange.fmt} {coyInfo.price.currency}{' '}
-                ({coyInfo.price.regularMarketChangePercent.fmt})
-              </span>
-            </h1>
-            <h2 className="mtb-0 m-0">
-              {ticker}: {coyInfo.price.shortName}
-            </h2>
+                {coyInfo.price.currency}
+                <span
+                  className={`ml-2 p-1 px-3 ${
+                    coyInfo.price.regularMarketChangePercent?.raw >= 0
+                      ? 'text-green-700 bg-green-100'
+                      : 'text-red-700 bg-red-100'
+                  } rounded`}
+                >
+                  Today{' '}
+                  {coyInfo.price.regularMarketChange?.raw > 0 ? (
+                    <ArrowUpOutlined />
+                  ) : (
+                    <ArrowDownOutlined />
+                  )}{' '}
+                  {coyInfo.price.regularMarketChange.fmt}{' '}
+                  {coyInfo.price.currency} (
+                  {coyInfo.price.regularMarketChangePercent.fmt})
+                </span>
+              </h1>
+              <p className="mtb-0 m-0">
+                <span className="font-medium ">
+                  {ticker}: {coyInfo.price.shortName}
+                </span>{' '}
+                - Listed on {coyInfo.price.exchangeName}
+              </p>
 
-            <div className="m-0">Listed on {coyInfo.price.exchangeName}</div>
-          </div>
-        )}
-        <div onClick={handleClick} className="dateRangeBtns my-2">
-          {range.map((r, key) => (
-            <div
-              key={key}
-              className={`cbx dateRangeBtn ${key === onFocus ? 'focus' : ''}`}
-            >
-              {r}
+              <div className="m-0"></div>
+              <div>
+                You own{' '}
+                {state.userObj?.stock_portfolio
+                  .filter((item) => item.ticker == ticker)[0]
+                  ?.stock_orders.reduce(
+                    (agg, item) => agg + item.quantity,
+                    0
+                  ) || 'no'}{' '}
+                share(s)
+              </div>
             </div>
-          ))}
-        </div>
+          )}
+          <div onClick={handleClick} className="dateRangeBtns my-2">
+            {range.map((r, key) => (
+              <div
+                key={key}
+                className={`cbx dateRangeBtn ${key === onFocus ? 'focus' : ''}`}
+              >
+                {r}
+              </div>
+            ))}
+          </div>
 
-        <div style={{ height: '300px' }} id="g">
-          {ticker && <Graph ticker={symbol} range={range[onFocus]} />}
-        </div>
-      </section>
+          <div style={{ height: '300px' }} id="g">
+            {ticker && <Graph ticker={symbol} range={range[onFocus]} />}
+          </div>
+        </section>
+        <CommentSection
+          ticker={symbol}
+          loggedIn={state.loggedIn}
+          userObj={state.userObj}
+        />
+      </div>
 
       <h3 className="text-xl mt-8">Discover More</h3>
       <div className="mb-5">
-        <TinyStockChart ticker={'GOOG'} />
-        <TinyStockChart ticker={'FUTU'} />
-        <TinyStockChart ticker={'MSFT'} />
-        <TinyStockChart ticker={'BABA'} />
+        {randomTickers.map((ticker) => (
+          <TinyStockChart ticker={ticker} />
+        ))}
       </div>
 
       {coyInfo.summaryDetail && (
