@@ -10,6 +10,9 @@ import { currF } from 'utils/format'
 
 import PortfolioTable from './PortfolioTable'
 
+let relativeTime = require('dayjs/plugin/relativeTime')
+dayjs.extend(relativeTime)
+
 const Portfolio = () => {
   const [inOut, setInOut] = useState([[], []])
   const { state } = useResetState()
@@ -28,9 +31,9 @@ const Portfolio = () => {
             key,
             quantity,
             order_price: currF(order_price),
-            createdAt: dayjs(createdAt)
+            createdAt: `${dayjs(createdAt)
               .tz('Asia/Singapore')
-              .format('DD MMM YY hh:mma'),
+              .format('DD MMM YY hh:mma')} (${dayjs(createdAt).fromNow()})`,
           })
         ),
         ...stock_orders.reduce(

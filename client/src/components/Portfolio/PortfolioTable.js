@@ -1,9 +1,10 @@
 /* eslint-disable no-undef */
 import React, { useState, useEffect } from 'react'
-import { Table } from 'antd'
+import { Table, Statistic, Row, Col, Tooltip } from 'antd'
 
-import { currF, round } from 'utils/format'
 import useYfws from 'components/hooks/useYfws'
+import { currF, round } from 'utils/format'
+import { QuestionCircleOutlined } from '@ant-design/icons'
 
 const UpDown = ({ val }) => {
   const c = val >= 0 ? 'green' : 'red'
@@ -32,7 +33,11 @@ const PortfolioTable = ({ innerTableData, outerTableData }) => {
 
   const expandedRowRender = (e) => {
     const columns = [
-      { title: 'Price', dataIndex: 'order_price', key: 'order_price' },
+      {
+        title: 'Price brought at',
+        dataIndex: 'order_price',
+        key: 'order_price',
+      },
       { title: 'Quantity', dataIndex: 'quantity', key: 'quantity' },
       { title: 'Order date', dataIndex: 'createdAt', key: 'createdAt' },
     ]
@@ -49,33 +54,58 @@ const PortfolioTable = ({ innerTableData, outerTableData }) => {
   const columns = [
     { title: 'Ticker', dataIndex: 'ticker', key: 'ticker' },
     {
-      title: 'Avg price',
+      title: () => (
+        <Tooltip title="The weightage is calculated by taking the value of ">
+          Avg price{' '}
+          <QuestionCircleOutlined style={{ fontSize: '11px', color: '#aaa' }} />
+        </Tooltip>
+      ),
       dataIndex: 'avgVal',
       key: 'avgVal',
       render: (t) => currF(t),
     },
     {
-      title: 'Total value',
+      title: () => (
+        <Tooltip title="The weightage is calculated by taking the value of ">
+          Total value{' '}
+          <QuestionCircleOutlined style={{ fontSize: '11px', color: '#aaa' }} />
+        </Tooltip>
+      ),
       dataIndex: 'totalVal',
       key: 'totalVal',
       render: (t) => currF(t),
     },
     { title: 'Total shares', dataIndex: 'totalQty', key: 'totalQty' },
     {
-      title: 'Market price',
+      title: () => (
+        <Tooltip title="The weightage is calculated by taking the value of ">
+          Market price{' '}
+          <QuestionCircleOutlined style={{ fontSize: '11px', color: '#aaa' }} />
+        </Tooltip>
+      ),
       dataIndex: 'mktPrice',
       key: 'mktPrice',
       render: (t) =>
         !t && !Array.isArray(t) && isNaN(t[0]) ? '-' : `${currF(t[0], t[1])}`,
     },
     {
-      title: 'Profit/Loss %',
+      title: () => (
+        <Tooltip title="The weightage is calculated by taking the value of ">
+          Profit/Loss in %{' '}
+          <QuestionCircleOutlined style={{ fontSize: '11px', color: '#aaa' }} />
+        </Tooltip>
+      ),
       dataIndex: 'pnl',
       key: 'pnl',
       render: (t) => (isNaN(t) ? '-' : <UpDown val={round(t, 2)} />), // incase YF provides invalid type?
     },
     {
-      title: 'Weightage in %',
+      title: () => (
+        <Tooltip title="The weightage is calculated by taking the Total value of the stock you own over the sum of the total value of assets owned ">
+          Weightage in %{' '}
+          <QuestionCircleOutlined style={{ fontSize: '11px', color: '#aaa' }} />
+        </Tooltip>
+      ),
       dataIndex: 'weightage',
       key: 'weightage',
       render: (t) => `${round(t, 3)}%`,

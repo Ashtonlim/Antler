@@ -1,6 +1,6 @@
-import React from "react";
-import { Statistic, Row, Col, Tooltip } from "antd";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import React from 'react'
+import { Statistic, Row, Col, Tooltip } from 'antd'
+import { QuestionCircleOutlined } from '@ant-design/icons'
 
 const StockMetrics = ({ summaryDetail }) => {
   return (
@@ -24,7 +24,7 @@ const StockMetrics = ({ summaryDetail }) => {
                 Dividend <QuestionCircleOutlined />
               </Tooltip>
             }
-            value={summaryDetail.dividendYield.fmt || "-"}
+            value={summaryDetail.dividendYield.fmt || '-'}
           />
         </Col>
 
@@ -36,7 +36,7 @@ const StockMetrics = ({ summaryDetail }) => {
               </Tooltip>
             }
             value={
-              summaryDetail.trailingPE ? summaryDetail.trailingPE.fmt : "-"
+              summaryDetail.trailingPE ? summaryDetail.trailingPE.fmt : '-'
             }
           />
         </Col>
@@ -45,13 +45,13 @@ const StockMetrics = ({ summaryDetail }) => {
           <Statistic
             title={
               <Tooltip title="A valuation method that multiplies the price of a company's shares by the total number of outstanding shares.">
-                Market Cap <QuestionCircleOutlined />
+                Market Capitalisation <QuestionCircleOutlined />
               </Tooltip>
             }
             value={
               summaryDetail.marketCap.fmt
                 ? `${summaryDetail.marketCap.fmt} ${summaryDetail.currency}`
-                : "-"
+                : '-'
             }
           />
         </Col>
@@ -73,7 +73,7 @@ const StockMetrics = ({ summaryDetail }) => {
         </Col> */}
       </Row>
     </section>
-  );
-};
+  )
+}
 
-export default StockMetrics;
+export default StockMetrics

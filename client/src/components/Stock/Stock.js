@@ -293,12 +293,12 @@ const Stock = (props) => {
               <div>
                 You own{' '}
                 {state.userObj?.stock_portfolio
-                  .filter((item) => item.ticker == ticker)[0]
-                  ?.stock_orders.reduce(
+                  ?.filter((item) => item.ticker == ticker)[0]
+                  ?.stock_orders?.reduce(
                     (agg, item) => agg + item.quantity,
                     0
                   ) || 'no'}{' '}
-                share(s)
+                shares of {coyInfo.price.shortName}
               </div>
             </div>
           )}

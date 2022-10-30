@@ -25,7 +25,7 @@ const HomeHero = () => {
         setCompanyData(
           await Promise.all([
             getCompanyInfo('aapl'),
-            getCompanyInfo('msft'),
+            getCompanyInfo('amzn'),
             getCompanyInfo('abnb'),
           ])
         )

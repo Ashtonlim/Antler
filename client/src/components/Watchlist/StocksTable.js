@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import { Table, Tooltip } from 'antd'
+import { QuestionCircleOutlined } from '@ant-design/icons'
 
-import { Table } from 'antd'
-
+import TinyStockChart from 'components/common/TinyStockChart'
 import { getCompanyInfo } from 'api/YF.js'
 import { processData } from 'utils/dataHandling'
 
@@ -39,7 +40,7 @@ const StocksTable = ({ symbols }) => {
 
   const columns = [
     {
-      title: 'Symbol',
+      title: 'Ticker',
       dataIndex: 'Symbol',
       render: (text) => <a href={'stock/' + [text]}>{text}</a>,
     },
@@ -51,28 +52,34 @@ const StocksTable = ({ symbols }) => {
       title: 'Last Price (USD)',
       dataIndex: 'LastPrice',
     },
+    // {
+    //   title: 'Market Time',
+    //   dataIndex: 'MarketTime',
+    // },
+    // {
+    //   title: 'Change',
+    //   dataIndex: 'Change',
+    // },
+    // {
+    //   title: 'Change (%)',
+    //   dataIndex: 'perChange',
+    // },
+    // {
+    //   title: 'Volume',
+    //   dataIndex: 'Volume',
+    // },
     {
-      title: 'Market Time',
-      dataIndex: 'MarketTime',
+      title: 'Graph',
+      dataIndex: 'Symbol',
+      render: (ticker) => <TinyStockChart ticker={ticker} />,
     },
     {
-      title: 'Change',
-      dataIndex: 'Change',
-    },
-    {
-      title: 'Change (%)',
-      dataIndex: 'perChange',
-    },
-    {
-      title: 'Volume',
-      dataIndex: 'Volume',
-    },
-    {
-      title: 'Average Volume',
-      dataIndex: 'AvgVol',
-    },
-    {
-      title: 'Market Cap',
+      title: () => (
+        <Tooltip title="A valuation method that multiplies the price of a company's shares by the total number of outstanding shares.">
+          Market Capitalisation{' '}
+          <QuestionCircleOutlined style={{ fontSize: '11px', color: '#aaa' }} />
+        </Tooltip>
+      ),
       dataIndex: 'MarketCap',
     },
   ]

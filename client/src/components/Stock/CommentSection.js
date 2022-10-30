@@ -23,7 +23,9 @@ const LoggedInOutView = ({
     return (
       <>
         <Comment
-          avatar={<Avatar src={avatar} alt="Username" />}
+          avatar={
+            <Avatar src="https://joeschmoe.io/api/v1/random" alt="Username" />
+          }
           content={
             <Editor
               onChange={handleChange}
@@ -38,7 +40,7 @@ const LoggedInOutView = ({
   }
   return (
     <Link to="/login">
-      <ButtonTWP text="Login to Trade"></ButtonTWP>
+      <ButtonTWP text="Login to Comment"></ButtonTWP>
     </Link>
   )
 }
@@ -50,9 +52,9 @@ const CommentList = ({ comments }) => (
       <div>
         <span className="text-xl">Comments</span>
         {comments.length > 1
-          ? `- ${comments.length} Replies`
+          ? ` - ${comments.length} Replies`
           : comments.length
-          ? `- ${comments.length} Reply`
+          ? ` - ${comments.length} Reply`
           : ' '}
       </div>
     }
@@ -91,10 +93,9 @@ const CommentSection = ({ ticker, loggedIn, userObj }) => {
         setComments(
           commentsRes.comments.map(({ postText, author, createdAt }) => ({
             author: <Link to={`/profile/${author}`}>{author}</Link>,
-            avatar,
+            avatar: 'https://joeschmoe.io/api/v1/random',
             content: <p>{postText}</p>,
             datetime: dayjs(createdAt).fromNow(),
-            // datetime: dayjs().fromNow(),
           }))
         )
       } catch (err) {
@@ -102,8 +103,8 @@ const CommentSection = ({ ticker, loggedIn, userObj }) => {
       }
     }
     getComments()
-    // setComments({comments: })
-  })
+    // does not refresh when change stock
+  }, [ticker])
 
   const handleSubmit = async () => {
     if (!value) return
@@ -124,7 +125,7 @@ const CommentSection = ({ ticker, loggedIn, userObj }) => {
           author: (
             <Link to={`/profile/${userObj.username}`}>{userObj.username}</Link>
           ),
-          avatar,
+          avatar: 'https://joeschmoe.io/api/v1/random',
           content: <p>{value}</p>,
           datetime: dayjs().fromNow(),
         },

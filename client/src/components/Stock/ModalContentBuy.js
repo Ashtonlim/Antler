@@ -30,7 +30,7 @@ const BuyModalContent = ({
   return (
     <div className="relative p-6 flex-auto">
       {/* Review: removed a div here, not sure if will cause issues... check di#01 */}
-      {/* <span className="link px-3">{`Buy max : ${limit} shares`}</span> */}
+      <span className="link px-3">{`Maximum shares you can purchase: ${limit}`}</span>
 
       <div className="mt-1 relative rounded-md shadow-sm">
         <div className="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none">

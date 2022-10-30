@@ -90,7 +90,7 @@ export const buyStock = async (req, res) => {
       }
 
       // Review: or upRes.nModified? what's the diff between n and nModified
-      if (upRes.ok && upRes.n > 0) {
+      if (upRes.acknowledged && upRes.modifiedCount > 0) {
         res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
       } else {
         res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))
@@ -195,7 +195,7 @@ export const sellStock = async (req, res) => {
         )
       }
 
-      if (upRes.ok && upRes.n > 0) {
+      if (upRes.acknowledged && upRes.modifiedCount > 0) {
         res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
       } else {
         res.status(400).json(createErrMsg({ message: 'Could not deposit funds' }))
