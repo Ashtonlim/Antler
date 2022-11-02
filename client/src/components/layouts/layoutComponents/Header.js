@@ -30,15 +30,7 @@ const LoggedInOutView = ({ loggedIn, userObj }) => {
               <li>
                 <Link to="/portfolio">Portfolio</Link>
               </li>
-              <li>
-                <Link to="/">Friends</Link>
-              </li>
-              <li>
-                <Link to="/">Research</Link>
-              </li>
-              <li>
-                <Link to="/">Settings</Link>
-              </li>
+
               <li>
                 <Link to="/logout">Logout</Link>
               </li>

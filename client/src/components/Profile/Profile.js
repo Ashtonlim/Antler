@@ -146,6 +146,7 @@ const Profile = ({ match }) => {
           isMyProfile={isMyProfile}
           setVisible={setAddFundsModalVisible}
           myFollowingList={state?.userObj?.following}
+          myFollowersList={state?.userObj?.followers}
         />
       </div>
     </MainLayout>

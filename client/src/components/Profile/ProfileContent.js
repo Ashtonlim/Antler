@@ -1,12 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-
+import dayjs from 'dayjs'
 import ButtonTWP from 'components/common/ButtonTWP'
 import Modal from 'components/common/Modal'
 import ModalContentFF from './ModalContentFF'
+import ModalContentPosts from './ModalContentPosts'
 
 import { FOLLOW_USER, UNFOLLOW_USER } from 'actionTypes'
 import { api_unfollowUser, api_followUser } from 'api/user'
+import { api_GetStockComment } from 'api/stock'
+
+let relativeTime = require('dayjs/plugin/relativeTime')
+dayjs.extend(relativeTime)
 
 const ProfileContent = ({
   dispatch,
@@ -14,21 +19,50 @@ const ProfileContent = ({
   isMyProfile,
   setVisible,
   myFollowingList,
+  myFollowersList,
 }) => {
   const [ffModalVisible, setFFModalVisible] = useState(false)
+  const [postsModalVisible, setPostsModalVisible] = useState(false)
   const [title, setTitle] = useState('Followers')
   const [data, setData] = useState(myFollowingList)
-  const [followerList, setFollowerList] = useState()
-  const [followingList, setFollowingList] = useState(myFollowingList)
+
+  const [comments, setComments] = useState([])
+
+  useEffect(() => {
+    const getComments = async () => {
+      try {
+        const commentsRes = await api_GetStockComment('ABNB')
+        console.log(commentsRes)
+        setComments(
+          commentsRes.comments.map(({ postText, author, createdAt }) => ({
+            author: <Link to={`/profile/${author}`}>{author}</Link>,
+            content: <p>{postText}</p>,
+            datetime: dayjs(createdAt).fromNow(),
+            ticker: 'ABNB',
+          }))
+        )
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    getComments()
+    // does not refresh when change stock
+  }, [])
 
   const showFollowers = () => {
     setTitle('Followers')
     setFFModalVisible(true)
+    setData(myFollowersList)
   }
 
   const showFollowing = () => {
     setTitle('Following')
+    setData(myFollowingList)
     setFFModalVisible(true)
+  }
+
+  const showPosts = () => {
+    setPostsModalVisible(true)
   }
 
   const follow = async () => {
@@ -60,6 +94,13 @@ const ProfileContent = ({
         setVisible={setFFModalVisible}
       >
         <ModalContentFF data={data} setVis={setFFModalVisible} />
+      </Modal>
+      <Modal
+        title="Posts"
+        visible={postsModalVisible}
+        setVisible={setPostsModalVisible}
+      >
+        <ModalContentPosts data={comments} setVis={setPostsModalVisible} />
       </Modal>
 
       <div className="container mx-auto px-4">
@@ -125,7 +166,7 @@ const ProfileContent = ({
                     </span>
                     <span className="text-sm text-gray-500">Following</span>
                   </div>
-                  <div className="lg:mr-4 p-3 text-center">
+                  <div className="lg:mr-4 p-3 text-center" onClick={showPosts}>
                     <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
                       0
                     </span>
