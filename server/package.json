@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run edev",
+    "start": "conc \"npm run dev\" \"cd ../npm run dev\"",
+    "deploy": "npm run edev",
     "dev": "nodemon --trace-deprecation --exec node_modules/.bin/babel-node src/index.js",
     "devclean": "echo 'see how to fix calling node.../babel-node this way, should just be babel-node'",
     "edev": "npm-run-all build server",
