@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import React, { useState, useEffect } from 'react'
-import { Table, Statistic, Row, Col, Tooltip } from 'antd'
+import { Table, Tooltip } from 'antd'
 
 import useYfws from 'components/hooks/useYfws'
 import { currF, round } from 'utils/format'

@@ -112,6 +112,20 @@ const userSchema = mongoose.Schema(
         default: [],
       },
     ],
+    postCount: {
+      type: Number,
+      min: 0,
+      max: 262144,
+      required: true,
+      default: 0,
+    },
+    followers: [
+      {
+        type: String,
+        required: true,
+        default: [],
+      },
+    ],
     // Review: count may be necessary in the future when acc's have many followers. More research needs to be done here
     // followingCount: { type: Number, required: true, default: 0 },
     // followerCount: { type: Number, required: true, default: 0 },

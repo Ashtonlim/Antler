@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom'
 import { Avatar, Button, Comment, Form, Input, List } from 'antd'
 
 import ButtonTWP from 'components/common/ButtonTWP'
-import { api_GetStockComment, api_PostComment } from 'api/stock'
+import { api_GetPosts, api_CreatePost } from 'api/stock'
 
 let relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
 const { TextArea } = Input
-const avatar = 'https://joeschmoe.io/api/v1/random'
+// const avatar = 'https://joeschmoe.io/api/v1/random'
 
 const LoggedInOutView = ({
   loggedIn,
@@ -88,10 +88,10 @@ const CommentSection = ({ ticker, loggedIn, userObj }) => {
   useEffect(() => {
     const getComments = async () => {
       try {
-        const commentsRes = await api_GetStockComment(ticker)
+        const commentsRes = await api_GetPosts(ticker)
         console.log(commentsRes)
         setComments(
-          commentsRes.comments.map(({ postText, author, createdAt }) => ({
+          commentsRes.map(({ postText, author, createdAt }) => ({
             author: <Link to={`/profile/${author}`}>{author}</Link>,
             avatar: 'https://joeschmoe.io/api/v1/random',
             content: <p>{postText}</p>,
@@ -109,9 +109,10 @@ const CommentSection = ({ ticker, loggedIn, userObj }) => {
   const handleSubmit = async () => {
     if (!value) return
 
-    const res = await api_PostComment({
+    const res = await api_CreatePost({
       ticker,
-      comments: { author: userObj.username, postText: value },
+      author: userObj.username,
+      postText: value,
     })
     console.log(res)
 

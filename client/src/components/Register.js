@@ -44,10 +44,11 @@ const Register = () => {
 
     delete values.repassword
     try {
-      dispatch({
-        type: LOGIN,
-        payload: await registerUser({ ...values }),
-      })
+      const payload = await registerUser({ ...values })
+      console.log(`from reg ${payload}`)
+      if (payload) {
+        dispatch({ type: LOGIN, payload })
+      }
     } catch (err) {
       alert('@register.js' + err + 'change this to proper err on frontend')
       setEmailIsOk([true, err])

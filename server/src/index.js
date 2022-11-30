@@ -7,6 +7,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware'
 
 import swaggerJsDoc from './swagger'
 import usersRoute from './users/users'
+import postsRoute from './posts/posts'
 import stocksRoute from './stocks/stocks'
 
 const app = express()
@@ -16,6 +17,7 @@ app.use(express.json())
 app.use(cors())
 
 app.use('/users', usersRoute)
+app.use('/posts', postsRoute)
 app.use('/stocks', stocksRoute)
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc))
 

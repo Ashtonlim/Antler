@@ -8,7 +8,7 @@ import ModalContentPosts from './ModalContentPosts'
 
 import { FOLLOW_USER, UNFOLLOW_USER } from 'actionTypes'
 import { api_unfollowUser, api_followUser } from 'api/user'
-import { api_GetStockComment } from 'api/stock'
+import { api_GetPosts } from 'api/stock'
 
 let relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
@@ -31,7 +31,7 @@ const ProfileContent = ({
   useEffect(() => {
     const getComments = async () => {
       try {
-        const commentsRes = await api_GetStockComment('ABNB')
+        const commentsRes = await api_GetPosts('ABNB')
         console.log(commentsRes)
         setComments(
           commentsRes.comments.map(({ postText, author, createdAt }) => ({
