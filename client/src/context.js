@@ -1,4 +1,5 @@
 import React, { useReducer } from 'react'
+import { api_getLatestState } from 'api/user'
 
 import {
   GET_LATEST_STATE,
@@ -12,6 +13,7 @@ import {
   SELL_STOCK,
   FOLLOW_USER,
   UNFOLLOW_USER,
+  POST_ON_STOCK,
 } from './actionTypes'
 import { saveState, loadState } from './localStorage'
 
@@ -19,9 +21,19 @@ const GC = React.createContext()
 const user = loadState()
 
 const stateResolver = (state, action) => {
-  const newState = { ...state, ...action.payload }
-  saveState(newState)
-  return newState
+  console.log(`resolving state for: ${state.userObj._id}`)
+  // add in payload
+  try {
+    const newState = {
+      ...state,
+      ...action.payload,
+    }
+    saveState(newState)
+    return newState
+  } catch (err) {
+    console.log(`@context.js: ${err}`)
+    return state
+  }
 }
 
 // uses something similar to redux pattern.
@@ -52,7 +64,10 @@ const reducer = (state = {}, action) => {
     case SELL_STOCK:
     case FOLLOW_USER:
     case UNFOLLOW_USER:
-      return stateResolver(state, action)
+    case POST_ON_STOCK:
+      const stiff = stateResolver(state, action)
+      console.log(`stiff ${JSON.stringify(stiff)}`)
+      return stiff
     default:
       return state
   }

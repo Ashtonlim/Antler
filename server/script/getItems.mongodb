@@ -8,5 +8,22 @@ use('myFirstDatabase');
 
 // The drop() command destroys all data from a collection.
 // Make sure you run it against the correct database and collection.
-res = db.posts.find({ ticker: "AAPL" })
+res = db.posts.count({ userID: "6387237f8bec75935c285e09" })
 res
+
+// res = db.posts.aggregate([
+//     {
+//       $match: {
+//         userID: "6387237f8bec75935c285e09"
+//       }
+//     },
+//     {
+//       $lookup: {
+//         from: "posts",  //MUST be the physical name of the collection
+//         localField: "_id",
+//         foreignField: "userID",
+//         as: "posts"
+//       }
+//     }
+//   ]);
+// res

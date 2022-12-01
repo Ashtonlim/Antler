@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
 import { Avatar, Button, Comment, Form, Input, List } from 'antd'
 
+import GC from 'context'
 import ButtonTWP from 'components/common/ButtonTWP'
+import { POST_ON_STOCK } from 'actionTypes'
 import { api_GetPosts, api_CreatePost } from 'api/stock'
 
 let relativeTime = require('dayjs/plugin/relativeTime')
@@ -81,23 +83,27 @@ const Editor = ({ onChange, onSubmit, submitting, value }) => (
   </>
 )
 const CommentSection = ({ ticker, loggedIn, userObj }) => {
+  const { dispatch } = useContext(GC)
   const [comments, setComments] = useState([])
   const [submitting, setSubmitting] = useState(false)
   const [value, setValue] = useState('')
 
+  const retrievePosts = async () => {
+    setComments(
+      (await api_GetPosts(ticker)).map(({ postText, author, createdAt }) => ({
+        author: <Link to={`/profile/${author}`}>{author}</Link>,
+        avatar: 'https://joeschmoe.io/api/v1/random',
+        content: <p>{postText}</p>,
+        datetime: dayjs(createdAt).fromNow(),
+      }))
+    )
+  }
+
   useEffect(() => {
+    console.log(dayjs())
     const getComments = async () => {
       try {
-        const commentsRes = await api_GetPosts(ticker)
-        console.log(commentsRes)
-        setComments(
-          commentsRes.map(({ postText, author, createdAt }) => ({
-            author: <Link to={`/profile/${author}`}>{author}</Link>,
-            avatar: 'https://joeschmoe.io/api/v1/random',
-            content: <p>{postText}</p>,
-            datetime: dayjs(createdAt).fromNow(),
-          }))
-        )
+        await retrievePosts()
       } catch (err) {
         console.log(err)
       }
@@ -109,29 +115,25 @@ const CommentSection = ({ ticker, loggedIn, userObj }) => {
   const handleSubmit = async () => {
     if (!value) return
 
-    const res = await api_CreatePost({
-      ticker,
-      author: userObj.username,
-      postText: value,
-    })
-    console.log(res)
+    try {
+      dispatch({
+        type: POST_ON_STOCK,
+        payload: await api_CreatePost({
+          ticker,
+          author: userObj.username,
+          postText: value,
+        }),
+      })
 
-    setSubmitting(true)
-    setTimeout(() => {
-      setSubmitting(false)
-      setValue('')
-      setComments([
-        ...comments,
-        {
-          author: (
-            <Link to={`/profile/${userObj.username}`}>{userObj.username}</Link>
-          ),
-          avatar: 'https://joeschmoe.io/api/v1/random',
-          content: <p>{value}</p>,
-          datetime: dayjs().fromNow(),
-        },
-      ])
-    }, 1000)
+      setSubmitting(true)
+      setTimeout(async () => {
+        setSubmitting(false)
+        setValue('')
+        await retrievePosts()
+      }, 1000)
+    } catch ({ message }) {
+      console.log(message)
+    }
   }
   const handleChange = (e) => {
     setValue(e.target.value)

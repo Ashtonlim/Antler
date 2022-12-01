@@ -2,6 +2,11 @@ import { createReqParams, resHandler } from './factory'
 import { BASE } from './apiConsts'
 
 export const api_GetPosts = async (id = '') => {
+  console.log(id)
+  if (id.length === 0) {
+    console.log('No id')
+    return { message: 'no id' }
+  }
   return await resHandler(await fetch(`${BASE}/posts/${id}`, createReqParams()))
 }
 

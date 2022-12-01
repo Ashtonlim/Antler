@@ -1,8 +1,7 @@
 import React from 'react'
 import { List, Comment } from 'antd'
-import { Link } from 'react-router-dom'
 
-const ModalContentPosts = ({ data, setVis }) => (
+const ModalContentPosts = ({ data }) => (
   <>
     {console.log(data)}
     <List
@@ -10,10 +9,7 @@ const ModalContentPosts = ({ data, setVis }) => (
       dataSource={data}
       // renderItem={(item) => <List.Item>{item}</List.Item>}
       renderItem={(props) => (
-        <div className="m-5">
-          <span>
-            Posted on <Link to="stocks/ABNB">ABNB</Link>
-          </span>
+        <div className="mx-5 ">
           <Comment {...props} />
         </div>
       )}

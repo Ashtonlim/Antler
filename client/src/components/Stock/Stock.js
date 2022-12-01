@@ -46,6 +46,7 @@ const rTickers = [ra(x), ra(x), ra(x), ra(x)]
 
 const Stock = (props) => {
   const { state, dispatch } = useContext(GC)
+  console.log(`state in stock ${JSON.stringify(state)}`)
   const symbol = useLocation().pathname.split('/').pop()
   const range = ['1D', '5D', '3MO', '6MO', '1Y', '5Y', 'MAX']
 
@@ -186,7 +187,7 @@ const Stock = (props) => {
               ticker={ticker}
               noOfSharesToBuy={noOfSharesToBuy}
               setNoOfSharesToBuy={setNoOfSharesToBuy}
-              funds={state.userObj.funds}
+              funds={state?.userObj?.funds}
             />
           </Modal>
           <Modal

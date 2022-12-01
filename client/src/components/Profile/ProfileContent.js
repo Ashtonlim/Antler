@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import dayjs from 'dayjs'
+
 import ButtonTWP from 'components/common/ButtonTWP'
 import Modal from 'components/common/Modal'
 import ModalContentFF from './ModalContentFF'
@@ -15,7 +16,7 @@ dayjs.extend(relativeTime)
 
 const ProfileContent = ({
   dispatch,
-  userInfo,
+  userObj,
   isMyProfile,
   setVisible,
   myFollowingList,
@@ -31,16 +32,24 @@ const ProfileContent = ({
   useEffect(() => {
     const getComments = async () => {
       try {
-        const commentsRes = await api_GetPosts('ABNB')
-        console.log(commentsRes)
-        setComments(
-          commentsRes.comments.map(({ postText, author, createdAt }) => ({
-            author: <Link to={`/profile/${author}`}>{author}</Link>,
-            content: <p>{postText}</p>,
-            datetime: dayjs(createdAt).fromNow(),
-            ticker: 'ABNB',
-          }))
-        )
+        if (userObj._id) {
+          console.log(`user ID ${JSON.stringify(userObj._id)}`)
+          const commentsRes = await api_GetPosts(userObj._id)
+          console.log(commentsRes)
+          setComments(
+            commentsRes.map(({ ticker, postText, author, createdAt }) => ({
+              author: (
+                <span>
+                  <Link to={`/profile/${author}`}>{author}</Link> Posted on{' '}
+                  <Link to="/stock/ABNB">ABNB</Link>:
+                </span>
+              ),
+              content: <p>{postText}</p>,
+              datetime: dayjs(createdAt).fromNow(),
+              ticker,
+            }))
+          )
+        }
       } catch (err) {
         console.log(err)
       }
@@ -69,7 +78,7 @@ const ProfileContent = ({
     try {
       dispatch({
         type: FOLLOW_USER,
-        payload: await api_followUser({ username: userInfo?.username }),
+        payload: await api_followUser({ username: userObj?.username }),
       })
     } catch (err) {
       alert(err)
@@ -80,7 +89,7 @@ const ProfileContent = ({
     try {
       dispatch({
         type: UNFOLLOW_USER,
-        payload: await api_unfollowUser({ username: userInfo?.username }),
+        payload: await api_unfollowUser({ username: userObj?.username }),
       })
     } catch (err) {
       alert(err)
@@ -133,10 +142,10 @@ const ProfileContent = ({
                   <div className="py-6 px-3 mt-32 sm:mt-0">
                     {console.log(
                       { myFollowingList },
-                      userInfo?.username,
-                      myFollowingList.includes(userInfo?.username)
+                      userObj?.username,
+                      myFollowingList.includes(userObj?.username)
                     )}
-                    {myFollowingList.includes(userInfo?.username) ? (
+                    {myFollowingList.includes(userObj?.username) ? (
                       <ButtonTWP text="Unfollow" onClick={unfollow} />
                     ) : (
                       <ButtonTWP text="Follow" onClick={follow} />
@@ -149,26 +158,26 @@ const ProfileContent = ({
                   {isMyProfile && (
                     <div className="mr-4 p-3 text-center">
                       <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
-                        ${userInfo.funds ? userInfo.funds : 0}
+                        ${userObj.funds ? userObj.funds : 0}
                       </span>
                       <span className="text-sm text-gray-500">Funds</span>
                     </div>
                   )}
                   <div className="mr-4 p-3 text-center" onClick={showFollowers}>
                     <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
-                      {userInfo?.followers ? userInfo.followers.length : 0}
+                      {userObj?.followers ? userObj.followers.length : 0}
                     </span>
                     <span className="text-sm text-gray-500">Followers</span>
                   </div>
                   <div className="mr-4 p-3 text-center" onClick={showFollowing}>
                     <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
-                      {userInfo?.following ? userInfo.following.length : 0}
+                      {userObj?.following ? userObj.following.length : 0}
                     </span>
                     <span className="text-sm text-gray-500">Following</span>
                   </div>
                   <div className="lg:mr-4 p-3 text-center" onClick={showPosts}>
                     <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
-                      0
+                      {userObj?.postCount ? userObj.postCount : 0}
                     </span>
                     <span className="text-sm text-gray-500">Posts</span>
                   </div>
@@ -177,16 +186,16 @@ const ProfileContent = ({
             </div>
             <div className="text-center mt-4">
               <h3 className="text-4xl font-semibold leading-normal mb-2 text-gray-800 mb-2">
-                {userInfo?.name?.toUpperCase()}
+                {userObj?.name?.toUpperCase()}
               </h3>
 
               {isMyProfile && (
                 <>
                   <div className="text-sm leading-normal mt-0 mb-2 text-gray-500 font-bold uppercase">
-                    {userInfo?.email}
+                    {userObj?.email}
                   </div>
                   <div className="mb-2 text-gray-700">
-                    Phone Number: {userInfo?.phone_num}
+                    Phone Number: {userObj?.phone_num}
                   </div>
                 </>
               )}

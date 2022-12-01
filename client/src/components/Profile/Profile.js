@@ -1,17 +1,17 @@
 import React, { useContext, useState, useEffect } from 'react'
 
+import GC from 'context'
+import { api_addFunds, getUsers } from 'api/user'
+import { DEPOSIT_FUNDS } from 'actionTypes'
+import { expiresIn } from 'consts'
+import { currF } from 'utils/format'
+
 import MainLayout from 'components/layouts/MainLayout'
 import NotificationPopups from 'components/common/NotificationPopups'
 import Modal from 'components/common/Modal'
 import ButtonTWP from 'components/common/ButtonTWP'
 import ModalContentAddFunds from './ModalContentAddFunds'
 import ProfileContent from './ProfileContent'
-
-import GC from 'context'
-import { api_addFunds, getUsers } from 'api/user'
-import { DEPOSIT_FUNDS } from 'actionTypes'
-import { expiresIn } from 'consts'
-import { currF } from 'utils/format'
 
 const { REACT_APP_NAME } = process.env
 
@@ -21,6 +21,8 @@ const Profile = ({ match }) => {
   const [depositVal, setDepositVal] = useState('1.00')
   const [msgList, setMsgList] = useState([])
   const [addFundsModalVisible, setAddFundsModalVisible] = useState(false)
+
+  // check if I am looking at my own profile or another user's one.
   const [isMyProfile, setIsMyProfile] = useState(false)
 
   useEffect(() => {
@@ -142,7 +144,7 @@ const Profile = ({ match }) => {
         </section>
         <ProfileContent
           dispatch={dispatch}
-          userInfo={userInfo}
+          userObj={state.userObj}
           isMyProfile={isMyProfile}
           setVisible={setAddFundsModalVisible}
           myFollowingList={state?.userObj?.following}
