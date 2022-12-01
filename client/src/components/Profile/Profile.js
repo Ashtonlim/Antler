@@ -23,18 +23,19 @@ const Profile = ({ match }) => {
   const [addFundsModalVisible, setAddFundsModalVisible] = useState(false)
 
   // check if I am looking at my own profile or another user's one.
-  const [isMyProfile, setIsMyProfile] = useState(false)
+  const [isMe, setIsMe] = useState(false)
 
+  console.log('setUserInfo', userInfo)
   useEffect(() => {
     const pn = match.url.split('/').pop().toLowerCase()
 
     const initData = async () => {
       try {
         if (state.userObj?.username?.toLowerCase() === pn) {
-          setIsMyProfile(true)
+          setIsMe(true)
           setUserInfo(state.userObj)
         } else {
-          setIsMyProfile(false)
+          setIsMe(false)
           setUserInfo(await getUsers(pn))
         }
       } catch (err) {
@@ -43,12 +44,12 @@ const Profile = ({ match }) => {
     }
 
     // console.log(
-    //   { pn, match, isMyProfile },
+    //   { pn, match, isMe },
     //   state.userObj?.username?.toUpperCase(),
     // );
     initData()
     document.title = `${pn} Profile | ${REACT_APP_NAME}`
-  }, [match, state, isMyProfile])
+  }, [match, state, isMe])
 
   const removeEnded = (listOfPopups) => {
     // once items in msgList expires, remove it
@@ -106,7 +107,7 @@ const Profile = ({ match }) => {
         </div>
       )}
       {/* Review: move into profile content? */}
-      {isMyProfile && (
+      {isMe && (
         <Modal
           title="Fund Your Account"
           visible={addFundsModalVisible}
@@ -144,11 +145,10 @@ const Profile = ({ match }) => {
         </section>
         <ProfileContent
           dispatch={dispatch}
-          userObj={state.userObj}
-          isMyProfile={isMyProfile}
+          userInfo={userInfo}
+          ifMeDetails={state.userObj}
+          isMe={isMe}
           setVisible={setAddFundsModalVisible}
-          myFollowingList={state?.userObj?.following}
-          myFollowersList={state?.userObj?.followers}
         />
       </div>
     </MainLayout>

@@ -16,38 +16,36 @@ dayjs.extend(relativeTime)
 
 const ProfileContent = ({
   dispatch,
-  userObj,
-  isMyProfile,
+  userInfo,
+  ifMeDetails,
+  isMe,
   setVisible,
-  myFollowingList,
-  myFollowersList,
 }) => {
   const [ffModalVisible, setFFModalVisible] = useState(false)
   const [postsModalVisible, setPostsModalVisible] = useState(false)
   const [title, setTitle] = useState('Followers')
-  const [data, setData] = useState(myFollowingList)
+  const [data, setData] = useState([])
 
   const [comments, setComments] = useState([])
 
   useEffect(() => {
     const getComments = async () => {
       try {
-        if (userObj._id) {
-          console.log(`user ID ${JSON.stringify(userObj._id)}`)
-          const commentsRes = await api_GetPosts(userObj._id)
-          console.log(commentsRes)
+        if (userInfo._id) {
           setComments(
-            commentsRes.map(({ ticker, postText, author, createdAt }) => ({
-              author: (
-                <span>
-                  <Link to={`/profile/${author}`}>{author}</Link> Posted on{' '}
-                  <Link to="/stock/ABNB">ABNB</Link>:
-                </span>
-              ),
-              content: <p>{postText}</p>,
-              datetime: dayjs(createdAt).fromNow(),
-              ticker,
-            }))
+            (await api_GetPosts(userInfo._id)).map(
+              ({ ticker, postText, author, createdAt }) => ({
+                author: (
+                  <span>
+                    <Link to={`/profile/${author}`}>{author}</Link> Posted on{' '}
+                    <Link to="/stock/ABNB">ABNB</Link>:
+                  </span>
+                ),
+                content: <p>{postText}</p>,
+                datetime: dayjs(createdAt).fromNow(),
+                ticker,
+              })
+            )
           )
         }
       } catch (err) {
@@ -60,13 +58,13 @@ const ProfileContent = ({
 
   const showFollowers = () => {
     setTitle('Followers')
+    setData(userInfo?.followers)
     setFFModalVisible(true)
-    setData(myFollowersList)
   }
 
   const showFollowing = () => {
     setTitle('Following')
-    setData(myFollowingList)
+    setData(userInfo?.following)
     setFFModalVisible(true)
   }
 
@@ -74,22 +72,25 @@ const ProfileContent = ({
     setPostsModalVisible(true)
   }
 
-  const follow = async () => {
+  const follow = async (e) => {
+    console.log('foloow', e.target)
+
     try {
       dispatch({
         type: FOLLOW_USER,
-        payload: await api_followUser({ username: userObj?.username }),
+        payload: await api_followUser({ userValue: e.target.value }),
       })
     } catch (err) {
       alert(err)
     }
   }
 
-  const unfollow = async () => {
+  const unfollow = async (e) => {
+    console.log('unffoloow', e.target)
     try {
       dispatch({
         type: UNFOLLOW_USER,
-        payload: await api_unfollowUser({ username: userObj?.username }),
+        payload: await api_unfollowUser({ userValue: e.target.value }),
       })
     } catch (err) {
       alert(err)
@@ -102,7 +103,14 @@ const ProfileContent = ({
         visible={ffModalVisible}
         setVisible={setFFModalVisible}
       >
-        <ModalContentFF data={data} setVis={setFFModalVisible} />
+        <ModalContentFF
+          data={data}
+          myFollowingList={ifMeDetails.following}
+          setVis={setFFModalVisible}
+          myUser={ifMeDetails.username}
+          unfollow={unfollow}
+          follow={follow}
+        />
       </Modal>
       <Modal
         title="Posts"
@@ -129,7 +137,7 @@ const ProfileContent = ({
                 />
               </div>
               <div className="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center text-center">
-                {isMyProfile ? (
+                {isMe ? (
                   <div className="py-6 px-3 mt-32 sm:mt-0">
                     <ButtonTWP
                       text="Add funds"
@@ -140,44 +148,47 @@ const ProfileContent = ({
                   </div>
                 ) : (
                   <div className="py-6 px-3 mt-32 sm:mt-0">
-                    {console.log(
-                      { myFollowingList },
-                      userObj?.username,
-                      myFollowingList.includes(userObj?.username)
-                    )}
-                    {myFollowingList.includes(userObj?.username) ? (
-                      <ButtonTWP text="Unfollow" onClick={unfollow} />
+                    {ifMeDetails.following?.includes(userInfo?.username) ? (
+                      <ButtonTWP
+                        text="Unfollow"
+                        value={userInfo?.username}
+                        onClick={unfollow}
+                      />
                     ) : (
-                      <ButtonTWP text="Follow" onClick={follow} />
+                      <ButtonTWP
+                        text="Follow"
+                        value={userInfo?.username}
+                        onClick={follow}
+                      />
                     )}
                   </div>
                 )}
               </div>
               <div className="w-full lg:w-4/12 px-4 lg:order-1">
                 <div className="flex justify-center py-4 lg:pt-4 pt-8">
-                  {isMyProfile && (
+                  {isMe && (
                     <div className="mr-4 p-3 text-center">
                       <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
-                        ${userObj.funds ? userObj.funds : 0}
+                        ${userInfo.funds ? userInfo.funds : 0}
                       </span>
                       <span className="text-sm text-gray-500">Funds</span>
                     </div>
                   )}
                   <div className="mr-4 p-3 text-center" onClick={showFollowers}>
                     <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
-                      {userObj?.followers ? userObj.followers.length : 0}
+                      {userInfo?.followers ? userInfo.followers.length : 0}
                     </span>
                     <span className="text-sm text-gray-500">Followers</span>
                   </div>
                   <div className="mr-4 p-3 text-center" onClick={showFollowing}>
                     <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
-                      {userObj?.following ? userObj.following.length : 0}
+                      {userInfo?.following ? userInfo.following.length : 0}
                     </span>
                     <span className="text-sm text-gray-500">Following</span>
                   </div>
                   <div className="lg:mr-4 p-3 text-center" onClick={showPosts}>
                     <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
-                      {userObj?.postCount ? userObj.postCount : 0}
+                      {userInfo?.postCount ? userInfo.postCount : 0}
                     </span>
                     <span className="text-sm text-gray-500">Posts</span>
                   </div>
@@ -186,24 +197,24 @@ const ProfileContent = ({
             </div>
             <div className="text-center mt-4">
               <h3 className="text-4xl font-semibold leading-normal mb-2 text-gray-800 mb-2">
-                {userObj?.name?.toUpperCase()}
+                {userInfo?.name?.toUpperCase()}
               </h3>
 
-              {isMyProfile && (
+              {isMe && (
                 <>
                   <div className="text-sm leading-normal mt-0 mb-2 text-gray-500 font-bold uppercase">
-                    {userObj?.email}
+                    {userInfo?.email}
                   </div>
                   <div className="mb-2 text-gray-700">
-                    Phone Number: {userObj?.phone_num}
+                    Phone Number: {userInfo?.phone_num}
                   </div>
                 </>
               )}
-              <div className="mb-2 text-gray-700">Lorum epsum</div>
+              {/* <div className="mb-2 text-gray-700">Lorum epsum</div> */}
             </div>{' '}
             <div className="mt-10 py-10 text-center">
               <div className="flex flex-wrap justify-center">
-                {isMyProfile && (
+                {isMe && (
                   <div className="py-6 px-3 mt-32 sm:mt-0">
                     <Link
                       className="eDM align-middle bg-blue-500 hover:bg-blue-600 uppercase text-white font-bold hover:shadow-md hover:text-white px-4 py-2 rounded outline-none focus:outline-none mb-1"

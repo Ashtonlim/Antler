@@ -8,8 +8,11 @@ use('myFirstDatabase');
 
 // The drop() command destroys all data from a collection.
 // Make sure you run it against the correct database and collection.
-res = db.posts.count({ userID: "6387237f8bec75935c285e09" })
-res
+// res = db.posts.count({ userID: "6387237f8bec75935c285e09" })
+// res
+
+// res = db.users.updateMany([{ _id: "6387237f8bec75935c285e09" }])
+// res
 
 // res = db.posts.aggregate([
 //     {

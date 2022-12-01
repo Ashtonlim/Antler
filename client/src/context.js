@@ -65,9 +65,7 @@ const reducer = (state = {}, action) => {
     case FOLLOW_USER:
     case UNFOLLOW_USER:
     case POST_ON_STOCK:
-      const stiff = stateResolver(state, action)
-      console.log(`stiff ${JSON.stringify(stiff)}`)
-      return stiff
+      return stateResolver(state, action)
     default:
       return state
   }

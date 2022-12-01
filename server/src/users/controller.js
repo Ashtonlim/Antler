@@ -82,28 +82,34 @@ export const getLatestUserState = async (req, res) => {
 export const follow = async (req, res) => {
   try {
     const _id = verifyAndGetUserId(req, res)
-    const { username } = req.body
+    const userIWantToFollow = req.body.userValue
+    const { username } = await users.findOne({ _id })
+    // checks if user exists
+    console.log(userIWantToFollow, username)
+    const IdIWantToFollow = (await users.findOne({ username: userIWantToFollow }))._id
 
     // Review: Should i check if I am alr following the person???
 
     // Either both updates must pass, or neither.
+    // Should implement ACID transaction
     // 1. add to my following list
-    const isFollowing = await users.updateOne({ _id }, { $addToSet: { following: username } })
+    // add to set ensures safe multiple times operation.
+    const isFollowing = await users.updateOne({ _id }, { $addToSet: { following: userIWantToFollow } })
     if (isFollowing.acknowledged && isFollowing.modifiedCount > 0) {
       // 2. if works, add myself to follower's list of followed user
-      let isFollowedBy = await users.updateOne({ username }, { $addToSet: { followers: username } })
+      let isFollowedBy = await users.updateOne({ _id: IdIWantToFollow }, { $addToSet: { followers: username } })
       let rollback
       let tries = 0
-      // 3(failling). if fails, either try again or rollback follow.
+      // 3(failling). if fails, EITHER try again or rollback follow (try both and see which success).
       while ((!isFollowedBy.acknowledged || isFollowedBy.modifiedCount === 0) && tries < 10) {
         // 4. try again
-        isFollowedBy = await users.updateOne({ username }, { $addToSet: { followers: username } })
+        isFollowedBy = await users.updateOne({ _id: userIWantToFollow }, { $addToSet: { followers: username } })
         if (isFollowedBy.acknowledged && isFollowedBy.modifiedCount > 0) {
           // 5(passing). Report normal!
           return res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
         } else {
           // 5(failing). rollback, remove from my following list
-          rollback = await users.updateOne({ _id }, { $addToSet: { following: username } })
+          rollback = await users.updateOne({ _id }, { $pull: { following: userIWantToFollow } })
           if (rollback.acknowledged && rollback.modifiedCount > 0) {
             return res.status(400).json(createErrMsg({ message: 'Could not follow user' }))
           }
@@ -119,29 +125,33 @@ export const follow = async (req, res) => {
     } else {
       res.status(400).json(createErrMsg({ message: 'Could not follow user' }))
     }
-  } catch (err) {
-    res.status(404).json(err.message)
+  } catch ({ message }) {
+    res.status(400).json(createErrMsg({ message }))
   }
 }
 
 export const unfollow = async (req, res) => {
   try {
     const _id = verifyAndGetUserId(req, res)
-    const { username } = req.body
+    const userIWantToUnfollow = req.body.userValue
+    const { username } = await users.findOne({ _id })
+    // checks if user exists
+    console.log(userIWantToUnfollow, username)
+    const IdIWantToUnfollow = (await users.findOne({ username: userIWantToUnfollow }))._id
 
     // Review: Should i check if even following person???
 
-    const isunfollowed = await users.updateOne({ _id }, { $pull: { following: username } })
-    if (isunfollowed.acknowledged && isunfollowed.modifiedCount > 0) {
-      let isUnfollowedBy = await users.updateOne({ username }, { $pull: { followers: username } })
+    const isUnfollowed = await users.updateOne({ _id }, { $pull: { following: userIWantToUnfollow } })
+    if (isUnfollowed.acknowledged && isUnfollowed.modifiedCount > 0) {
+      let isUnfollowedBy = await users.updateOne({ _id: IdIWantToUnfollow }, { $pull: { followers: username } })
       let rollback
       let tries = 0
       while ((!isUnfollowedBy.acknowledged || isUnfollowedBy.modifiedCount === 0) && tries < 10) {
-        isUnfollowedBy = await users.updateOne({ username }, { $pull: { followers: username } })
+        isUnfollowedBy = await users.updateOne({ _id: IdIWantToUnfollow }, { $pull: { followers: username } })
         if (isUnfollowedBy.acknowledged && isUnfollowedBy.modifiedCount > 0) {
           return res.json({ userObj: (await users.findOne({ _id }, { __v: 0, password: 0 })).toObject({ getters: true }) })
         } else {
-          rollback = await users.updateOne({ _id }, { $pull: { following: username } })
+          rollback = await users.updateOne({ _id }, { $addToSet: { following: userIWantToUnfollow } })
           if (rollback.acknowledged && rollback.modifiedCount > 0) {
             return res.status(400).json(createErrMsg({ message: 'Could not follow user' }))
           }
@@ -155,7 +165,7 @@ export const unfollow = async (req, res) => {
         res.status(400).json(createErrMsg({ message: 'Could not unfollow user' }))
       }
     }
-  } catch (err) {
-    res.status(404).json(err.message)
+  } catch ({ message }) {
+    res.status(400).json(createErrMsg({ message }))
   }
 }
