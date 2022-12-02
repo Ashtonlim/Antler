@@ -9,12 +9,22 @@ import swaggerJsDoc from './swagger'
 import usersRoute from './users/users'
 import postsRoute from './posts/posts'
 import stocksRoute from './stocks/stocks'
+import homeRoute from './home'
 
 const app = express()
 const PORT = process.env.PORT || 8000
 
 app.use(express.json())
 app.use(cors())
+// app.get('/', (req, res) => {
+//   res.send('Hello World!')
+// })
+
+app.get('/', (req, res) => {
+  res.send(
+    '<html> <head>server Response</head> <body><h1> This page was render direcly from the server <p>Hello there welcome to my website</p></h1></body></html>'
+  )
+})
 
 app.use('/users', usersRoute)
 app.use('/posts', postsRoute)
