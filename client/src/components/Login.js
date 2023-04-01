@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Redirect, Link } from 'react-router-dom'
+import { Navigate, Link } from 'react-router-dom'
 
 import { Form, Input, Button, Checkbox, Row, Col } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
@@ -20,7 +20,7 @@ const Login = () => {
     usernameReqPF: false,
     pwdReqPF: false,
     errMsg: '',
-    redirect: null,
+    Navigate: null,
     loginErrMsg: '',
     loginTries: 10,
   })
@@ -66,7 +66,7 @@ const Login = () => {
     console.log('Failed:', errorInfo)
   }
 
-  if (state.loggedIn) return <Redirect to="/" />
+  if (state.loggedIn) return <Navigate to="/" />
 
   return (
     <MainLayout>

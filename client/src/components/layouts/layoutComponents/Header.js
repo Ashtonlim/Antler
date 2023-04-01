@@ -125,12 +125,12 @@ const Header = () => {
         <Col xs={{ span: 0 }} md={{ span: 14 }} lg={{ span: 13 }}>
           <nav style={{ justifyContent: 'flex-end' }}>
             <ul className="ruRow nav-items">
-              <Switch
+              {/* <Switch
                 checkedChildren="Dark"
                 unCheckedChildren="Light"
                 checked={state.darkMode || false}
                 onClick={toggleDarkModeState}
-              />
+              /> */}
 
               <LoggedInOutView
                 loggedIn={state.loggedIn}

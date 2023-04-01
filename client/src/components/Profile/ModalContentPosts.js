@@ -1,5 +1,7 @@
 import React from 'react'
-import { List, Comment } from 'antd'
+import { List } from 'antd'
+import { Comment } from '@ant-design/compatible'
+
 
 const ModalContentPosts = ({ data }) => (
   <>

@@ -96,7 +96,7 @@ const Autocomplete = () => {
   return (
     <AutoComplete
       className="w-full"
-      dropdownClassName="certain-category-search-dropdown"
+      popupClassName="certain-category-search-dropdown"
       dropdownMatchSelectWidth={500}
       onChange={handleSymbol}
       options={options}

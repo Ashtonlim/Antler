@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react'
-import { api_getLatestState } from 'api/user'
+// import { api_getLatestState } from 'api/user'
 
 import {
   GET_LATEST_STATE,
@@ -17,7 +17,7 @@ import {
 } from './actionTypes'
 import { saveState, loadState } from './localStorage'
 
-const GC = React.createContext()
+const GC = React.createContext({})
 const user = loadState()
 
 const stateResolver = (state, action) => {

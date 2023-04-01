@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
-import { Avatar, Button, Comment, Form, Input, List } from 'antd'
+import { Avatar, Button, Form, Input, List } from 'antd'
+import { Comment } from '@ant-design/compatible'
 
 import GC from 'context'
 import ButtonTWP from 'components/common/ButtonTWP'

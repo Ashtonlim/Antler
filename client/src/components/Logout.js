@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import GC from 'context'
 import { LOGOUT } from 'actionTypes'
 const { REACT_APP_NAME } = process.env
@@ -11,7 +11,7 @@ const Logout = () => {
     dispatch({ type: LOGOUT })
   })
 
-  return <Redirect to="/" />
+  return <Navigate to="/" />
 }
 
 export default Logout
